@@ -81,6 +81,9 @@ function renderCard(p) {
   const flavor   = p.flavor
     ? `<div class="card-flavor">🍓 ${p.flavor}</div>`
     : '';
+  const desc = p.description
+    ? `<div class="card-desc">${p.description.split('\n')[0]}</div>`
+    : '';
   const brand    = p.brand
     ? `<span class="card-badge">${p.brand}</span>`
     : '';
@@ -92,6 +95,7 @@ function renderCard(p) {
         ${catLabel}
         <div class="card-name">${p.name}</div>
         ${flavor}
+        ${desc}
       </div>
       <div class="card-footer">
         ${price}

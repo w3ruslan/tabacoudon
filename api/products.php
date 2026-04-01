@@ -46,15 +46,18 @@ if (!isset($_SESSION['admin'])) {
 if ($method === 'POST' && $action === 'add') {
     $data = json_decode(file_get_contents('php://input'), true);
     $db   = getDB();
-    $stmt = $db->prepare('INSERT INTO products (name, brand, flavor, category_id, price, image_url)
-                          VALUES (?, ?, ?, ?, ?, ?)');
+    $stmt = $db->prepare('INSERT INTO products
+        (name, brand, flavor, size, category_id, price, image_url, description)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
     $stmt->execute([
         $data['name']        ?? '',
         $data['brand']       ?? '',
         $data['flavor']      ?? '',
+        $data['size']        ?? '',
         $data['category_id'] ?? null,
         $data['price']       ?? null,
         $data['image_url']   ?? '',
+        $data['description'] ?? '',
     ]);
     echo json_encode(['id' => $db->lastInsertId(), 'ok' => true]);
     exit;
@@ -64,16 +67,19 @@ if ($method === 'POST' && $action === 'add') {
 if ($method === 'PUT' && $action === 'edit') {
     $data = json_decode(file_get_contents('php://input'), true);
     $db   = getDB();
-    $stmt = $db->prepare('UPDATE products SET name=?, brand=?, flavor=?, category_id=?, price=?, image_url=?, active=?
-                          WHERE id=?');
+    $stmt = $db->prepare('UPDATE products
+        SET name=?, brand=?, flavor=?, size=?, category_id=?, price=?, image_url=?, active=?, description=?
+        WHERE id=?');
     $stmt->execute([
         $data['name']        ?? '',
         $data['brand']       ?? '',
         $data['flavor']      ?? '',
+        $data['size']        ?? '',
         $data['category_id'] ?? null,
         $data['price']       ?? null,
         $data['image_url']   ?? '',
         $data['active']      ?? 1,
+        $data['description'] ?? '',
         $data['id'],
     ]);
     echo json_encode(['ok' => true]);

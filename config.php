@@ -16,6 +16,9 @@ define('ADMIN_PASSWORD', 'admin123');
 define('SHOP_NAME',    'Tabacoudon');
 define('SHOP_TAGLINE', 'Votre spécialiste e-liquid à Paris');
 
+// Gemini AI API Key
+define('GEMINI_API_KEY', 'AIzaSyDmdvE9kdmJp9BFfnUcRLmy328dLWn-wf0');
+
 // Connexion PDO
 function getDB(): PDO {
     static $pdo = null;
