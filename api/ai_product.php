@@ -33,8 +33,8 @@ Réponds UNIQUEMENT avec ce JSON strict, sans texte avant ou après :
 {
   \"brand\": \"marque du produit\",
   \"flavor\": \"parfum court (ex: Blueberry Ice)\",
-  \"flavor_description\": \"description du goût en 2-3 phrases appétissantes en français\",
-  \"short_description\": \"slogan marketing accrocheur en français, 1 phrase max\",
+  \"card_description\": \"résumé accrocheur du goût pour la fiche produit, MAXIMUM 150 caractères, en français, donne envie d'acheter (ex: Myrtilles juteuses avec une vague de fraîcheur glacée. Un best-seller incontournable !)\",
+  \"full_description\": \"description complète du goût en 2-3 phrases en français, détaillée et appétissante\",
   \"category\": \"Goût Tabac OU Goût Gourmand OU Fruité OU Fruité Fresh\",
   \"image_search_query\": \"requête en anglais pour trouver l'image du produit (ex: Elfbar 600 Blueberry Ice vape)\"
 }";

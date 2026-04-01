@@ -383,8 +383,8 @@ function renderAIResult(d) {
       ${d.flavor ? `<span class="ai-tag">🍓 ${d.flavor}</span>` : ''}
       ${catHtml}
     </div>
-    <div class="ai-desc-preview">"${d.short_description || d.flavor_description || ''}"</div>
-    ${d.flavor_description ? `<div class="ai-desc-preview" style="margin-top:6px;font-style:normal;font-size:12px;color:#777">${d.flavor_description}</div>` : ''}
+    <div class="ai-desc-preview">"${d.card_description || ''}"</div>
+    ${d.full_description ? `<div class="ai-desc-preview" style="margin-top:6px;font-style:normal;font-size:12px;color:#777">${d.full_description}</div>` : ''}
   `;
 }
 
@@ -402,10 +402,10 @@ function confirmAI() {
   document.getElementById('fSize').value   = size;
   document.getElementById('fPrice').value  = price;
 
-  // Description = flavor_description + short_description
+  // Description : card_description (150 chars) + full_description
   let desc = '';
-  if (aiData.short_description)  desc += aiData.short_description;
-  if (aiData.flavor_description) desc += (desc ? '\n' : '') + aiData.flavor_description;
+  if (aiData.card_description)  desc += aiData.card_description;
+  if (aiData.full_description)  desc += (desc ? '\n\n' : '') + aiData.full_description;
   document.getElementById('fDesc').value = desc;
 
   // Catégorie auto

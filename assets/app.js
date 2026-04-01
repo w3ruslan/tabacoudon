@@ -81,8 +81,9 @@ function renderCard(p) {
   const flavor   = p.flavor
     ? `<div class="card-flavor">🍓 ${p.flavor}</div>`
     : '';
-  const desc = p.description
-    ? `<div class="card-desc">${p.description.split('\n')[0]}</div>`
+  const rawDesc = p.description ? p.description.split('\n\n')[0] : '';
+  const desc = rawDesc
+    ? `<div class="card-desc">${rawDesc.length > 150 ? rawDesc.slice(0,148) + '…' : rawDesc}</div>`
     : '';
   const brand    = p.brand
     ? `<span class="card-badge">${p.brand}</span>`
