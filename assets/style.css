@@ -232,109 +232,129 @@ body {
 }
 
 /* ══════════════════════════════════════════
-   TRADING CARD STYLE — Catégorie colorée
+   TRADING CARD — Premium Design
 ══════════════════════════════════════════ */
 .product-grid {
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
 }
 
+/* ── Outer card shell ── */
 .tc-card {
-  border: 4px solid var(--cc, #e94560);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 5px;
-  background: linear-gradient(160deg, #fff 60%, rgba(0,0,0,.03));
-  box-shadow: 0 4px 18px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.04);
   cursor: pointer;
-  transition: transform .18s ease, box-shadow .18s ease;
-  -webkit-tap-highlight-color: transparent;
   position: relative;
+  transition: transform .22s ease, box-shadow .22s ease;
+  -webkit-tap-highlight-color: transparent;
+  /* Coloured glow border */
+  background: var(--cc, #e94560);
+  box-shadow:
+    0 6px 24px rgba(0,0,0,.18),
+    0 0 0 1px rgba(255,255,255,.08),
+    0 0 32px -8px var(--cc, #e94560);
 }
 .tc-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 16px 40px rgba(0,0,0,.18), 0 0 20px rgba(0,0,0,.08);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.25),
+    0 0 40px -4px var(--cc, #e94560);
 }
-.tc-card:active { transform: scale(.97); }
+.tc-card:active { transform: scale(.96); }
 
-/* Inner frame */
+/* ── Inner white card ── */
 .tc-frame {
-  border-radius: 11px;
+  border-radius: 13px;
   overflow: hidden;
-  background: white;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Category header bar */
+/* ── Category header ── */
 .tc-header {
   background: var(--cc, #e94560);
-  color: white;
-  font-size: 10px;
-  font-weight: 800;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 5px 10px;
+  letter-spacing: 1.5px;
+  padding: 6px 12px;
   text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,.3);
 }
 
-/* Image zone */
+/* ── Image zone ── */
 .tc-img-wrap {
-  background: #f7f8fa;
-  height: 170px;
+  background: linear-gradient(180deg, #f4f5f8 0%, #eceef2 100%);
+  height: 190px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 14px;
   overflow: hidden;
+  position: relative;
 }
 .tc-img-wrap img {
   max-height: 100%;
   max-width: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.2));
+  transition: transform .3s ease;
 }
-.tc-no-img { font-size: 60px; opacity: .2; }
+.tc-card:hover .tc-img-wrap img {
+  transform: scale(1.06) translateY(-3px);
+}
+.tc-no-img { font-size: 64px; opacity: .15; }
 
-/* Name + price bar */
+/* ── Name + price dark bar ── */
 .tc-namebar {
-  background: var(--cc, #e94560);
+  background: linear-gradient(135deg, var(--cc, #e94560), #1a1a2e);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 10px;
+  padding: 9px 12px;
+  gap: 8px;
 }
-.tc-name  {
+.tc-name {
   font-size: 13px;
-  font-weight: 800;
-  color: white;
+  font-weight: 900;
+  color: #fff;
   line-height: 1.2;
   flex: 1;
-  margin-right: 8px;
+  text-shadow: 0 1px 4px rgba(0,0,0,.4);
 }
 .tc-price {
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 900;
-  color: white;
+  color: #fff;
   white-space: nowrap;
-  text-shadow: 0 1px 4px rgba(0,0,0,.25);
+  background: rgba(0,0,0,.25);
+  padding: 3px 9px;
+  border-radius: 20px;
+  text-shadow: 0 1px 4px rgba(0,0,0,.3);
 }
 
-/* Flavor line */
+/* ── Flavor ── */
 .tc-flavor {
-  background: rgba(0,0,0,.04);
   font-size: 11px;
-  color: #666;
-  padding: 5px 10px;
-  border-bottom: 1px solid rgba(0,0,0,.06);
+  color: #777;
+  padding: 5px 12px;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-/* Description box — always visible */
+/* ── Description — always visible ── */
 .tc-desc {
   font-size: 11.5px;
-  color: #444;
-  line-height: 1.5;
-  padding: 8px 10px;
+  color: #555;
+  line-height: 1.55;
+  padding: 9px 12px 11px;
   font-style: italic;
-  background: #fafafa;
-  border-top: 1px solid rgba(0,0,0,.05);
-  min-height: 52px;
+  background: #fff;
+  min-height: 54px;
+  border-left: 3px solid var(--cc, #e94560);
+  margin: 0 0 0 0;
 }
 
 /* ══════════════════════════════════════════
