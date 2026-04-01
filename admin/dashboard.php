@@ -558,8 +558,10 @@ function editProduct(p) {
   document.getElementById('fPrice').value   = p.price   || '';
   document.getElementById('fActive').value  = p.active;
   document.getElementById('fCategory').value = p.category_id || '';
-  document.getElementById('fDesc').value    = p.description || '';
-  document.getElementById('fBarcode').value = p.barcode     || '';
+  const descEl    = document.getElementById('fDesc');
+  const barcodeEl = document.getElementById('fBarcode');
+  if (descEl)    descEl.value    = p.description || '';
+  if (barcodeEl) barcodeEl.value = p.barcode     || '';
 
   selectedImgUrl = p.image_url || '';
   if (selectedImgUrl) document.getElementById('selectedImg').src = selectedImgUrl;
@@ -596,15 +598,22 @@ async function saveProduct() {
   };
 
   try {
-    await fetch(`../api/products.php?action=${action}`, {
+    const res  = await fetch(`../api/products.php?action=${action}`, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload)
     });
+    const json = await res.json();
+    if (json.error) {
+      alert('❌ Erreur : ' + json.error);
+      btn.disabled    = false;
+      btn.textContent = '💾 Enregistrer';
+      return;
+    }
     closeModal();
     window.location.reload();
   } catch(e) {
-    alert('Erreur lors de l\'enregistrement.');
+    alert('❌ Erreur réseau : ' + e.message);
     btn.disabled    = false;
     btn.textContent = '💾 Enregistrer';
   }
