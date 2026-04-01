@@ -57,6 +57,9 @@
   <p>© <?= date('Y') ?> <?= SHOP_NAME ?> · Catalogue en ligne</p>
 </footer>
 
+<!-- ══ CARD DETAIL POPUP ══ -->
+<div id="cardDetailPopup" style="display:none"></div>
+
 <!-- ══ SCANNER OVERLAY ══ -->
 <div id="scannerOverlay" class="scanner-overlay" style="display:none">
   <div class="scanner-inner">

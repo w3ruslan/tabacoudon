@@ -231,6 +231,196 @@ body {
   font-weight: 600;
 }
 
+/* ── Card tap hint ────────────────────────── */
+.card-tap-hint {
+  text-align: center;
+  font-size: 11px;
+  color: #ccc;
+  padding: 6px 0 10px;
+  letter-spacing: .3px;
+  transition: color .2s;
+}
+.product-card:hover .card-tap-hint { color: var(--accent); }
+.product-card { cursor: pointer; }
+
+/* ══════════════════════════════════════════
+   CARD DETAIL POPUP — Anime Card Effect
+══════════════════════════════════════════ */
+#cardDetailPopup {
+  position: fixed; inset: 0;
+  z-index: 800;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+
+.cdp-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(10,10,20,.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.cdp-card {
+  position: relative;
+  width: 100%; max-width: 400px;
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.15),
+    0 30px 80px rgba(0,0,0,.5),
+    0 0 60px color-mix(in srgb, var(--cat-color) 30%, transparent);
+  transform: scale(0.6) translateY(60px) rotateX(15deg);
+  opacity: 0;
+  transition: transform .4s cubic-bezier(.175,.885,.32,1.275),
+              opacity .3s ease,
+              box-shadow .3s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.cdp-card.cdp-animate-in {
+  transform: scale(1) translateY(0) rotateX(0deg);
+  opacity: 1;
+}
+
+.cdp-card.cdp-animate-out {
+  transform: scale(0.8) translateY(40px);
+  opacity: 0;
+  transition: transform .25s ease-in, opacity .25s ease-in;
+}
+
+/* Shiny top stripe */
+.cdp-card::before {
+  content: '';
+  display: block;
+  height: 6px;
+  background: linear-gradient(90deg, var(--cat-color), color-mix(in srgb, var(--cat-color) 60%, white));
+}
+
+/* Holographic shimmer on hover */
+.cdp-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0) 40%,
+    rgba(255,255,255,.08) 50%,
+    rgba(255,255,255,0) 60%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+  border-radius: 24px;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 200%; }
+  50%  { background-position: 0% 0%; }
+  100% { background-position: 200% 200%; }
+}
+
+.cdp-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 32px; height: 32px;
+  background: rgba(0,0,0,.12);
+  border: none; border-radius: 50%;
+  font-size: 14px; color: #fff;
+  cursor: pointer; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.cdp-close:hover { background: rgba(0,0,0,.3); }
+
+/* Image section */
+.cdp-img-wrap {
+  position: relative;
+  background: var(--cat-light, #f8f9fa);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 220px;
+  overflow: hidden;
+}
+.cdp-img-wrap img {
+  max-height: 220px;
+  max-width: 100%;
+  object-fit: contain;
+  padding: 20px;
+  position: relative; z-index: 1;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.2));
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+.cdp-no-img { font-size: 80px; }
+.cdp-glow {
+  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+  width: 60%; height: 30px;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--cat-color) 40%, transparent), transparent 70%);
+  filter: blur(8px);
+}
+
+/* Body */
+.cdp-body { padding: 20px 22px 22px; }
+
+.cdp-cat {
+  display: inline-block;
+  color: white; padding: 4px 14px;
+  border-radius: 20px; font-size: 11px;
+  font-weight: 800; letter-spacing: .5px;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+
+.cdp-name {
+  font-size: 22px; font-weight: 900;
+  color: #1a1a2e; line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.cdp-brand {
+  font-size: 13px; color: #999; margin-bottom: 12px;
+}
+
+/* Flavor tags */
+.cdp-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 14px;
+}
+.dtag {
+  background: var(--cat-light, #f5f5f5);
+  color: var(--cat-color, #555);
+  border: 1.5px solid color-mix(in srgb, var(--cat-color) 30%, transparent);
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 700;
+}
+
+/* Descriptions */
+.cdp-short-desc {
+  font-size: 15px; font-style: italic;
+  color: #444; line-height: 1.5;
+  border-left: 3px solid var(--cat-color);
+  padding-left: 12px; margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.cdp-full-desc {
+  font-size: 13px; color: #777;
+  line-height: 1.6; margin-bottom: 16px;
+}
+
+/* Footer price */
+.cdp-footer {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cdp-price {
+  font-size: 36px; font-weight: 900;
+  color: #00C896;
+}
+.cdp-price small { font-size: 18px; font-weight: 600; }
+
 /* ── Scan Button ──────────────────────────── */
 .btn-scan {
   background: var(--accent);
