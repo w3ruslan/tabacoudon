@@ -19,7 +19,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var el = e.target;
     // Karta tıklandığında en yakın .fc-card'ı bul
     while (el && el !== this) {
-      if (el.classList && el.classList.contains('fc-card')) {
+      if (el.classList && el.classList.contains('tc-card')) {
         showDetail(el.getAttribute('data-id'));
         return;
       }
@@ -73,21 +73,29 @@ function loadProducts(catId) {
 
 function renderCard(p) {
   var catColor = catColors[p.category_name] || '#e94560';
-  var imgHtml  = p.image_url
-    ? '<img src="' + p.image_url + '" alt="' + p.name + '" onerror="this.style.display=\'none\'">'
-    : '<span class="no-img">🌬️</span>';
-  var priceHtml = p.price
-    ? '<span class="fc-price"><small>€</small>' + parseFloat(p.price).toFixed(2) + '</span>'
-    : '<span class="fc-price" style="color:#bbb">—</span>';
-  var brandHtml = p.brand ? '<span class="fc-brand">' + p.brand + '</span>' : '';
-  var catHtml   = p.category_name ? '<div class="fc-cat">' + (p.category_icon||'') + ' ' + p.category_name + '</div>' : '';
-  var flavHtml  = p.flavor ? '<div class="fc-flavor">🍓 ' + p.flavor + '</div>' : '';
+  var catLabel = p.category_name || '';
+  var catIcon  = p.category_icon || '';
 
-  return '<div class="fc-card" data-id="' + p.id + '" style="border-top:5px solid ' + catColor + '">'
-    + '<div class="fc-img">' + imgHtml + '</div>'
-    + '<div class="fc-body">' + catHtml + '<div class="fc-name">' + p.name + '</div>' + flavHtml + '</div>'
-    + '<div class="fc-footer">' + priceHtml + brandHtml + '</div>'
-    + '<div class="fc-tap">👆 Touchez pour les détails</div>'
+  var imgHtml = p.image_url
+    ? '<img src="' + p.image_url + '" alt="' + p.name + '" onerror="this.style.display=\'none\'">'
+    : '<span class="tc-no-img">🌬️</span>';
+
+  var desc = (p.description || '').split('\n\n')[0];
+  if (desc.length > 150) desc = desc.slice(0, 148) + '…';
+
+  var price = p.price ? '€' + parseFloat(p.price).toFixed(2) : '—';
+
+  return '<div class="tc-card" data-id="' + p.id + '" style="--cc:' + catColor + ';border-color:' + catColor + '">'
+    + '<div class="tc-frame">'
+    + '<div class="tc-header">' + catIcon + ' ' + catLabel + '</div>'
+    + '<div class="tc-img-wrap">' + imgHtml + '</div>'
+    + '<div class="tc-namebar">'
+    + '<span class="tc-name">' + p.name + '</span>'
+    + '<span class="tc-price">' + price + '</span>'
+    + '</div>'
+    + (p.flavor ? '<div class="tc-flavor">🍓 ' + p.flavor + '</div>' : '')
+    + (desc ? '<div class="tc-desc">' + desc + '</div>' : '')
+    + '</div>'
     + '</div>';
 }
 
