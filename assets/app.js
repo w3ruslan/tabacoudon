@@ -3,7 +3,8 @@
 // ══════════════════════════════════════════
 
 const API = 'api/products.php';
-let currentCat = 0;
+let currentCat  = 0;
+let pubScanner  = null;
 
 const catColorMap = {
   'Goût Tabac':    'cat-tabac',
@@ -90,7 +91,7 @@ function renderCard(p) {
     : '';
 
   return `
-    <div class="product-card ${colorClass}">
+    <div class="product-card ${colorClass}" id="card-${p.id}">
       <div class="card-img">${img}</div>
       <div class="card-body">
         ${catLabel}
@@ -103,4 +104,81 @@ function renderCard(p) {
         ${brand}
       </div>
     </div>`;
+}
+
+// ── Barcode Scanner ───────────────────────
+function openScanner() {
+  const overlay = document.getElementById('scannerOverlay');
+  const status  = document.getElementById('scannerStatus');
+  overlay.style.display = 'flex';
+  status.textContent    = '';
+
+  pubScanner = new Html5Qrcode('scannerBox');
+  pubScanner.start(
+    { facingMode: 'environment' },
+    { fps: 10, qrbox: { width: 280, height: 140 } },
+    async (barcode) => {
+      status.textContent = '🔍 Recherche...';
+      await findProductByBarcode(barcode);
+    },
+    () => {}
+  ).catch(err => {
+    status.textContent = '❌ Caméra inaccessible';
+    console.warn(err);
+  });
+}
+
+function closeScanner() {
+  if (pubScanner) {
+    pubScanner.stop().catch(() => {});
+    pubScanner = null;
+  }
+  document.getElementById('scannerOverlay').style.display = 'none';
+}
+
+async function findProductByBarcode(barcode) {
+  try {
+    const res = await fetch(`${API}?action=find_barcode&barcode=${encodeURIComponent(barcode)}`);
+    const p   = await res.json();
+    closeScanner();
+    if (p && p.id) {
+      showFoundPopup(p);
+    } else {
+      showNotFound(barcode);
+    }
+  } catch(e) {
+    closeScanner();
+    showNotFound(barcode);
+  }
+}
+
+function showFoundPopup(p) {
+  const popup    = document.getElementById('foundPopup');
+  const colorMap = { 'Goût Tabac':'#8B6914','Goût Gourmand':'#E67E22','Fruité':'#E74C3C','Fruité Fresh':'#2ECC71' };
+  const color    = colorMap[p.category_name] || '#e94560';
+
+  document.getElementById('foundImg').innerHTML = p.image_url
+    ? `<img src="${p.image_url}" style="width:120px;height:120px;object-fit:contain;border-radius:12px;background:#f5f5f5;padding:8px">`
+    : `<div style="font-size:72px">🌬️</div>`;
+  document.getElementById('foundName').textContent   = p.name;
+  document.getElementById('foundFlavor').textContent = p.flavor ? '🍓 ' + p.flavor : '';
+  document.getElementById('foundPrice').textContent  = p.price  ? '€ ' + parseFloat(p.price).toFixed(2) : '';
+  document.getElementById('foundCat').innerHTML = p.category_name
+    ? `<span style="background:${color};color:white;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">${p.category_icon||''} ${p.category_name}</span>`
+    : '';
+  popup.style.display = 'flex';
+}
+
+function showNotFound(barcode) {
+  const popup = document.getElementById('foundPopup');
+  document.getElementById('foundImg').innerHTML    = '<div style="font-size:64px">❓</div>';
+  document.getElementById('foundName').textContent = 'Produit non trouvé';
+  document.getElementById('foundFlavor').textContent = 'Barkod: ' + barcode;
+  document.getElementById('foundPrice').textContent  = '';
+  document.getElementById('foundCat').innerHTML       = '';
+  popup.style.display = 'flex';
+}
+
+function closeFound() {
+  document.getElementById('foundPopup').style.display = 'none';
 }

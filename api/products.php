@@ -27,6 +27,20 @@ if ($method === 'GET' && $action === 'list') {
     exit;
 }
 
+// ── GET — recherche par barcode ───────────────────
+if ($method === 'GET' && $action === 'find_barcode') {
+    $barcode = trim($_GET['barcode'] ?? '');
+    if (!$barcode) { echo json_encode(null); exit; }
+    $db   = getDB();
+    $stmt = $db->prepare('SELECT p.*, c.name AS category_name, c.icon AS category_icon
+        FROM products p LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.active = 1 AND p.barcode = ? LIMIT 1');
+    $stmt->execute([$barcode]);
+    $product = $stmt->fetch();
+    echo json_encode($product ?: null);
+    exit;
+}
+
 // ── GET — catégories ──────────────────────────────
 if ($method === 'GET' && $action === 'categories') {
     $db   = getDB();
@@ -47,13 +61,14 @@ if ($method === 'POST' && $action === 'add') {
     $data = json_decode(file_get_contents('php://input'), true);
     $db   = getDB();
     $stmt = $db->prepare('INSERT INTO products
-        (name, brand, flavor, size, category_id, price, image_url, description)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+        (name, brand, flavor, size, barcode, category_id, price, image_url, description)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
     $stmt->execute([
         $data['name']        ?? '',
         $data['brand']       ?? '',
         $data['flavor']      ?? '',
         $data['size']        ?? '',
+        $data['barcode']     ?? '',
         $data['category_id'] ?? null,
         $data['price']       ?? null,
         $data['image_url']   ?? '',
@@ -68,13 +83,14 @@ if ($method === 'PUT' && $action === 'edit') {
     $data = json_decode(file_get_contents('php://input'), true);
     $db   = getDB();
     $stmt = $db->prepare('UPDATE products
-        SET name=?, brand=?, flavor=?, size=?, category_id=?, price=?, image_url=?, active=?, description=?
+        SET name=?, brand=?, flavor=?, size=?, barcode=?, category_id=?, price=?, image_url=?, active=?, description=?
         WHERE id=?');
     $stmt->execute([
         $data['name']        ?? '',
         $data['brand']       ?? '',
         $data['flavor']      ?? '',
         $data['size']        ?? '',
+        $data['barcode']     ?? '',
         $data['category_id'] ?? null,
         $data['price']       ?? null,
         $data['image_url']   ?? '',

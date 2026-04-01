@@ -15,7 +15,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — <?= SHOP_NAME ?></title>
-  <link rel="stylesheet" href="assets/admin.css">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     /* ── AI Step ── */
     .ai-input-row { display:flex; gap:10px; margin-bottom:14px; }
@@ -60,8 +60,31 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     }
     textarea#fDesc:focus { border-color:var(--accent); }
   </style>
+  <style>
+    .scanner-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,.85);
+      z-index:999; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:16px;
+    }
+    .scanner-box { width:320px; max-width:90vw; }
+    .scanner-title { color:#fff; font-size:18px; font-weight:700; }
+    .scanner-hint  { color:rgba(255,255,255,.6); font-size:13px; }
+    .btn-close-scanner {
+      background:#e94560; color:#fff; border:none;
+      padding:12px 32px; border-radius:10px; font-size:15px;
+      font-weight:700; cursor:pointer;
+    }
+  </style>
 </head>
 <body>
+
+<!-- SCANNER OVERLAY ADMIN -->
+<div id="adminScannerOverlay" class="scanner-overlay" style="display:none">
+  <div class="scanner-title">📷 Scanner le barkod</div>
+  <div class="scanner-hint">Pointez la caméra vers le code-barres</div>
+  <div id="adminScannerBox" class="scanner-box"></div>
+  <button class="btn-close-scanner" onclick="closeAdminScanner()">✕ Fermer</button>
+</div>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
@@ -249,6 +272,14 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
           <div class="form-group">
             <label>Taille / Format</label>
             <input type="text" id="fSize" placeholder="ex: 600 puffs">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px">
+          <label>Barkod</label>
+          <div style="display:flex;gap:8px">
+            <input type="text" id="fBarcode" placeholder="ex: 3760246640108" style="flex:1">
+            <button type="button" onclick="openAdminScanner()" style="padding:11px 14px;background:#1a1a2e;color:white;border:none;border-radius:9px;cursor:pointer;font-size:18px;" title="Scanner">📷</button>
           </div>
         </div>
 
@@ -527,6 +558,7 @@ function editProduct(p) {
   document.getElementById('fActive').value  = p.active;
   document.getElementById('fCategory').value = p.category_id || '';
   document.getElementById('fDesc').value    = p.description || '';
+  document.getElementById('fBarcode').value = p.barcode     || '';
 
   selectedImgUrl = p.image_url || '';
   if (selectedImgUrl) document.getElementById('selectedImg').src = selectedImgUrl;
@@ -555,6 +587,7 @@ async function saveProduct() {
     flavor:      document.getElementById('fFlavor').value.trim(),
     size:        document.getElementById('fSize').value.trim(),
     description: document.getElementById('fDesc').value.trim(),
+    barcode:     document.getElementById('fBarcode').value.trim(),
     category_id: document.getElementById('fCategory').value || null,
     price:       document.getElementById('fPrice').value || null,
     image_url:   selectedImgUrl,
@@ -583,8 +616,36 @@ async function deleteProduct(id, name) {
   document.getElementById('row-' + id)?.remove();
 }
 
+// ─── Admin Barcode Scanner ───────────────────────
+let adminScanner = null;
+
+function openAdminScanner() {
+  document.getElementById('adminScannerOverlay').style.display = 'flex';
+  adminScanner = new Html5Qrcode('adminScannerBox');
+  adminScanner.start(
+    { facingMode: 'environment' },
+    { fps: 10, qrbox: { width: 280, height: 140 } },
+    (decodedText) => {
+      document.getElementById('fBarcode').value = decodedText;
+      closeAdminScanner();
+    },
+    () => {}
+  ).catch(err => {
+    alert('Caméra inaccessible : ' + err);
+    closeAdminScanner();
+  });
+}
+
+function closeAdminScanner() {
+  if (adminScanner) {
+    adminScanner.stop().catch(() => {});
+    adminScanner = null;
+  }
+  document.getElementById('adminScannerOverlay').style.display = 'none';
+}
+
 function clearForm() {
-  ['fName','fBrand','fFlavor','fSize','fPrice'].forEach(id => document.getElementById(id).value = '');
+  ['fName','fBrand','fFlavor','fSize','fBarcode','fPrice'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('fDesc').value     = '';
   document.getElementById('fCategory').value = '';
   document.getElementById('fActive').value   = '1';

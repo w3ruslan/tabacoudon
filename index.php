@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= SHOP_NAME ?> — Catalogue E-Liquid</title>
   <link rel="stylesheet" href="assets/style.css">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 
@@ -19,6 +20,9 @@
         <div class="logo-tag"><?= SHOP_TAGLINE ?></div>
       </div>
     </div>
+    <button class="btn-scan" onclick="openScanner()" title="Scanner un produit">
+      📷 Scanner
+    </button>
   </div>
 </header>
 
@@ -30,12 +34,6 @@
 
 <!-- CATALOG -->
 <main class="catalog-main">
-
-  <!-- Print header (PDF only) -->
-  <div class="print-only print-header">
-    <h1><?= SHOP_NAME ?></h1>
-    <p>Catalogue E-Liquid — <?= date('d/m/Y') ?></p>
-  </div>
 
   <!-- Loading -->
   <div id="loading" class="loading-state">
@@ -58,6 +56,30 @@
 <footer class="site-footer no-print">
   <p>© <?= date('Y') ?> <?= SHOP_NAME ?> · Catalogue en ligne</p>
 </footer>
+
+<!-- ══ SCANNER OVERLAY ══ -->
+<div id="scannerOverlay" class="scanner-overlay" style="display:none">
+  <div class="scanner-inner">
+    <div class="scanner-title">📷 Scanner un produit</div>
+    <div class="scanner-hint">Pointez la caméra vers le code-barres du produit</div>
+    <div id="scannerBox"></div>
+    <div id="scannerStatus" class="scanner-status"></div>
+    <button class="btn-close-scan" onclick="closeScanner()">✕ Fermer</button>
+  </div>
+</div>
+
+<!-- ══ PRODUCT FOUND POPUP ══ -->
+<div id="foundPopup" class="found-popup" style="display:none">
+  <div class="found-inner">
+    <div class="found-check">✅</div>
+    <div id="foundImg"></div>
+    <div id="foundName" class="found-name"></div>
+    <div id="foundFlavor" class="found-flavor"></div>
+    <div id="foundPrice" class="found-price"></div>
+    <div id="foundCat" class="found-cat"></div>
+    <button class="btn-close-found" onclick="closeFound()">Fermer</button>
+  </div>
+</div>
 
 <script src="assets/app.js"></script>
 </body>
