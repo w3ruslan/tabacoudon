@@ -45,11 +45,8 @@ $payload = [
     'contents' => [
         ['role' => 'user', 'parts' => [['text' => $prompt]]]
     ],
-    'tools' => [
-        ['google_search' => (object)[]]
-    ],
     'generationConfig' => [
-        'temperature'     => 0.3,
+        'temperature'     => 0.4,
         'maxOutputTokens' => 1024,
     ]
 ];
