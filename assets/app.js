@@ -125,6 +125,7 @@ function openCardDetail(productId) {
     : '';
 
   const popup = document.getElementById('cardDetailPopup');
+  if (!popup) return;
   popup.innerHTML = `
     <div class="cdp-backdrop" onclick="closeCardDetail()"></div>
     <div class="cdp-card" style="--cat-color:${colors.bg}; --cat-light:${colors.light}">
