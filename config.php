@@ -16,8 +16,12 @@ define('ADMIN_PASSWORD', 'admin123');
 define('SHOP_NAME',    'Tabacoudon');
 define('SHOP_TAGLINE', 'Votre spécialiste e-liquid à Paris');
 
-// Gemini AI API Key
-define('GEMINI_API_KEY', 'AIzaSyCyneReVQuXY9F173-ZqUHnFe8jj2_sSCY');
+// API Keys — fichier séparé (non versionné)
+if (file_exists(__DIR__ . '/config.keys.php')) {
+    require_once __DIR__ . '/config.keys.php';
+} else {
+    define('GROQ_API_KEY', '');
+}
 
 // Connexion PDO
 function getDB(): PDO {
