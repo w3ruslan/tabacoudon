@@ -70,108 +70,79 @@ async function loadProducts(catId) {
 // ── Render card ───────────────────────────
 function renderCard(p) {
   const colorClass = catColorMap[p.category_name] || '';
-  const img = p.image_url
-    ? `<img src="${p.image_url}" alt="${p.name}" loading="lazy" onerror="this.parentElement.innerHTML='<span class=no-img>🌬️</span>'">`
+  const colors = {
+    'Goût Tabac':    '#8B6914',
+    'Goût Gourmand': '#E67E22',
+    'Fruité':        '#E74C3C',
+    'Fruité Fresh':  '#2ECC71',
+  };
+  const catColor = colors[p.category_name] || '#e94560';
+
+  const imgFront = p.image_url
+    ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.style.display='none'">`
     : `<span class="no-img">🌬️</span>`;
-  const catLabel = p.category_name
-    ? `<div class="card-cat">${p.category_icon || ''} ${p.category_name}</div>`
-    : '';
+
   const price = p.price
-    ? `<span class="card-price"><small>€</small>${parseFloat(p.price).toFixed(2)}</span>`
-    : `<span class="card-price no-price">—</span>`;
-  const brand = p.brand
-    ? `<span class="card-badge">${p.brand}</span>`
-    : '';
+    ? `<span class="flip-price"><small>€</small>${parseFloat(p.price).toFixed(2)}</span>`
+    : `<span class="flip-price" style="color:#bbb;font-size:16px">—</span>`;
 
-  // Store product data safely as JSON in data attribute
-  const safeData = encodeURIComponent(JSON.stringify(p));
-
-  return `
-    <div class="product-card ${colorClass}" data-p="${safeData}" onclick="openCardDetail(this)">
-      <div class="card-img">${img}</div>
-      <div class="card-body">
-        ${catLabel}
-        <div class="card-name">${p.name}</div>
-        ${p.flavor ? `<div class="card-flavor">🍓 ${p.flavor}</div>` : ''}
-      </div>
-      <div class="card-footer">
-        ${price}
-        ${brand}
-      </div>
-      <div class="card-tap-hint">👆 Appuyez pour voir</div>
-    </div>`;
-}
-
-// ── Card Detail Popup ─────────────────────
-const colorMap = {
-  'Goût Tabac':    { bg: '#8B6914', light: '#fff8e7' },
-  'Goût Gourmand': { bg: '#E67E22', light: '#fff4e6' },
-  'Fruité':        { bg: '#E74C3C', light: '#fff0f0' },
-  'Fruité Fresh':  { bg: '#2ECC71', light: '#f0fff6' },
-};
-
-function openCardDetail(el) {
-  // Read product from data attribute
-  const raw = el.dataset.p || el.closest('[data-p]')?.dataset.p;
-  if (!raw) return;
-  const p = JSON.parse(decodeURIComponent(raw));
-
-  const colors  = colorMap[p.category_name] || { bg: '#e94560', light: '#fff0f3' };
-  const parts   = (p.description || '').split('\n\n');
+  const parts     = (p.description || '').split('\n\n');
   const shortDesc = parts[0] || '';
   const fullDesc  = parts[1] || '';
+
   const flavorTags = p.flavor
-    ? p.flavor.split(/[,\/\+]+/).map(f => `<span class="dtag" style="background:${colors.light};color:${colors.bg}">${f.trim()}</span>`).join('')
+    ? p.flavor.split(/[,\/\+]+/).map(f =>
+        `<span class="flip-tag">${f.trim()}</span>`
+      ).join('')
     : '';
 
-  const popup = document.getElementById('cardDetailPopup');
-  if (!popup) return;
+  return `
+    <div class="flip-wrap" onclick="flipCard(this)">
+      <div class="flip-inner">
 
-  popup.innerHTML = `
-    <div class="cdp-backdrop" onclick="closeCardDetail()"></div>
-    <div class="cdp-card" id="cdpCard" style="--cat-color:${colors.bg};--cat-light:${colors.light}">
-      <button class="cdp-close" onclick="closeCardDetail()">✕</button>
-      <div class="cdp-img-wrap" style="background:${colors.light}">
-        ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}">` : `<span class="cdp-no-img">🌬️</span>`}
-        <div class="cdp-glow"></div>
-      </div>
-      <div class="cdp-body">
-        ${p.category_name ? `<div class="cdp-cat" style="background:${colors.bg}">${p.category_icon||''} ${p.category_name}</div>` : ''}
-        <div class="cdp-name">${p.name}</div>
-        ${p.brand ? `<div class="cdp-brand">${p.brand}${p.size ? ' · '+p.size : ''}</div>` : ''}
-        ${flavorTags ? `<div class="cdp-tags">${flavorTags}</div>` : ''}
-        ${shortDesc ? `<div class="cdp-short-desc" style="border-color:${colors.bg}">"${shortDesc}"</div>` : ''}
-        ${fullDesc  ? `<div class="cdp-full-desc">${fullDesc}</div>` : ''}
-        <div class="cdp-footer">
-          <div class="cdp-price">
-            ${p.price ? `<small>€</small>${parseFloat(p.price).toFixed(2)}` : '<span style="color:#bbb;font-size:16px">Prix non défini</span>'}
+        <!-- FRONT -->
+        <div class="flip-front" style="border-top: 5px solid ${catColor}">
+          <div class="flip-front-img">${imgFront}</div>
+          <div class="flip-front-body">
+            ${p.category_name ? `<div class="flip-cat" style="color:${catColor}">${p.category_icon||''} ${p.category_name}</div>` : ''}
+            <div class="flip-name">${p.name}</div>
+            ${p.flavor ? `<div class="flip-flavor">🍓 ${p.flavor}</div>` : ''}
+          </div>
+          <div class="flip-front-footer">
+            ${price}
+            ${p.brand ? `<span class="flip-brand">${p.brand}</span>` : ''}
+          </div>
+          <div class="flip-hint">👆 Touchez pour voir</div>
+        </div>
+
+        <!-- BACK -->
+        <div class="flip-back" style="background: linear-gradient(160deg, ${catColor} 0%, #1a1a2e 60%)">
+          <button class="flip-back-close" onclick="event.stopPropagation();flipCard(this.closest('.flip-wrap'))">✕</button>
+          ${p.image_url ? `<img class="flip-back-img" src="${p.image_url}" alt="${p.name}">` : ''}
+          <div class="flip-back-name">${p.name}</div>
+          ${p.brand ? `<div class="flip-back-brand">${p.brand}${p.size ? ' · '+p.size : ''}</div>` : ''}
+          ${flavorTags ? `<div class="flip-tags">${flavorTags}</div>` : ''}
+          ${shortDesc ? `<div class="flip-desc-short">"${shortDesc}"</div>` : ''}
+          ${fullDesc  ? `<div class="flip-desc-full">${fullDesc}</div>`   : ''}
+          <div class="flip-back-price">
+            ${p.price ? `€${parseFloat(p.price).toFixed(2)}` : ''}
           </div>
         </div>
+
       </div>
     </div>`;
-
-  popup.style.display = 'flex';
-  // Small delay so the browser paints before animating
-  setTimeout(() => {
-    const card = document.getElementById('cdpCard');
-    if (card) card.classList.add('cdp-animate-in');
-  }, 20);
 }
 
-function closeCardDetail() {
-  const popup = document.getElementById('cardDetailPopup');
-  const card  = document.getElementById('cdpCard');
-  if (card) {
-    card.classList.add('cdp-animate-out');
-    setTimeout(() => {
-      popup.style.display = 'none';
-      popup.innerHTML = '';
-    }, 280);
-  } else {
-    popup.style.display = 'none';
-    popup.innerHTML = '';
-  }
+// ── Flip card ────────────────────────────
+function flipCard(wrap) {
+  const inner = wrap.querySelector('.flip-inner');
+  const isFlipped = inner.classList.contains('flipped');
+  document.querySelectorAll('.flip-inner.flipped').forEach(el => el.classList.remove('flipped'));
+  if (!isFlipped) inner.classList.add('flipped');
 }
+// legacy - keep empty to avoid errors
+const colorMap = {};
+
 
 // ── Barcode Scanner ───────────────────────
 function openScanner() {
