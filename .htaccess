@@ -1,0 +1,5 @@
+Options -Indexes
+# Config PHP gizle
+<Files "config.php">
+    Deny from all
+</Files>
