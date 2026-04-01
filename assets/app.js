@@ -3,8 +3,8 @@
 // ══════════════════════════════════════════
 
 const API = 'api/products.php';
-let currentCat  = 0;
-let pubScanner  = null;
+let currentCat = 0;
+let pubScanner = null;
 
 const catColorMap = {
   'Goût Tabac':    'cat-tabac',
@@ -52,24 +52,22 @@ async function loadProducts(catId) {
   grid.style.display    = 'none';
   empty.style.display   = 'none';
 
-  const url = `${API}?action=list` + (catId > 0 ? `&category=${catId}` : '');
-  const res = await fetch(url);
-  allProducts   = await res.json();
+  const url      = `${API}?action=list` + (catId > 0 ? `&category=${catId}` : '');
+  const res      = await fetch(url);
+  const products = await res.json();
 
   loading.style.display = 'none';
 
-  if (!allProducts.length) {
+  if (!products.length) {
     empty.style.display = 'block';
     return;
   }
 
-  grid.innerHTML     = allProducts.map(renderCard).join('');
+  grid.innerHTML     = products.map(renderCard).join('');
   grid.style.display = 'grid';
 }
 
 // ── Render card ───────────────────────────
-let allProducts = [];
-
 function renderCard(p) {
   const colorClass = catColorMap[p.category_name] || '';
   const img = p.image_url
@@ -85,8 +83,11 @@ function renderCard(p) {
     ? `<span class="card-badge">${p.brand}</span>`
     : '';
 
+  // Store product data safely as JSON in data attribute
+  const safeData = encodeURIComponent(JSON.stringify(p));
+
   return `
-    <div class="product-card ${colorClass}" id="card-${p.id}" onclick="openCardDetail(${p.id})">
+    <div class="product-card ${colorClass}" data-p="${safeData}" onclick="openCardDetail(this)">
       <div class="card-img">${img}</div>
       <div class="card-body">
         ${catLabel}
@@ -101,76 +102,74 @@ function renderCard(p) {
     </div>`;
 }
 
-// ── Card Detail Popup (Anime effect) ──────
-function openCardDetail(productId) {
-  const p = allProducts.find(x => x.id == productId);
-  if (!p) return;
+// ── Card Detail Popup ─────────────────────
+const colorMap = {
+  'Goût Tabac':    { bg: '#8B6914', light: '#fff8e7' },
+  'Goût Gourmand': { bg: '#E67E22', light: '#fff4e6' },
+  'Fruité':        { bg: '#E74C3C', light: '#fff0f0' },
+  'Fruité Fresh':  { bg: '#2ECC71', light: '#f0fff6' },
+};
 
-  const colorMap = {
-    'Goût Tabac':    { bg: '#8B6914', light: '#fff8e7', accent: '#8B6914' },
-    'Goût Gourmand': { bg: '#E67E22', light: '#fff4e6', accent: '#E67E22' },
-    'Fruité':        { bg: '#E74C3C', light: '#fff0f0', accent: '#E74C3C' },
-    'Fruité Fresh':  { bg: '#2ECC71', light: '#f0fff6', accent: '#2ECC71' },
-  };
-  const colors = colorMap[p.category_name] || { bg: '#e94560', light: '#fff0f3', accent: '#e94560' };
+function openCardDetail(el) {
+  // Read product from data attribute
+  const raw = el.dataset.p || el.closest('[data-p]')?.dataset.p;
+  if (!raw) return;
+  const p = JSON.parse(decodeURIComponent(raw));
 
-  // Description parts
-  const parts = (p.description || '').split('\n\n');
+  const colors  = colorMap[p.category_name] || { bg: '#e94560', light: '#fff0f3' };
+  const parts   = (p.description || '').split('\n\n');
   const shortDesc = parts[0] || '';
   const fullDesc  = parts[1] || '';
-
-  // Flavor tags
   const flavorTags = p.flavor
-    ? p.flavor.split(/[,\/\+]+/).map(f => `<span class="dtag">${f.trim()}</span>`).join('')
+    ? p.flavor.split(/[,\/\+]+/).map(f => `<span class="dtag" style="background:${colors.light};color:${colors.bg}">${f.trim()}</span>`).join('')
     : '';
 
   const popup = document.getElementById('cardDetailPopup');
   if (!popup) return;
+
   popup.innerHTML = `
     <div class="cdp-backdrop" onclick="closeCardDetail()"></div>
-    <div class="cdp-card" style="--cat-color:${colors.bg}; --cat-light:${colors.light}">
+    <div class="cdp-card" id="cdpCard" style="--cat-color:${colors.bg};--cat-light:${colors.light}">
       <button class="cdp-close" onclick="closeCardDetail()">✕</button>
-
-      <div class="cdp-img-wrap">
-        ${p.image_url
-          ? `<img src="${p.image_url}" alt="${p.name}" onerror="this.src=''">`
-          : `<span class="cdp-no-img">🌬️</span>`}
+      <div class="cdp-img-wrap" style="background:${colors.light}">
+        ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}">` : `<span class="cdp-no-img">🌬️</span>`}
         <div class="cdp-glow"></div>
       </div>
-
       <div class="cdp-body">
         ${p.category_name ? `<div class="cdp-cat" style="background:${colors.bg}">${p.category_icon||''} ${p.category_name}</div>` : ''}
         <div class="cdp-name">${p.name}</div>
-        ${p.brand ? `<div class="cdp-brand">${p.brand}${p.size ? ' · ' + p.size : ''}</div>` : ''}
-
+        ${p.brand ? `<div class="cdp-brand">${p.brand}${p.size ? ' · '+p.size : ''}</div>` : ''}
         ${flavorTags ? `<div class="cdp-tags">${flavorTags}</div>` : ''}
-
-        ${shortDesc ? `<div class="cdp-short-desc">"${shortDesc}"</div>` : ''}
-        ${fullDesc  ? `<div class="cdp-full-desc">${fullDesc}</div>`   : ''}
-
+        ${shortDesc ? `<div class="cdp-short-desc" style="border-color:${colors.bg}">"${shortDesc}"</div>` : ''}
+        ${fullDesc  ? `<div class="cdp-full-desc">${fullDesc}</div>` : ''}
         <div class="cdp-footer">
           <div class="cdp-price">
-            ${p.price ? `<small>€</small>${parseFloat(p.price).toFixed(2)}` : '<span style="color:#bbb">Prix non défini</span>'}
+            ${p.price ? `<small>€</small>${parseFloat(p.price).toFixed(2)}` : '<span style="color:#bbb;font-size:16px">Prix non défini</span>'}
           </div>
         </div>
       </div>
     </div>`;
 
   popup.style.display = 'flex';
-  // Trigger animation
-  requestAnimationFrame(() => {
-    popup.querySelector('.cdp-card').classList.add('cdp-animate-in');
-  });
+  // Small delay so the browser paints before animating
+  setTimeout(() => {
+    const card = document.getElementById('cdpCard');
+    if (card) card.classList.add('cdp-animate-in');
+  }, 20);
 }
 
 function closeCardDetail() {
   const popup = document.getElementById('cardDetailPopup');
-  const card  = popup.querySelector('.cdp-card');
+  const card  = document.getElementById('cdpCard');
   if (card) {
     card.classList.add('cdp-animate-out');
-    setTimeout(() => { popup.style.display = 'none'; popup.innerHTML = ''; }, 300);
+    setTimeout(() => {
+      popup.style.display = 'none';
+      popup.innerHTML = '';
+    }, 280);
   } else {
     popup.style.display = 'none';
+    popup.innerHTML = '';
   }
 }
 
