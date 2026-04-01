@@ -13,6 +13,19 @@ const catColors = {
 window.addEventListener('DOMContentLoaded', function() {
   loadCategories();
   loadProducts(0);
+
+  // Event delegation — tüm kart tıklamalarını yakala
+  document.getElementById('productGrid').addEventListener('click', function(e) {
+    var el = e.target;
+    // Karta tıklandığında en yakın .fc-card'ı bul
+    while (el && el !== this) {
+      if (el.classList && el.classList.contains('fc-card')) {
+        showDetail(el.getAttribute('data-id'));
+        return;
+      }
+      el = el.parentElement;
+    }
+  });
 });
 
 function loadCategories() {
@@ -70,7 +83,7 @@ function renderCard(p) {
   var catHtml   = p.category_name ? '<div class="fc-cat">' + (p.category_icon||'') + ' ' + p.category_name + '</div>' : '';
   var flavHtml  = p.flavor ? '<div class="fc-flavor">🍓 ' + p.flavor + '</div>' : '';
 
-  return '<div class="fc-card" data-id="' + p.id + '" style="border-top:5px solid ' + catColor + '" onclick="showDetail(' + p.id + ')">'
+  return '<div class="fc-card" data-id="' + p.id + '" style="border-top:5px solid ' + catColor + '">'
     + '<div class="fc-img">' + imgHtml + '</div>'
     + '<div class="fc-body">' + catHtml + '<div class="fc-name">' + p.name + '</div>' + flavHtml + '</div>'
     + '<div class="fc-footer">' + priceHtml + brandHtml + '</div>'
