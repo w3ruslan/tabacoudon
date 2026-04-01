@@ -15,6 +15,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — <?= SHOP_NAME ?></title>
+  <link rel="stylesheet" href="assets/admin.css">
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <style>
     /* ── AI Step ── */
