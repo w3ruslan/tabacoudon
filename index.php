@@ -19,9 +19,6 @@
         <div class="logo-tag"><?= SHOP_TAGLINE ?></div>
       </div>
     </div>
-    <button class="btn-print" onclick="window.print()">
-      🖨️ Télécharger PDF
-    </button>
   </div>
 </header>
 
