@@ -26,6 +26,15 @@
   </div>
 </header>
 
+<!-- SEARCH BAR -->
+<div class="search-wrap no-print">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Rechercher un arôme, un produit..." oninput="filterProducts(this.value)" autocomplete="off">
+    <button class="search-clear" id="searchClear" onclick="clearSearch()" style="display:none">✕</button>
+  </div>
+</div>
+
 <!-- CATEGORY TABS -->
 <nav class="cat-nav no-print">
   <button class="cat-btn active" data-cat="0" onclick="switchCat(0, this)">Tous les produits</button>

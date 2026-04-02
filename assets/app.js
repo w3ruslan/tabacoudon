@@ -63,6 +63,10 @@ function loadProducts(catId) {
   grid.style.display    = 'none';
   empty.style.display   = 'none';
 
+  // Clear search on category switch
+  var searchInput = document.getElementById('searchInput');
+  if (searchInput) { searchInput.value = ''; document.getElementById('searchClear').style.display = 'none'; }
+
   var url = API + '?action=list' + (catId > 0 ? '&category=' + catId : '');
   fetch(url)
     .then(function(r){ return r.json(); })
@@ -73,6 +77,43 @@ function loadProducts(catId) {
       grid.innerHTML     = products.map(renderCard).join('');
       grid.style.display = 'grid';
     });
+}
+
+function filterProducts(query) {
+  var clear = document.getElementById('searchClear');
+  var grid  = document.getElementById('productGrid');
+  var empty = document.getElementById('emptyState');
+  clear.style.display = query ? 'flex' : 'none';
+
+  var q = query.trim().toLowerCase();
+  if (!q) {
+    grid.innerHTML = productsCache.map(renderCard).join('');
+    grid.style.display = productsCache.length ? 'grid' : 'none';
+    empty.style.display = productsCache.length ? 'none' : 'block';
+    return;
+  }
+
+  var filtered = productsCache.filter(function(p) {
+    return (p.name   || '').toLowerCase().indexOf(q) !== -1
+        || (p.flavor || '').toLowerCase().indexOf(q) !== -1
+        || (p.brand  || '').toLowerCase().indexOf(q) !== -1;
+  });
+
+  if (!filtered.length) {
+    grid.style.display  = 'none';
+    empty.style.display = 'block';
+  } else {
+    grid.innerHTML     = filtered.map(renderCard).join('');
+    grid.style.display = 'grid';
+    empty.style.display = 'none';
+  }
+}
+
+function clearSearch() {
+  var input = document.getElementById('searchInput');
+  input.value = '';
+  filterProducts('');
+  input.focus();
 }
 
 function renderCard(p) {
