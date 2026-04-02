@@ -407,6 +407,8 @@ body {
   background: #fff;
   display: flex;
   flex-direction: column;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  transform: translateZ(0);
 }
 
 /* ── Category header ── */
