@@ -169,7 +169,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
             </span>
           </td>
           <td>
-            <button class="btn-edit" onclick='editProduct(<?= json_encode($p) ?>)'>✏️</button>
+            <button class="btn-edit" onclick='editProduct(<?= json_encode($p, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>✏️</button>
             <button class="btn-del"  onclick="deleteProduct(<?= $p['id'] ?>, '<?= addslashes($p['name']) ?>')">🗑️</button>
           </td>
         </tr>
