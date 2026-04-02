@@ -71,12 +71,12 @@
 
 <!-- ══ SCANNER OVERLAY ══ -->
 <div id="scannerOverlay" class="scanner-overlay" style="display:none">
+  <button class="scanner-close-btn" onclick="closeScanner()">✕</button>
   <div class="scanner-inner">
     <div class="scanner-title">📷 Scanner un produit</div>
     <div class="scanner-hint">Pointez la caméra vers le code-barres du produit</div>
     <div id="scannerBox"></div>
     <div id="scannerStatus" class="scanner-status"></div>
-    <button class="btn-close-scan" onclick="closeScanner()">✕ Fermer</button>
   </div>
 </div>
 
