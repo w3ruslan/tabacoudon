@@ -112,8 +112,10 @@ function renderCard(p) {
     + '<span class="tc-name">' + p.name + '</span>'
     + '<span class="tc-price">' + price + '</span>'
     + '</div>'
+    + '<div class="tc-bottom">'
     + (p.flavor ? '<div class="tc-chips">' + renderFlavorChips(p.flavor, catColor) + '</div>' : '')
-    + (desc ? '<div class="tc-desc">' + desc + '</div>' : '')
+    + '<div class="tc-desc">' + (desc || '') + '</div>'
+    + '</div>'
     + '</div>'
     + '</div>'
     // ── Arka yüz ──

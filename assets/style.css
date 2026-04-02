@@ -478,13 +478,24 @@ body {
   text-shadow: 0 1px 4px rgba(0,0,0,.3);
 }
 
+/* ── Bottom info box ── */
+.tc-bottom {
+  margin: 0 6px 6px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 /* ── Flavor chips ── */
 .tc-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
   padding: 6px 10px;
-  background: #fff;
   border-bottom: 1px solid #f0f0f0;
 }
 .tc-chip {
@@ -503,9 +514,7 @@ body {
   line-height: 1.55;
   padding: 9px 12px 11px;
   font-style: italic;
-  background: #fff;
-  min-height: 54px;
-  margin: 0 0 0 0;
+  flex: 1;
 }
 
 /* ══════════════════════════════════════════
