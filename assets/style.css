@@ -287,13 +287,13 @@ body {
 /* ── Image zone ── */
 .tc-img-wrap {
   background: #fff;
-  height: 190px;
+  height: 184px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 8px;
-  border-radius: 16px;
-  margin: 6px 6px 0 6px;
+  border-radius: 8px;
+  margin: 6px;
   overflow: hidden;
   position: relative;
   box-shadow: 0 2px 12px rgba(0,0,0,.1);
