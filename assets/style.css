@@ -406,9 +406,14 @@ body {
   cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
 .dt-img {
-  width: 120px; height: 120px;
+  width: 130px; height: 130px;
   object-fit: contain;
-  filter: drop-shadow(0 6px 20px rgba(0,0,0,.3));
+  background: rgba(255,255,255,0.15);
+  border-radius: 18px;
+  padding: 8px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 4px 20px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.2);
   animation: dtFloat 3s ease-in-out infinite;
   margin-bottom: 10px;
 }
