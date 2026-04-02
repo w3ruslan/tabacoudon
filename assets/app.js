@@ -162,54 +162,69 @@ function closeDetail() {
   }, 350);
 }
 
-// ── Scanner ───────────────────────────────
-var _scanCooldown = false;
+// ── Scanner (Quagga2) ─────────────────────
+var _scanRunning = false;
 
 function openScanner() {
   document.getElementById('scannerOverlay').style.display = 'flex';
-  document.getElementById('scannerStatus').textContent = '📷 Caméra en cours...';
-  _scanCooldown = false;
+  document.getElementById('scannerStatus').textContent = '📷 Démarrage...';
+  _scanRunning = true;
 
-  var config = {
-    fps: 25,
-    qrbox: function(w, h) {
-      var side = Math.min(w, h) * 0.72;
-      return { width: Math.round(side * 1.8), height: Math.round(side * 0.65) };
+  Quagga.init({
+    inputStream: {
+      name: 'Live',
+      type: 'LiveStream',
+      target: document.getElementById('scannerBox'),
+      constraints: {
+        facingMode: 'environment',
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      }
     },
-    formatsToSupport: [
-      Html5QrcodeSupportedFormats.EAN_13,
-      Html5QrcodeSupportedFormats.EAN_8,
-      Html5QrcodeSupportedFormats.UPC_A,
-      Html5QrcodeSupportedFormats.UPC_E,
-      Html5QrcodeSupportedFormats.CODE_128,
-      Html5QrcodeSupportedFormats.CODE_39,
-      Html5QrcodeSupportedFormats.ITF,
-      Html5QrcodeSupportedFormats.QR_CODE
-    ],
-    experimentalFeatures: { useBarCodeDetectorIfSupported: true }
-  };
-
-  pubScanner = new Html5Qrcode('scannerBox');
-  pubScanner.start(
-    { facingMode: 'environment' },
-    config,
-    function(barcode) {
-      if (_scanCooldown) return;
-      _scanCooldown = true;
-      findProductByBarcode(barcode);
+    locator: { patchSize: 'medium', halfSample: true },
+    numOfWorkers: 0,
+    frequency: 15,
+    decoder: {
+      readers: [
+        'ean_reader', 'ean_8_reader', 'upc_reader',
+        'upc_e_reader', 'code_128_reader', 'code_39_reader'
+      ]
     },
-    function() {}
-  ).then(function() {
+    locate: true
+  }, function(err) {
+    if (err) {
+      document.getElementById('scannerStatus').textContent = '❌ Caméra inaccessible';
+      return;
+    }
     document.getElementById('scannerStatus').textContent = '🎯 Pointez le code-barres';
-  }).catch(function(err){
-    document.getElementById('scannerStatus').textContent = '❌ Caméra inaccessible';
+    Quagga.start();
+  });
+
+  var _lastCode = '';
+  var _lastTime = 0;
+  Quagga.onDetected(function(result) {
+    if (!_scanRunning) return;
+    var code = result.codeResult.code;
+    var now = Date.now();
+    // Debounce: same code twice within 1.5s
+    if (code === _lastCode && now - _lastTime < 1500) return;
+    _lastCode = code;
+    _lastTime = now;
+    // Require at least 2 consistent reads
+    var decodedList = result.codeResult;
+    _scanRunning = false;
+    findProductByBarcode(code);
   });
 }
 
 function closeScanner() {
-  _scanCooldown = false;
-  if (pubScanner) { pubScanner.stop().catch(function(){}); pubScanner = null; }
+  _scanRunning = false;
+  Quagga.offDetected();
+  try { Quagga.stop(); } catch(e) {}
   document.getElementById('scannerOverlay').style.display = 'none';
+  // Clear the video element
+  var box = document.getElementById('scannerBox');
+  if (box) box.innerHTML = '';
 }
 
 function findProductByBarcode(barcode) {
