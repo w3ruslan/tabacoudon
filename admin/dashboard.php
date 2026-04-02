@@ -148,7 +148,11 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
         <tr id="row-<?= $p['id'] ?>">
           <td>
             <?php if ($p['image_url']): ?>
-              <img src="<?= htmlspecialchars($p['image_url']) ?>" class="thumb" alt="">
+              <?php
+                $imgSrc = $p['image_url'];
+                if (strpos($imgSrc, 'uploads/') === 0) $imgSrc = '../' . $imgSrc;
+              ?>
+              <img src="<?= htmlspecialchars($imgSrc) ?>" class="thumb" alt="">
             <?php else: ?>
               <span class="no-thumb">🌬️</span>
             <?php endif; ?>
