@@ -6,8 +6,8 @@ let productsCache = [];
 const catColors = {}; // DB'den doldurulur
 
 window.addEventListener('DOMContentLoaded', function() {
-  loadCategories();
-  loadProducts(0);
+  // Önce kategorileri yükle, sonra ürünleri — renk eşleşmesi için
+  loadCategories().then(function() { loadProducts(0); });
 
   // Event delegation — kart tıklamaları
   document.getElementById('productGrid').addEventListener('click', function(e) {
@@ -15,13 +15,13 @@ window.addEventListener('DOMContentLoaded', function() {
     while (el && el !== this) {
       if (el.classList && el.classList.contains('tc-card')) {
         var card = el;
-        document.querySelectorAll('.tc-card.flipped').forEach(function(c){ c.classList.remove('flipped'); });
-        card.classList.add('flipped');
         var id = card.getAttribute('data-id');
-        setTimeout(function(){
-          card.classList.remove('flipped');
+        // Kart yarı dönünce (görünmez) detay aç
+        card.classList.add('flipping');
+        setTimeout(function() {
           showDetail(id);
-        }, 420);
+          setTimeout(function() { card.classList.remove('flipping'); }, 50);
+        }, 220);
         return;
       }
       el = el.parentElement;
@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 function loadCategories() {
-  fetch('api/categories.php?action=list')
+  return fetch('api/categories.php?action=list')
     .then(function(r){ return r.json(); })
     .then(function(cats){
       cats.forEach(function(c){
