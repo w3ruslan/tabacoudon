@@ -299,10 +299,11 @@ body {
   box-shadow: 0 2px 12px rgba(0,0,0,.1);
 }
 .tc-img-wrap img {
-  max-height: 85%;
-  max-width: 85%;
+  max-height: 88%;
+  max-width: 88%;
   object-fit: contain;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,.2));
+  border-radius: 10px;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.15));
   transition: transform .3s ease;
 }
 .tc-card:hover .tc-img-wrap img {
@@ -415,6 +416,7 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,.2), inset 0 0 0 1px rgba(0,0,0,.05);
   animation: dtFloat 3s ease-in-out infinite;
   margin-bottom: 10px;
+  overflow: hidden;
 }
 @keyframes dtFloat {
   0%,100% { transform: translateY(0); }
