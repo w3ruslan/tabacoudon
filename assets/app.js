@@ -114,7 +114,7 @@ function renderCard(p) {
     + '</div>'
     + '<div class="tc-bottom">'
     + (p.flavor ? '<div class="tc-chips">' + renderFlavorChips(p.flavor, catColor) + '</div>' : '')
-    + (p.size ? '<div class="tc-size">' + p.size + '</div>' : '')
+    + (p.size ? '<div class="tc-size-wrap"><span class="tc-size" style="background:' + catColor + '">' + p.size + '</span></div>' : '')
     + '</div>'
     + '</div>'
     + '</div>'

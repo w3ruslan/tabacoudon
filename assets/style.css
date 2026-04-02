@@ -517,14 +517,20 @@ body {
 }
 
 /* ── Size label ── */
-.tc-size {
-  font-size: 12px;
-  font-weight: 700;
-  color: #888;
-  padding: 8px 12px;
-  flex: 1;
+.tc-size-wrap {
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
+  padding: 8px 10px;
+  flex: 1;
+  align-items: flex-end;
+}
+.tc-size {
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: .3px;
 }
 
 /* ══════════════════════════════════════════
