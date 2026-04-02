@@ -516,14 +516,15 @@ body {
   letter-spacing: .3px;
 }
 
-/* ── Description — always visible ── */
-.tc-desc {
-  font-size: 11.5px;
-  color: #555;
-  line-height: 1.55;
-  padding: 9px 12px 11px;
-  font-style: italic;
+/* ── Size label ── */
+.tc-size {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  padding: 8px 12px;
   flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 /* ══════════════════════════════════════════
