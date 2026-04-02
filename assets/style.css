@@ -255,7 +255,7 @@ body {
   position: relative;
   width: 100%;
   transform-style: preserve-3d;
-  transition: transform .55s cubic-bezier(.4,.2,.2,1);
+  transition: transform .4s cubic-bezier(.4,.2,.2,1);
   border-radius: 18px;
   box-shadow:
     0 6px 24px rgba(0,0,0,.18),

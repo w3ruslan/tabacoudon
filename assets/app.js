@@ -12,26 +12,16 @@ window.addEventListener('DOMContentLoaded', function() {
   // Event delegation — kart tıklamaları
   document.getElementById('productGrid').addEventListener('click', function(e) {
     var el = e.target;
-    // "Fermer" butonuna basıldıysa sadece kart kapat
-    if (el.classList && el.classList.contains('tc-back-close')) {
-      var card = el.closest('.tc-card');
-      if (card) card.classList.remove('flipped');
-      return;
-    }
-    // "Détails" butonuna basıldıysa modal aç
-    if (el.classList && el.classList.contains('tc-back-btn')) {
-      var card = el.closest('.tc-card');
-      if (card) showDetail(card.getAttribute('data-id'));
-      return;
-    }
     while (el && el !== this) {
       if (el.classList && el.classList.contains('tc-card')) {
-        if (el.classList.contains('flipped')) {
-          el.classList.remove('flipped');
-        } else {
-          document.querySelectorAll('.tc-card.flipped').forEach(function(c){ c.classList.remove('flipped'); });
-          el.classList.add('flipped');
-        }
+        var card = el;
+        document.querySelectorAll('.tc-card.flipped').forEach(function(c){ c.classList.remove('flipped'); });
+        card.classList.add('flipped');
+        var id = card.getAttribute('data-id');
+        setTimeout(function(){
+          card.classList.remove('flipped');
+          showDetail(id);
+        }, 420);
         return;
       }
       el = el.parentElement;
@@ -99,20 +89,8 @@ function renderCard(p) {
 
   var price = p.price ? '€' + parseFloat(p.price).toFixed(2) : '—';
 
-  var flavorTags = '';
-  if (p.flavor) {
-    p.flavor.split(/[,\/]+/).forEach(function(f){
-      flavorTags += '<span class="tc-back-tag">' + f.trim() + '</span>';
-    });
-  }
-
-  var backImg = p.image_url
-    ? '<img class="tc-back-img" src="' + p.image_url + '" alt="' + p.name + '" onerror="this.style.display=\'none\'">'
-    : '';
-
   return '<div class="tc-card" data-id="' + p.id + '" style="--cc:' + catColor + '">'
     + '<div class="tc-card-inner">'
-    // ── Ön yüz ──
     + '<div class="tc-card-front">'
     + '<div class="tc-frame">'
     + '<div class="tc-header">' + catIcon + ' ' + catLabel + '</div>'
@@ -123,19 +101,6 @@ function renderCard(p) {
     + '</div>'
     + (p.flavor ? '<div class="tc-chips">' + renderFlavorChips(p.flavor, catColor) + '</div>' : '')
     + (desc ? '<div class="tc-desc">' + desc + '</div>' : '')
-    + '</div>'
-    + '</div>'
-    // ── Arka yüz ──
-    + '<div class="tc-card-back" style="background:linear-gradient(160deg,var(--cc) 0%,#0d0d1a 75%)">'
-    + backImg
-    + '<div class="tc-back-cat">' + catIcon + ' ' + catLabel + '</div>'
-    + '<div class="tc-back-name">' + p.name + '</div>'
-    + (flavorTags ? '<div class="tc-back-tags">' + flavorTags + '</div>' : '')
-    + (desc ? '<div class="tc-back-desc">"' + desc + '"</div>' : '')
-    + '<div class="tc-back-price">' + price + '</div>'
-    + '<div class="tc-back-actions">'
-    + '<button class="tc-back-btn">Voir détails</button>'
-    + '<button class="tc-back-close">✕</button>'
     + '</div>'
     + '</div>'
     + '</div>'
