@@ -31,12 +31,22 @@ if ($method === 'GET' && $action === 'list') {
 if ($method === 'GET' && $action === 'find_barcode') {
     $barcode = trim($_GET['barcode'] ?? '');
     if (!$barcode) { echo json_encode(null); exit; }
-    $db   = getDB();
+    $db = getDB();
+    // Exact match first
     $stmt = $db->prepare('SELECT p.*, c.name AS category_name, c.icon AS category_icon
         FROM products p LEFT JOIN categories c ON p.category_id = c.id
         WHERE p.active = 1 AND p.barcode = ? LIMIT 1');
     $stmt->execute([$barcode]);
     $product = $stmt->fetch();
+    // Fallback: strip leading zeros from both sides and compare
+    if (!$product) {
+        $stripped = ltrim($barcode, '0') ?: $barcode;
+        $stmt2 = $db->prepare('SELECT p.*, c.name AS category_name, c.icon AS category_icon
+            FROM products p LEFT JOIN categories c ON p.category_id = c.id
+            WHERE p.active = 1 AND (LTRIM(p.barcode, "0") = ? OR p.barcode = ?) LIMIT 1');
+        $stmt2->execute([$stripped, $stripped]);
+        $product = $stmt2->fetch();
+    }
     echo json_encode($product ?: null);
     exit;
 }

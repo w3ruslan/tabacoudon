@@ -163,32 +163,75 @@ function closeDetail() {
 }
 
 // ── Scanner ───────────────────────────────
+var _scanCooldown = false;
+
 function openScanner() {
   document.getElementById('scannerOverlay').style.display = 'flex';
-  document.getElementById('scannerStatus').textContent = '';
+  document.getElementById('scannerStatus').textContent = '📷 Caméra en cours...';
+  _scanCooldown = false;
+
+  var config = {
+    fps: 25,
+    qrbox: function(w, h) {
+      var side = Math.min(w, h) * 0.72;
+      return { width: Math.round(side * 1.8), height: Math.round(side * 0.65) };
+    },
+    formatsToSupport: [
+      Html5QrcodeSupportedFormats.EAN_13,
+      Html5QrcodeSupportedFormats.EAN_8,
+      Html5QrcodeSupportedFormats.UPC_A,
+      Html5QrcodeSupportedFormats.UPC_E,
+      Html5QrcodeSupportedFormats.CODE_128,
+      Html5QrcodeSupportedFormats.CODE_39,
+      Html5QrcodeSupportedFormats.ITF,
+      Html5QrcodeSupportedFormats.QR_CODE
+    ],
+    experimentalFeatures: { useBarCodeDetectorIfSupported: true }
+  };
+
   pubScanner = new Html5Qrcode('scannerBox');
   pubScanner.start(
     { facingMode: 'environment' },
-    { fps: 10, qrbox: { width: 280, height: 140 } },
-    function(barcode) { findProductByBarcode(barcode); },
+    config,
+    function(barcode) {
+      if (_scanCooldown) return;
+      _scanCooldown = true;
+      findProductByBarcode(barcode);
+    },
     function() {}
-  ).catch(function(err){
+  ).then(function() {
+    document.getElementById('scannerStatus').textContent = '🎯 Pointez le code-barres';
+  }).catch(function(err){
     document.getElementById('scannerStatus').textContent = '❌ Caméra inaccessible';
   });
 }
 
 function closeScanner() {
+  _scanCooldown = false;
   if (pubScanner) { pubScanner.stop().catch(function(){}); pubScanner = null; }
   document.getElementById('scannerOverlay').style.display = 'none';
 }
 
 function findProductByBarcode(barcode) {
-  document.getElementById('scannerStatus').textContent = '🔍 Recherche...';
+  var status = document.getElementById('scannerStatus');
+  status.textContent = '🔍 Recherche...';
+  // Normalize: strip leading zeros for fallback
+  var stripped = barcode.replace(/^0+/, '') || barcode;
   fetch(API + '?action=find_barcode&barcode=' + encodeURIComponent(barcode))
     .then(function(r){ return r.json(); })
     .then(function(p){
+      if (p && p.id) { closeScanner(); showFoundPopup(p); return; }
+      // Retry with stripped leading zeros
+      if (stripped !== barcode) {
+        return fetch(API + '?action=find_barcode&barcode=' + encodeURIComponent(stripped))
+          .then(function(r){ return r.json(); })
+          .then(function(p2){
+            closeScanner();
+            if (p2 && p2.id) showFoundPopup(p2); else showNotFound(barcode);
+          });
+      }
       closeScanner();
-      if (p && p.id) showFoundPopup(p); else showNotFound(barcode);
+      showNotFound(barcode);
     })
     .catch(function(){ closeScanner(); showNotFound(barcode); });
 }
