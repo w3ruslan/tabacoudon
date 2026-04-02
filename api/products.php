@@ -153,6 +153,22 @@ if ($method === 'POST' && $action === 'bulk_delete') {
     exit;
 }
 
+// ── POST — bulk price change ──────────────────────
+if ($method === 'POST' && $action === 'bulk_price') {
+    if (!isset($_SESSION['admin'])) { http_response_code(403); exit; }
+    $data  = json_decode(file_get_contents('php://input'), true);
+    $ids   = array_map('intval', $data['ids'] ?? []);
+    $price = round((float)($data['price'] ?? 0), 2);
+    if ($ids && $price >= 0) {
+        $db = getDB();
+        $ph = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $db->prepare("UPDATE products SET price=? WHERE id IN ($ph)");
+        $stmt->execute(array_merge([$price], $ids));
+    }
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
 // ── POST — reorder products ───────────────────────
 if ($method === 'POST' && $action === 'reorder') {
     if (!isset($_SESSION['admin'])) { http_response_code(403); exit; }

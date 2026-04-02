@@ -119,6 +119,7 @@ body {
 }
 .bulk-show  { background: #2ecc71; color: #fff; }
 .bulk-hide  { background: #f39c12; color: #fff; }
+.bulk-price { background: #3498db; color: #fff; }
 .bulk-del   { background: #e74c3c; color: #fff; }
 .bulk-clear { background: rgba(255,255,255,.15); color: #fff; }
 

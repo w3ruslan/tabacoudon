@@ -135,6 +135,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     <span id="bulkCount">0 sélectionné(s)</span>
     <button class="bulk-btn bulk-show"  onclick="bulkSetActive(1)">👁️ Afficher</button>
     <button class="bulk-btn bulk-hide"  onclick="bulkSetActive(0)">🙈 Masquer</button>
+    <button class="bulk-btn bulk-price" onclick="bulkPricePrompt()">💶 Changer prix</button>
     <button class="bulk-btn bulk-del"   onclick="bulkDelete()">🗑️ Supprimer</button>
     <button class="bulk-btn bulk-clear" onclick="clearSelection()">✕ Désélectionner</button>
   </div>
@@ -694,6 +695,32 @@ async function bulkDelete() {
   location.reload();
 }
 
+function bulkPricePrompt() {
+  const ids = getSelectedIds();
+  if (!ids.length) return;
+  document.getElementById('bulkPriceModal').style.display = 'flex';
+  document.getElementById('bulkPriceDesc').textContent = ids.length + ' produit(s) sélectionné(s)';
+  document.getElementById('bulkPriceInput').value = '';
+  document.getElementById('bulkPriceInput').focus();
+}
+
+function closeBulkPrice() {
+  document.getElementById('bulkPriceModal').style.display = 'none';
+}
+
+async function applyBulkPrice() {
+  const ids   = getSelectedIds();
+  const price = parseFloat(document.getElementById('bulkPriceInput').value);
+  if (!ids.length || isNaN(price) || price < 0) return;
+  await fetch('../api/products.php?action=bulk_price', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids, price })
+  });
+  closeBulkPrice();
+  location.reload();
+}
+
 // ─── Admin Barcode Scanner ───────────────────────
 let adminScanner = null;
 
@@ -793,5 +820,23 @@ async function loadImageFromUrl() {
   }
 }
 </script>
+
+<!-- Bulk Price Modal -->
+<div id="bulkPriceModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:28px;width:320px;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+    <h3 style="margin:0 0 16px;font-size:18px;">💶 Changer le prix</h3>
+    <p style="margin:0 0 16px;font-size:13px;color:#666;" id="bulkPriceDesc"></p>
+    <div style="display:flex;align-items:center;border:2px solid #e8e8e8;border-radius:10px;overflow:hidden;margin-bottom:20px;">
+      <span style="padding:12px 14px;background:#f5f5f5;font-weight:700;font-size:16px;">€</span>
+      <input type="number" id="bulkPriceInput" placeholder="14.90" step="0.10" min="0"
+        style="flex:1;border:none;outline:none;padding:12px;font-size:16px;"
+        onkeydown="if(event.key==='Enter')applyBulkPrice()">
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button onclick="closeBulkPrice()" style="padding:10px 20px;background:#f5f5f5;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Annuler</button>
+      <button onclick="applyBulkPrice()" style="padding:10px 20px;background:#00C896;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;">Appliquer</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
