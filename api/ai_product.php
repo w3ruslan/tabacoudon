@@ -42,23 +42,22 @@ Réponds UNIQUEMENT avec ce JSON strict, sans texte avant ou après :
 }";
 
 $payload = [
-    'contents' => [
-        ['parts' => [['text' => $prompt]]]
+    'model'    => 'llama-3.3-70b-versatile',
+    'messages' => [
+        ['role' => 'user', 'content' => $prompt]
     ],
-    'generationConfig' => [
-        'temperature'     => 0.2,
-        'maxOutputTokens' => 1024,
-    ],
+    'temperature' => 0.2,
+    'max_tokens'  => 1024,
 ];
 
-$apiKey = GEMINI_API_KEY;
-$url    = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=' . $apiKey;
-
-$ch = curl_init($url);
+$ch = curl_init('https://api.groq.com/openai/v1/chat/completions');
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST           => true,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+    CURLOPT_HTTPHEADER     => [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . GROQ_API_KEY,
+    ],
     CURLOPT_POSTFIELDS     => json_encode($payload),
     CURLOPT_TIMEOUT        => 30,
     CURLOPT_SSL_VERIFYPEER => false,
@@ -69,7 +68,7 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 if (!$response) {
-    echo json_encode(['error' => 'Erreur réseau Gemini']);
+    echo json_encode(['error' => 'Erreur réseau Groq']);
     exit;
 }
 
@@ -77,11 +76,11 @@ $result = json_decode($response, true);
 
 if ($httpCode !== 200) {
     $msg = $result['error']['message'] ?? 'Erreur inconnue';
-    echo json_encode(['error' => 'Gemini API: ' . $msg]);
+    echo json_encode(['error' => 'Groq API: ' . $msg]);
     exit;
 }
 
-$text = $result['candidates'][0]['content']['parts'][0]['text'] ?? '';
+$text = $result['choices'][0]['message']['content'] ?? '';
 
 // Clean markdown
 $text = preg_replace('/```json\s*/i', '', $text);
