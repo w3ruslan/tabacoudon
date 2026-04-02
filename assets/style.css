@@ -430,10 +430,10 @@ body {
   box-shadow: 0 2px 12px rgba(0,0,0,.1);
 }
 .tc-img-wrap img {
-  max-width: calc(100% - 16px);
-  max-height: calc(100% - 16px);
+  width: 100%;
+  height: 100%;
   object-fit: contain;
-  border-radius: 12px;
+  border-radius: 8px;
   transition: transform .3s ease;
 }
 .tc-card:hover .tc-img-wrap img {
