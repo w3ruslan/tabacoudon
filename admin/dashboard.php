@@ -4,7 +4,7 @@ session_start();
 if (!isset($_SESSION['admin'])) { header('Location: index.php'); exit; }
 
 $db         = getDB();
-$products   = $db->query('SELECT p.*, c.name AS cat_name FROM products p LEFT JOIN categories c ON p.category_id = c.id ORDER BY c.display_order, p.name')->fetchAll();
+$products   = $db->query('SELECT p.*, c.name AS cat_name FROM products p LEFT JOIN categories c ON p.category_id = c.id ORDER BY c.display_order, p.display_order, p.name')->fetchAll();
 $categories = $db->query('SELECT * FROM categories ORDER BY display_order')->fetchAll();
 $total      = count($products);
 $active     = count(array_filter($products, fn($p) => $p['active']));
