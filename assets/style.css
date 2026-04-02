@@ -403,7 +403,7 @@ body {
 .tc-frame {
   border-radius: 13px;
   overflow: hidden;
-  background: #f2f2f5;
+  background: #fff;
   display: flex;
   flex-direction: column;
 }
@@ -481,7 +481,7 @@ body {
   flex-wrap: wrap;
   gap: 4px;
   padding: 6px 10px;
-  background: #fafafa;
+  background: #fff;
   border-bottom: 1px solid #f0f0f0;
 }
 .tc-chip {
