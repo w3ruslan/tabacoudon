@@ -14,7 +14,7 @@ define('ADMIN_PASSWORD', 'admin123');
 
 // Nom du magasin
 define('SHOP_NAME',    'Tabacoudon');
-define('SHOP_TAGLINE', 'Votre spécialiste e-liquid à Paris');
+define('SHOP_TAGLINE', 'Votre spécialiste e-liquid OUDON');
 
 // API Keys — fichier séparé (non versionné)
 if (file_exists(__DIR__ . '/config.keys.php')) {
