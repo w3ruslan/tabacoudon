@@ -153,4 +153,20 @@ if ($method === 'POST' && $action === 'bulk_delete') {
     exit;
 }
 
+// ── POST — reorder products ───────────────────────
+if ($method === 'POST' && $action === 'reorder') {
+    if (!isset($_SESSION['admin'])) { http_response_code(403); exit; }
+    $data = json_decode(file_get_contents('php://input'), true);
+    $ids  = array_map('intval', $data['ids'] ?? []);
+    if ($ids) {
+        $db   = getDB();
+        $stmt = $db->prepare('UPDATE products SET display_order=? WHERE id=?');
+        foreach ($ids as $order => $id) {
+            $stmt->execute([$order, $id]);
+        }
+    }
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
 echo json_encode(['error' => 'Action inconnue']);

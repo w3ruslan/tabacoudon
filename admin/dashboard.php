@@ -17,6 +17,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
   <title>Dashboard — <?= SHOP_NAME ?></title>
   <link rel="stylesheet" href="assets/admin.css">
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <style>
     /* ── AI Step ── */
     .ai-input-row { display:flex; gap:10px; margin-bottom:14px; }
@@ -143,6 +144,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     <table class="prod-table">
       <thead>
         <tr>
+          <th style="width:28px"></th>
           <th style="width:36px"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
           <th style="width:60px">Image</th>
           <th>Nom</th>
@@ -155,7 +157,8 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
       </thead>
       <tbody id="productTableBody">
         <?php foreach ($products as $p): ?>
-        <tr id="row-<?= $p['id'] ?>">
+        <tr id="row-<?= $p['id'] ?>" data-id="<?= $p['id'] ?>">
+          <td class="drag-handle" title="Glisser pour réordonner">⠿</td>
           <td><input type="checkbox" class="row-check" value="<?= $p['id'] ?>" onchange="updateBulkBar()"></td>
           <td>
             <?php if ($p['image_url']): ?>
@@ -190,7 +193,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
         </tr>
         <?php endforeach; ?>
         <?php if (!$products): ?>
-        <tr><td colspan="8" class="empty-row">Aucun produit. Commencez par en ajouter un !</td></tr>
+        <tr><td colspan="9" class="empty-row">Aucun produit. Commencez par en ajouter un !</td></tr>
         <?php endif; ?>
       </tbody>
     </table>
@@ -301,6 +304,24 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
 
 <script>
 const CATEGORIES = <?= json_encode($categories) ?>;
+
+// ─── Drag-and-drop sort ───────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  Sortable.create(document.getElementById('productTableBody'), {
+    handle: '.drag-handle',
+    animation: 150,
+    ghostClass: 'sortable-ghost',
+    onEnd: async function() {
+      const ids = [...document.querySelectorAll('#productTableBody tr[data-id]')]
+        .map(tr => tr.dataset.id);
+      await fetch('../api/products.php?action=reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids })
+      });
+    }
+  });
+});
 let selectedImgUrl = '';
 let isEditing      = false;
 let aiData         = null;

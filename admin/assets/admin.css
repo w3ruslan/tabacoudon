@@ -122,6 +122,17 @@ body {
 .bulk-del   { background: #e74c3c; color: #fff; }
 .bulk-clear { background: rgba(255,255,255,.15); color: #fff; }
 
+.drag-handle {
+  cursor: grab;
+  color: #ccc;
+  font-size: 18px;
+  text-align: center;
+  user-select: none;
+}
+.drag-handle:active { cursor: grabbing; }
+.sortable-ghost { opacity: .4; background: #f0f4ff !important; }
+.sortable-ghost td { background: #f0f4ff !important; }
+
 .table-wrap {
   background: var(--card);
   border-radius: 16px;
