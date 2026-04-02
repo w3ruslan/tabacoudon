@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
           showDetail(id);
           setTimeout(function() { card.classList.remove('flipping'); }, 50);
-        }, 220);
+        }, 390);
         return;
       }
       el = el.parentElement;
