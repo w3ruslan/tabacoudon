@@ -6,6 +6,13 @@ header('Content-Type: application/json');
 $db     = getDB();
 $action = $_GET['action'] ?? '';
 
+// ── Auto-migrate: add color column if missing ────────────
+try {
+    $db->query('SELECT color FROM categories LIMIT 1');
+} catch (Exception $e) {
+    $db->exec("ALTER TABLE categories ADD COLUMN color VARCHAR(20) DEFAULT '#e94560'");
+}
+
 // ── GET: liste ──────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'list') {
     $cats = $db->query('SELECT * FROM categories ORDER BY display_order')->fetchAll();
@@ -24,12 +31,13 @@ if (!isset($_SESSION['admin'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'add') {
     $data = json_decode(file_get_contents('php://input'), true);
     $stmt = $db->prepare(
-        'INSERT INTO categories (name, icon, display_order) VALUES (:name, :icon, :display_order)'
+        'INSERT INTO categories (name, icon, color, display_order) VALUES (:name, :icon, :color, :display_order)'
     );
     $maxOrder = $db->query('SELECT COALESCE(MAX(display_order),0)+1 FROM categories')->fetchColumn();
     $stmt->execute([
         ':name'          => trim($data['name']),
         ':icon'          => trim($data['icon'] ?? '📦'),
+        ':color'         => trim($data['color'] ?? '#e94560'),
         ':display_order' => (int)($data['display_order'] ?? $maxOrder),
     ]);
     echo json_encode(['id' => $db->lastInsertId()]);
@@ -40,11 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'add') {
 if ($_SERVER['REQUEST_METHOD'] === 'PUT' && $action === 'edit') {
     $data = json_decode(file_get_contents('php://input'), true);
     $stmt = $db->prepare(
-        'UPDATE categories SET name=:name, icon=:icon, display_order=:display_order WHERE id=:id'
+        'UPDATE categories SET name=:name, icon=:icon, color=:color, display_order=:display_order WHERE id=:id'
     );
     $stmt->execute([
         ':name'          => trim($data['name']),
         ':icon'          => trim($data['icon'] ?? '📦'),
+        ':color'         => trim($data['color'] ?? '#e94560'),
         ':display_order' => (int)$data['display_order'],
         ':id'            => (int)$data['id'],
     ]);
@@ -55,7 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT' && $action === 'edit') {
 // ── DELETE: sil ─────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && $action === 'delete') {
     $id = (int)($_GET['id'] ?? 0);
-    // Kategorideki ürünlerin category_id'sini null yap
     $db->prepare('UPDATE products SET category_id=NULL WHERE category_id=:id')->execute([':id' => $id]);
     $db->prepare('DELETE FROM categories WHERE id=:id')->execute([':id' => $id]);
     echo json_encode(['ok' => true]);

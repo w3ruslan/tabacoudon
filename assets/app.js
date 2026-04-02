@@ -3,12 +3,7 @@ let currentCat   = 0;
 let pubScanner   = null;
 let productsCache = [];
 
-const catColors = {
-  'Goût Tabac':    '#8B6914',
-  'Goût Gourmand': '#E67E22',
-  'Fruité':        '#E74C3C',
-  'Fruité Fresh':  '#2ECC71',
-};
+const catColors = {}; // DB'den doldurulur
 
 window.addEventListener('DOMContentLoaded', function() {
   loadCategories();
@@ -45,9 +40,12 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 function loadCategories() {
-  fetch(API + '?action=categories')
+  fetch('api/categories.php?action=list')
     .then(function(r){ return r.json(); })
     .then(function(cats){
+      cats.forEach(function(c){
+        catColors[c.name] = c.color || '#e94560';
+      });
       var wrap = document.getElementById('catButtons');
       cats.forEach(function(c){
         var btn = document.createElement('button');
@@ -123,7 +121,7 @@ function renderCard(p) {
     + '<span class="tc-name">' + p.name + '</span>'
     + '<span class="tc-price">' + price + '</span>'
     + '</div>'
-    + (p.flavor ? '<div class="tc-flavor">🍓 ' + p.flavor + '</div>' : '')
+    + (p.flavor ? '<div class="tc-chips">' + renderFlavorChips(p.flavor, catColor) + '</div>' : '')
     + (desc ? '<div class="tc-desc">' + desc + '</div>' : '')
     + '</div>'
     + '</div>'
@@ -142,6 +140,14 @@ function renderCard(p) {
     + '</div>'
     + '</div>'
     + '</div>';
+}
+
+function renderFlavorChips(flavor, color) {
+  return flavor.split(/[,\/]+/).map(function(f){
+    f = f.trim();
+    if (!f) return '';
+    return '<span class="tc-chip" style="background:' + color + '22;color:' + color + ';border-color:' + color + '44">' + f + '</span>';
+  }).join('');
 }
 
 function addToCache(p) {
