@@ -754,7 +754,13 @@ body {
 
 /* ── Mobile ────────────────────────────────── */
 @media (max-width: 600px) {
-  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .catalog-main { padding: 0 10px; margin: 12px auto 40px; }
+  .product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+  .tc-card { height: 360px; }
+  .tc-img-wrap { height: 150px; }
+  .tc-name { font-size: 11px; }
+  .tc-price { font-size: 14px; }
+  .tc-namebar { height: 58px; padding: 7px 9px; }
   .header-inner { padding: 12px 16px; }
   .logo-tag { display: none; }
 }
