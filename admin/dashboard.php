@@ -538,11 +538,28 @@ function askManualUrl(query) {
   if (url && url.startsWith('http')) selectImg(url, query);
 }
 
-function selectImg(url, query) {
-  selectedImgUrl = url;
+async function selectImg(url, query) {
+  // Show preview immediately with external URL
   document.getElementById('selectedImg').src = url;
+  selectedImgUrl = url;
   showStep('step2');
   document.getElementById('fPrice').focus();
+
+  // Save image to server in background
+  try {
+    const res  = await fetch('../api/save_image.php', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ url }),
+    });
+    const json = await res.json();
+    if (json.path) {
+      selectedImgUrl = json.path;
+      document.getElementById('selectedImg').src = '../' + json.path;
+    }
+  } catch (e) {
+    // Keep external URL as fallback
+  }
 }
 
 // ─── Éditer produit ──────────────────────────────
