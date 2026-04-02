@@ -28,7 +28,7 @@
 
 <!-- CATEGORY TABS -->
 <nav class="cat-nav no-print">
-  <button class="cat-btn active" data-cat="0">Tous les produits</button>
+  <button class="cat-btn active" data-cat="0" onclick="switchCat(0, this)">Tous les produits</button>
   <div id="catButtons"></div>
 </nav>
 
