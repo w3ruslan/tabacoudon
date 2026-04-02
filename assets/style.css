@@ -284,6 +284,7 @@ body {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   border-radius: 18px;
+  overflow: hidden;
   padding: 5px;
   background: var(--cc, #e94560);
 }
