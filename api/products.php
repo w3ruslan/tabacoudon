@@ -123,4 +123,34 @@ if ($method === 'DELETE' && $action === 'delete') {
     exit;
 }
 
+// ── POST — bulk active/inactive ──────────────────
+if ($method === 'POST' && $action === 'bulk_active') {
+    if (!isset($_SESSION['admin'])) { http_response_code(403); exit; }
+    $data = json_decode(file_get_contents('php://input'), true);
+    $ids  = array_map('intval', $data['ids'] ?? []);
+    $val  = (int)($data['active'] ?? 0);
+    if ($ids) {
+        $db   = getDB();
+        $ph   = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $db->prepare("UPDATE products SET active=? WHERE id IN ($ph)");
+        $stmt->execute(array_merge([$val], $ids));
+    }
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
+// ── POST — bulk delete ────────────────────────────
+if ($method === 'POST' && $action === 'bulk_delete') {
+    if (!isset($_SESSION['admin'])) { http_response_code(403); exit; }
+    $data = json_decode(file_get_contents('php://input'), true);
+    $ids  = array_map('intval', $data['ids'] ?? []);
+    if ($ids) {
+        $db = getDB();
+        $ph = implode(',', array_fill(0, count($ids), '?'));
+        $db->prepare("DELETE FROM products WHERE id IN ($ph)")->execute($ids);
+    }
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
 echo json_encode(['error' => 'Action inconnue']);

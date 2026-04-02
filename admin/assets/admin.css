@@ -96,6 +96,32 @@ body {
 .stat-lbl { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
 /* ── Table ────────────────────────────── */
+/* ── Bulk actions bar ── */
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #1a1a2e;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.bulk-bar span { font-size: 13px; font-weight: 700; flex: 1; }
+.bulk-btn {
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.bulk-show  { background: #2ecc71; color: #fff; }
+.bulk-hide  { background: #f39c12; color: #fff; }
+.bulk-del   { background: #e74c3c; color: #fff; }
+.bulk-clear { background: rgba(255,255,255,.15); color: #fff; }
+
 .table-wrap {
   background: var(--card);
   border-radius: 16px;

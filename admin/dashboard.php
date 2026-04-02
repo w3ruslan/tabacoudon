@@ -129,11 +129,21 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     </div>
   </div>
 
+  <!-- Bulk actions bar -->
+  <div class="bulk-bar" id="bulkBar" style="display:none">
+    <span id="bulkCount">0 sélectionné(s)</span>
+    <button class="bulk-btn bulk-show"  onclick="bulkSetActive(1)">👁️ Afficher</button>
+    <button class="bulk-btn bulk-hide"  onclick="bulkSetActive(0)">🙈 Masquer</button>
+    <button class="bulk-btn bulk-del"   onclick="bulkDelete()">🗑️ Supprimer</button>
+    <button class="bulk-btn bulk-clear" onclick="clearSelection()">✕ Désélectionner</button>
+  </div>
+
   <!-- Product table -->
   <div class="table-wrap">
     <table class="prod-table">
       <thead>
         <tr>
+          <th style="width:36px"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
           <th style="width:60px">Image</th>
           <th>Nom</th>
           <th>Parfum</th>
@@ -146,6 +156,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
       <tbody id="productTableBody">
         <?php foreach ($products as $p): ?>
         <tr id="row-<?= $p['id'] ?>">
+          <td><input type="checkbox" class="row-check" value="<?= $p['id'] ?>" onchange="updateBulkBar()"></td>
           <td>
             <?php if ($p['image_url']): ?>
               <?php
@@ -179,7 +190,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
         </tr>
         <?php endforeach; ?>
         <?php if (!$products): ?>
-        <tr><td colspan="7" class="empty-row">Aucun produit. Commencez par en ajouter un !</td></tr>
+        <tr><td colspan="8" class="empty-row">Aucun produit. Commencez par en ajouter un !</td></tr>
         <?php endif; ?>
       </tbody>
     </table>
@@ -645,6 +656,58 @@ async function deleteProduct(id, name) {
   if (!confirm(`Supprimer "${name}" ?`)) return;
   await fetch(`../api/products.php?action=delete&id=${id}`, { method: 'DELETE' });
   document.getElementById('row-' + id)?.remove();
+}
+
+// ─── Bulk actions ────────────────────────────────
+function getSelectedIds() {
+  return [...document.querySelectorAll('.row-check:checked')].map(c => c.value);
+}
+
+function updateBulkBar() {
+  const ids = getSelectedIds();
+  const bar = document.getElementById('bulkBar');
+  bar.style.display = ids.length ? 'flex' : 'none';
+  document.getElementById('bulkCount').textContent = ids.length + ' sélectionné(s)';
+  document.getElementById('checkAll').indeterminate =
+    ids.length > 0 && ids.length < document.querySelectorAll('.row-check').length;
+  document.getElementById('checkAll').checked =
+    ids.length === document.querySelectorAll('.row-check').length;
+}
+
+function toggleAll(cb) {
+  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+  updateBulkBar();
+}
+
+function clearSelection() {
+  document.querySelectorAll('.row-check').forEach(c => c.checked = false);
+  document.getElementById('checkAll').checked = false;
+  updateBulkBar();
+}
+
+async function bulkSetActive(val) {
+  const ids = getSelectedIds();
+  if (!ids.length) return;
+  const label = val ? 'afficher' : 'masquer';
+  if (!confirm(`${label.charAt(0).toUpperCase()+label.slice(1)} ${ids.length} produit(s) ?`)) return;
+  await fetch('../api/products.php?action=bulk_active', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids, active: val })
+  });
+  location.reload();
+}
+
+async function bulkDelete() {
+  const ids = getSelectedIds();
+  if (!ids.length) return;
+  if (!confirm(`Supprimer définitivement ${ids.length} produit(s) ?`)) return;
+  await fetch('../api/products.php?action=bulk_delete', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids })
+  });
+  location.reload();
 }
 
 // ─── Admin Barcode Scanner ───────────────────────
