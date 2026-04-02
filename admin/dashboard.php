@@ -205,64 +205,22 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
 
-    <!-- ── STEP 0 : AI ANALYSE ── -->
-    <div id="step0" style="padding:24px 28px">
-      <div class="form-group" style="margin-bottom:14px">
-        <label>Nom du produit *</label>
-        <div class="ai-input-row">
-          <input type="text" id="aiName" placeholder="ex: Elfbar 600 Blueberry Ice" onkeydown="if(event.key==='Enter')analyzeWithAI()">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Taille / Format</label>
-          <input type="text" id="aiSize" placeholder="ex: 600 puffs, 10ml, 2mg" onkeydown="if(event.key==='Enter')analyzeWithAI()">
-        </div>
-        <div class="form-group">
-          <label>Prix (€)</label>
-          <div class="price-wrap">
-            <span>€</span>
-            <input type="number" id="aiPrice" placeholder="9.90" step="0.10" min="0">
-          </div>
-        </div>
-      </div>
-
-      <button class="btn-ai" onclick="analyzeWithAI()" id="aiBtn">🤖 Analyser avec Gemini AI</button>
-
-      <!-- Résultat AI -->
-      <div id="aiResult" class="ai-result">
-        <div class="ai-result-title">✨ Résultat IA — Vérifiez et confirmez</div>
-        <div id="aiResultBody"></div>
-        <button class="btn-ai-confirm" onclick="confirmAI()">✅ Confirmer et choisir une image →</button>
-      </div>
-
-      <div class="skip-ai">
-        <button onclick="skipAI()">Passer l'IA et remplir manuellement</button>
-      </div>
-    </div>
-
-    <!-- ── STEP 1 : IMAGE ── -->
-    <div id="step1" style="display:none; padding:24px 28px">
-      <div class="form-group">
-        <label>Rechercher une image</label>
-        <div class="search-row">
-          <input type="text" id="searchQuery" placeholder="ex: Elfbar 600 Blueberry Ice..." onkeydown="if(event.key==='Enter')searchImages()">
-          <button class="btn-search" onclick="searchImages()" id="searchBtn">🔍 Chercher</button>
-        </div>
-        <div id="searchStatus" class="search-status"></div>
-      </div>
-      <div id="imgGrid" class="img-grid"></div>
-      <div style="margin-top:14px; text-align:right">
-        <button class="btn-cancel" onclick="backToAI()">↩ Retour</button>
-      </div>
-    </div>
-
     <!-- ── STEP 2 : FORMULAIRE ── -->
-    <div id="step2" style="display:none">
-      <div style="padding:24px 28px 0">
-        <div class="selected-preview">
-          <img id="selectedImg" src="" alt="">
-          <button class="btn-change" onclick="backToSearch()">↩ Changer l'image</button>
+    <div id="step2">
+      <div style="padding:20px 28px 0">
+        <div class="img-url-row">
+          <div class="img-preview-box">
+            <img id="selectedImg" src="" alt="" style="display:none">
+            <span id="imgPlaceholder">📷</span>
+          </div>
+          <div class="img-url-inputs">
+            <label>URL de l'image</label>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="imgUrlInput" placeholder="Coller l'URL de l'image ici..." oninput="previewImageUrl(this.value)">
+              <button type="button" class="btn-load-img" onclick="loadImageFromUrl()" title="Charger">⬇️</button>
+            </div>
+            <div id="imgUrlStatus" style="font-size:11px;margin-top:4px;color:#888"></div>
+          </div>
         </div>
       </div>
 
@@ -353,30 +311,20 @@ function openAddModal() {
   aiData    = null;
   document.getElementById('modalTitle').textContent = 'Ajouter un produit';
   document.getElementById('editId').value = '';
-  document.getElementById('aiName').value  = '';
-  document.getElementById('aiSize').value  = '';
-  document.getElementById('aiPrice').value = '';
-  document.getElementById('aiResult').style.display = 'none';
-  document.getElementById('aiBtn').disabled = false;
-  document.getElementById('aiBtn').textContent = '🤖 Analyser avec Gemini AI';
   selectedImgUrl = '';
   clearForm();
-  showStep('step0');
+  showStep('step2');
   document.getElementById('modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('aiName').focus(), 100);
+  setTimeout(() => document.getElementById('fName').focus(), 100);
 }
 
 function closeModal() { document.getElementById('modal').style.display = 'none'; }
 function closeModalOutside(e) { if (e.target.id === 'modal') closeModal(); }
 
 function showStep(step) {
-  ['step0','step1','step2'].forEach(s => {
-    document.getElementById(s).style.display = s === step ? 'block' : 'none';
-  });
+  const el = document.getElementById(step);
+  if (el) el.style.display = 'block';
 }
-
-function backToAI()     { showStep('step0'); }
-function backToSearch() { showStep('step1'); }
 
 // ─── AI Analyse ──────────────────────────────────
 async function analyzeWithAI() {
@@ -596,7 +544,22 @@ function editProduct(p) {
   if (barcodeEl) barcodeEl.value = p.barcode     || '';
 
   selectedImgUrl = p.image_url || '';
-  if (selectedImgUrl) document.getElementById('selectedImg').src = selectedImgUrl;
+  const imgEl = document.getElementById('selectedImg');
+  const ph    = document.getElementById('imgPlaceholder');
+  const urlInput  = document.getElementById('imgUrlInput');
+  const urlStatus = document.getElementById('imgUrlStatus');
+  if (selectedImgUrl) {
+    imgEl.src           = selectedImgUrl.startsWith('uploads/') ? '../' + selectedImgUrl : selectedImgUrl;
+    imgEl.style.display = 'block';
+    ph.style.display    = 'none';
+    if (urlInput) urlInput.value = selectedImgUrl;
+  } else {
+    imgEl.src           = '';
+    imgEl.style.display = 'none';
+    ph.style.display    = '';
+    if (urlInput) urlInput.value = '';
+  }
+  if (urlStatus) urlStatus.textContent = '';
 
   showStep('step2');
   document.getElementById('modal').style.display = 'flex';
@@ -743,7 +706,70 @@ function clearForm() {
   document.getElementById('fDesc').value     = '';
   document.getElementById('fCategory').value = '';
   document.getElementById('fActive').value   = '1';
-  document.getElementById('selectedImg').src = '';
+  const imgEl = document.getElementById('selectedImg');
+  imgEl.src = '';
+  imgEl.style.display = 'none';
+  document.getElementById('imgPlaceholder').style.display = '';
+  const urlInput = document.getElementById('imgUrlInput');
+  if (urlInput) urlInput.value = '';
+  const urlStatus = document.getElementById('imgUrlStatus');
+  if (urlStatus) urlStatus.textContent = '';
+}
+
+function previewImageUrl(val) {
+  const imgEl = document.getElementById('selectedImg');
+  const ph    = document.getElementById('imgPlaceholder');
+  if (val && val.startsWith('http')) {
+    imgEl.src          = val;
+    imgEl.style.display = 'block';
+    ph.style.display   = 'none';
+  } else {
+    imgEl.src          = '';
+    imgEl.style.display = 'none';
+    ph.style.display   = '';
+  }
+}
+
+async function loadImageFromUrl() {
+  const url    = document.getElementById('imgUrlInput').value.trim();
+  const status = document.getElementById('imgUrlStatus');
+  if (!url || !url.startsWith('http')) {
+    status.textContent = 'Veuillez saisir une URL valide.';
+    status.style.color = '#e94560';
+    return;
+  }
+  status.textContent = '⏳ Chargement...';
+  status.style.color = '#888';
+
+  // Show preview immediately
+  const imgEl = document.getElementById('selectedImg');
+  const ph    = document.getElementById('imgPlaceholder');
+  imgEl.src           = url;
+  imgEl.style.display = 'block';
+  ph.style.display    = 'none';
+  selectedImgUrl      = url;
+
+  // Save to server in background
+  try {
+    const res  = await fetch('../api/save_image.php', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ url }),
+    });
+    const json = await res.json();
+    if (json.path) {
+      selectedImgUrl      = json.path;
+      imgEl.src           = '../' + json.path;
+      status.textContent  = '✅ Image enregistrée.';
+      status.style.color  = '#16a34a';
+    } else {
+      status.textContent = '⚠️ Image utilisée telle quelle (URL externe).';
+      status.style.color = '#d97706';
+    }
+  } catch (e) {
+    status.textContent = '⚠️ Erreur réseau — URL externe conservée.';
+    status.style.color = '#d97706';
+  }
 }
 </script>
 </body>
