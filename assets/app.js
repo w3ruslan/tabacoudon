@@ -99,6 +99,13 @@ function renderCard(p) {
     + '</div>';
 }
 
+function addToCache(p) {
+  for (var i = 0; i < productsCache.length; i++) {
+    if (String(productsCache[i].id) === String(p.id)) return;
+  }
+  productsCache.push(p);
+}
+
 function showDetail(id) {
   var p = null;
   for (var i = 0; i < productsCache.length; i++) {
@@ -235,14 +242,14 @@ function findProductByBarcode(barcode) {
   fetch(API + '?action=find_barcode&barcode=' + encodeURIComponent(barcode))
     .then(function(r){ return r.json(); })
     .then(function(p){
-      if (p && p.id) { closeScanner(); showFoundPopup(p); return; }
+      if (p && p.id) { closeScanner(); addToCache(p); showDetail(p.id); return; }
       // Retry with stripped leading zeros
       if (stripped !== barcode) {
         return fetch(API + '?action=find_barcode&barcode=' + encodeURIComponent(stripped))
           .then(function(r){ return r.json(); })
           .then(function(p2){
             closeScanner();
-            if (p2 && p2.id) showFoundPopup(p2); else showNotFound(barcode);
+            if (p2 && p2.id) { addToCache(p2); showDetail(p2.id); } else showNotFound(barcode);
           });
       }
       closeScanner();
