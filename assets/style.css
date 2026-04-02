@@ -343,6 +343,22 @@ body {
   max-height: 54px;
   overflow: hidden;
 }
+.tc-back-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+.tc-back-chip {
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 12px;
+  padding: 2px 9px;
+  font-size: 10px;
+  font-weight: 700;
+}
 .tc-back-price {
   font-size: 22px;
   font-weight: 900;

@@ -21,7 +21,7 @@ window.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
           showDetail(id);
           setTimeout(function() { card.classList.remove('flipping'); }, 50);
-        }, 390);
+        }, 780);
         return;
       }
       el = el.parentElement;
@@ -89,8 +89,21 @@ function renderCard(p) {
 
   var price = p.price ? '€' + parseFloat(p.price).toFixed(2) : '—';
 
+  var flavorChipsBack = '';
+  if (p.flavor) {
+    p.flavor.split(/[,\/]+/).forEach(function(f){
+      f = f.trim();
+      if (f) flavorChipsBack += '<span class="tc-back-chip">' + f + '</span>';
+    });
+  }
+
+  var backImgHtml = p.image_url
+    ? '<img class="tc-back-img" src="' + p.image_url + '" alt="' + p.name + '" onerror="this.style.display=\'none\'">'
+    : '<div style="font-size:52px;margin-bottom:8px">🌬️</div>';
+
   return '<div class="tc-card" data-id="' + p.id + '" style="--cc:' + catColor + '">'
     + '<div class="tc-card-inner">'
+    // ── Ön yüz ──
     + '<div class="tc-card-front">'
     + '<div class="tc-frame">'
     + '<div class="tc-header">' + catIcon + ' ' + catLabel + '</div>'
@@ -102,6 +115,14 @@ function renderCard(p) {
     + (p.flavor ? '<div class="tc-chips">' + renderFlavorChips(p.flavor, catColor) + '</div>' : '')
     + (desc ? '<div class="tc-desc">' + desc + '</div>' : '')
     + '</div>'
+    + '</div>'
+    // ── Arka yüz ──
+    + '<div class="tc-card-back" style="background:linear-gradient(160deg,var(--cc) 0%,#0d0d1a 80%)">'
+    + backImgHtml
+    + '<div class="tc-back-name">' + p.name + '</div>'
+    + (flavorChipsBack ? '<div class="tc-back-chips">' + flavorChipsBack + '</div>' : '')
+    + (desc ? '<div class="tc-back-desc">' + desc + '</div>' : '')
+    + '<div class="tc-back-price">' + price + '</div>'
     + '</div>'
     + '</div>'
     + '</div>';
