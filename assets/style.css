@@ -286,16 +286,17 @@ body {
 
 /* ── Image zone ── */
 .tc-img-wrap {
-  background: linear-gradient(180deg, #f4f5f8 0%, #eceef2 100%);
+  background: #fff;
   height: 190px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px;
-  border-radius: 12px;
+  padding: 12px;
+  border-radius: 14px;
   margin: 6px;
   overflow: hidden;
   position: relative;
+  box-shadow: 0 2px 10px rgba(0,0,0,.08), inset 0 0 0 1px rgba(0,0,0,.05);
 }
 .tc-img-wrap img {
   max-height: 100%;
@@ -408,12 +409,10 @@ body {
 .dt-img {
   width: 130px; height: 130px;
   object-fit: contain;
-  background: rgba(255,255,255,0.15);
-  border-radius: 18px;
-  padding: 8px;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  box-shadow: 0 4px 20px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.2);
+  background: #fff;
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.2), inset 0 0 0 1px rgba(0,0,0,.05);
   animation: dtFloat 3s ease-in-out infinite;
   margin-bottom: 10px;
 }
