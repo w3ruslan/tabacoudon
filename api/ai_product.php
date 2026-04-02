@@ -29,33 +29,36 @@ Les 4 catégories disponibles :
 - \"Fruité\" : fruits (sans menthe/fraîcheur/ice)
 - \"Fruité Fresh\" : fruits + menthe, ice, cool, frais, glacé
 
+IMPORTANT : Si tu connais ce produit précisément, utilise ses vraies informations. Si tu ne le connais pas, déduis uniquement depuis le nom — n'invente PAS de fausses informations, laisse flavor et descriptions vides si incertain.
+
 Réponds UNIQUEMENT avec ce JSON strict, sans texte avant ou après :
 {
   \"brand\": \"marque du produit\",
-  \"flavor\": \"parfum court (ex: Blueberry Ice)\",
-  \"card_description\": \"résumé accrocheur du goût pour la fiche produit, MAXIMUM 150 caractères, en français, donne envie d'acheter (ex: Myrtilles juteuses avec une vague de fraîcheur glacée. Un best-seller incontournable !)\",
-  \"full_description\": \"description complète du goût en 2-3 phrases en français, détaillée et appétissante\",
+  \"flavor\": \"arômes réels séparés par des virgules (ex: Fruits exotiques, Corossol) — vide si inconnu\",
+  \"card_description\": \"résumé accrocheur du goût pour la fiche produit, MAXIMUM 150 caractères, en français, donne envie d'acheter — vide si inconnu\",
+  \"full_description\": \"description complète du goût en 2-3 phrases en français, détaillée et appétissante — vide si inconnu\",
   \"category\": \"Goût Tabac OU Goût Gourmand OU Fruité OU Fruité Fresh\",
-  \"image_search_query\": \"requête en anglais pour trouver l'image du produit (ex: Elfbar 600 Blueberry Ice vape)\"
+  \"image_search_query\": \"requête en anglais pour trouver l'image du produit (ex: Paperland Navy Drop Airmust vape eliquid)\"
 }";
 
 $payload = [
-    'model'    => 'llama-3.3-70b-versatile',
-    'messages' => [
-        ['role' => 'user', 'content' => $prompt]
+    'contents' => [
+        ['parts' => [['text' => $prompt]]]
     ],
-    'temperature' => 0.4,
-    'max_tokens'  => 1024,
+    'generationConfig' => [
+        'temperature'     => 0.2,
+        'maxOutputTokens' => 1024,
+    ],
 ];
 
-$ch = curl_init('https://api.groq.com/openai/v1/chat/completions');
+$apiKey = GEMINI_API_KEY;
+$url    = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' . $apiKey;
+
+$ch = curl_init($url);
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST           => true,
-    CURLOPT_HTTPHEADER     => [
-        'Content-Type: application/json',
-        'Authorization: Bearer ' . GROQ_API_KEY,
-    ],
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
     CURLOPT_POSTFIELDS     => json_encode($payload),
     CURLOPT_TIMEOUT        => 30,
     CURLOPT_SSL_VERIFYPEER => false,
@@ -66,7 +69,7 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 if (!$response) {
-    echo json_encode(['error' => 'Erreur réseau Groq']);
+    echo json_encode(['error' => 'Erreur réseau Gemini']);
     exit;
 }
 
@@ -74,18 +77,18 @@ $result = json_decode($response, true);
 
 if ($httpCode !== 200) {
     $msg = $result['error']['message'] ?? 'Erreur inconnue';
-    echo json_encode(['error' => 'Groq API: ' . $msg]);
+    echo json_encode(['error' => 'Gemini API: ' . $msg]);
     exit;
 }
 
-$text = $result['choices'][0]['message']['content'] ?? '';
+$text = $result['candidates'][0]['content']['parts'][0]['text'] ?? '';
 
-// Nettoyer les balises markdown
+// Clean markdown
 $text = preg_replace('/```json\s*/i', '', $text);
 $text = preg_replace('/```\s*/i', '', $text);
 $text = trim($text);
 
-// Extraire le JSON
+// Extract JSON
 if (preg_match('/\{.*\}/s', $text, $m)) {
     $text = $m[0];
 }

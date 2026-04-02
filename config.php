@@ -20,7 +20,8 @@ define('SHOP_TAGLINE', 'Votre spécialiste e-liquid à Paris');
 if (file_exists(__DIR__ . '/config.keys.php')) {
     require_once __DIR__ . '/config.keys.php';
 } else {
-    define('GROQ_API_KEY', '');
+    define('GROQ_API_KEY',   '');
+    define('GEMINI_API_KEY', '');
 }
 
 // Connexion PDO
