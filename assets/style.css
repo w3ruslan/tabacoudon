@@ -548,6 +548,9 @@ body {
   gap: 4px;
   padding: 6px 10px;
   border-bottom: 1px solid #f0f0f0;
+  flex: 1;
+  align-content: flex-start;
+  overflow: hidden;
 }
 .tc-chip {
   font-size: 10px;
@@ -721,6 +724,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px 8px;
+  flex-shrink: 0;
 }
 .tc-cart-btn {
   width: 34px; height: 34px;
