@@ -141,64 +141,60 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     <button class="bulk-btn bulk-clear" onclick="clearSelection()">✕ Désélectionner</button>
   </div>
 
-  <!-- Product table -->
-  <div class="table-wrap">
-    <table class="prod-table">
-      <thead>
-        <tr>
-          <th style="width:28px"></th>
-          <th style="width:36px"><input type="checkbox" id="checkAll" onchange="toggleAll(this)"></th>
-          <th style="width:60px">Image</th>
-          <th>Nom</th>
-          <th>Parfum</th>
-          <th>Catégorie</th>
-          <th>Prix</th>
-          <th>Visible</th>
-          <th style="width:120px">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="productTableBody">
-        <?php foreach ($products as $p): ?>
-        <tr id="row-<?= $p['id'] ?>" data-id="<?= $p['id'] ?>">
-          <td class="drag-handle" title="Glisser pour réordonner">⠿</td>
-          <td><input type="checkbox" class="row-check" value="<?= $p['id'] ?>" onchange="updateBulkBar()"></td>
-          <td>
-            <?php if ($p['image_url']): ?>
-              <?php
-                $imgSrc = $p['image_url'];
-                if (strpos($imgSrc, 'uploads/') === 0) $imgSrc = '../' . $imgSrc;
-              ?>
-              <img src="<?= htmlspecialchars($imgSrc) ?>" class="thumb" alt="">
-            <?php else: ?>
-              <span class="no-thumb">🌬️</span>
-            <?php endif; ?>
-          </td>
-          <td class="td-name"><?= htmlspecialchars($p['name']) ?></td>
-          <td class="td-muted"><?= htmlspecialchars($p['flavor'] ?? '') ?></td>
-          <td>
-            <?php if ($p['cat_name']): ?>
-              <span class="cat-badge"><?= htmlspecialchars($p['cat_name']) ?></span>
-            <?php endif; ?>
-          </td>
-          <td class="td-price">
-            <?= $p['price'] ? '€ ' . number_format($p['price'], 2) : '<span class="na">—</span>' ?>
-          </td>
-          <td>
-            <span class="badge-<?= $p['active'] ? 'on' : 'off' ?>">
-              <?= $p['active'] ? 'Oui' : 'Non' ?>
-            </span>
-          </td>
-          <td>
-            <button class="btn-edit" onclick='editProduct(<?= json_encode($p, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>✏️</button>
-            <button class="btn-del"  onclick="deleteProduct(<?= $p['id'] ?>, '<?= addslashes($p['name']) ?>')">🗑️</button>
-          </td>
-        </tr>
-        <?php endforeach; ?>
-        <?php if (!$products): ?>
-        <tr><td colspan="9" class="empty-row">Aucun produit. Commencez par en ajouter un !</td></tr>
+  <!-- Sélectionner tout -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+    <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer">
+      <input type="checkbox" id="checkAll" onchange="toggleAll(this)" style="width:16px;height:16px">
+      Tout sélectionner
+    </label>
+  </div>
+
+  <!-- Product card grid -->
+  <div class="prod-grid" id="productTableBody">
+    <?php foreach ($products as $p): ?>
+    <?php
+      $imgSrc = $p['image_url'] ?? '';
+      if ($imgSrc && strpos($imgSrc, 'uploads/') === 0) $imgSrc = '../' . $imgSrc;
+    ?>
+    <div class="admin-card <?= $p['active'] ? '' : 'inactive' ?>" id="row-<?= $p['id'] ?>" data-id="<?= $p['id'] ?>">
+      <div class="ac-topbar">
+        <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
+        <input type="checkbox" class="row-check" value="<?= $p['id'] ?>" onchange="updateBulkBar()">
+      </div>
+      <div class="ac-img">
+        <?php if ($imgSrc): ?>
+          <img src="<?= htmlspecialchars($imgSrc) ?>" alt="">
+        <?php else: ?>
+          <span class="ac-no-img">🌬️</span>
         <?php endif; ?>
-      </tbody>
-    </table>
+      </div>
+      <div class="ac-info">
+        <div class="ac-name"><?= htmlspecialchars($p['name']) ?></div>
+        <?php if ($p['flavor'] ?? ''): ?>
+          <div class="ac-flavor"><?= htmlspecialchars($p['flavor']) ?></div>
+        <?php endif; ?>
+        <div class="ac-meta">
+          <?php if ($p['cat_name'] ?? ''): ?>
+            <span class="cat-badge" style="font-size:10px;padding:2px 7px"><?= htmlspecialchars($p['cat_name']) ?></span>
+          <?php endif; ?>
+          <span class="ac-price"><?= $p['price'] ? '€'.number_format($p['price'],2) : '—' ?></span>
+        </div>
+      </div>
+      <div class="ac-actions">
+        <button class="ac-eye-btn <?= $p['active'] ? '' : 'eye-off' ?>"
+          id="eye-<?= $p['id'] ?>"
+          onclick="toggleSingleActive(<?= $p['id'] ?>, <?= $p['active'] ?>)"
+          title="<?= $p['active'] ? 'Masquer' : 'Afficher' ?>">
+          <?= $p['active'] ? '👁️' : '🙈' ?>
+        </button>
+        <button class="btn-edit" onclick='editProduct(<?= json_encode($p, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>✏️</button>
+        <button class="btn-del"  onclick="deleteProduct(<?= $p['id'] ?>, '<?= addslashes($p['name']) ?>')">🗑️</button>
+      </div>
+    </div>
+    <?php endforeach; ?>
+    <?php if (!$products): ?>
+    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)">Aucun produit.</div>
+    <?php endif; ?>
   </div>
 </div>
 
@@ -314,8 +310,8 @@ document.addEventListener('DOMContentLoaded', function() {
     animation: 150,
     ghostClass: 'sortable-ghost',
     onEnd: async function() {
-      const ids = [...document.querySelectorAll('#productTableBody tr[data-id]')]
-        .map(tr => tr.dataset.id);
+      const ids = [...document.querySelectorAll('#productTableBody [data-id]')]
+        .map(el => el.dataset.id);
       await fetch('../api/products.php?action=reorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -324,6 +320,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+// ─── Toggle single product visibility ────────────
+async function toggleSingleActive(id, currentActive) {
+  const newVal = currentActive ? 0 : 1;
+  await fetch('../api/products.php?action=bulk_active', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids: [String(id)], active: newVal })
+  });
+  const card = document.getElementById('row-' + id);
+  const btn  = document.getElementById('eye-' + id);
+  if (newVal === 0) {
+    card.classList.add('inactive');
+    btn.textContent = '🙈';
+    btn.classList.add('eye-off');
+    btn.title = 'Afficher';
+    btn.setAttribute('onclick', 'toggleSingleActive(' + id + ', 0)');
+  } else {
+    card.classList.remove('inactive');
+    btn.textContent = '👁️';
+    btn.classList.remove('eye-off');
+    btn.title = 'Masquer';
+    btn.setAttribute('onclick', 'toggleSingleActive(' + id + ', 1)');
+  }
+}
 let selectedImgUrl = '';
 let isEditing      = false;
 let aiData         = null;
