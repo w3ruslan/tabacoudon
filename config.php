@@ -16,6 +16,9 @@ define('ADMIN_PASSWORD', 'admin123');
 define('SHOP_NAME',    'Tabacoudon');
 define('SHOP_TAGLINE', 'Votre spécialiste e-liquid OUDON');
 
+// WhatsApp — numéro avec indicatif pays, sans + ni espaces (ex: 33612345678)
+define('WHATSAPP_NUMBER', '33612345678');
+
 // API Keys — fichier séparé (non versionné)
 if (file_exists(__DIR__ . '/config.keys.php')) {
     require_once __DIR__ . '/config.keys.php';

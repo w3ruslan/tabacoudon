@@ -3,11 +3,135 @@ let currentCat   = 0;
 let pubScanner   = null;
 let productsCache = [];
 
+// ─── Cart ─────────────────────────────────────────
+var cart = JSON.parse(localStorage.getItem('tc_cart') || '[]');
+
+function saveCart() {
+  localStorage.setItem('tc_cart', JSON.stringify(cart));
+  updateCartBadge();
+}
+
+function updateCartBadge() {
+  var total = cart.reduce(function(s, i) { return s + i.qty; }, 0);
+  var badge = document.getElementById('cartBadge');
+  if (!badge) return;
+  badge.textContent = total;
+  badge.style.display = total > 0 ? 'flex' : 'none';
+}
+
+function addToCart(id, name, price, size, event) {
+  if (event) event.stopPropagation();
+  var existing = cart.find(function(i) { return i.id === id; });
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ id: id, name: name, price: price, size: size, qty: 1 });
+  }
+  saveCart();
+  // Flash feedback on button
+  var btn = document.querySelector('.tc-cart-btn[data-id="' + id + '"]');
+  if (btn) {
+    btn.textContent = '✓';
+    btn.style.background = '#2ecc71';
+    setTimeout(function() {
+      btn.textContent = '🛒';
+      btn.style.background = '';
+    }, 800);
+  }
+}
+
+function openCart() {
+  renderCartPanel();
+  document.getElementById('cartOverlay').style.display = 'flex';
+  setTimeout(function() {
+    document.getElementById('cartPanel').classList.add('cart-open');
+  }, 10);
+}
+
+function closeCart() {
+  document.getElementById('cartPanel').classList.remove('cart-open');
+  setTimeout(function() {
+    document.getElementById('cartOverlay').style.display = 'none';
+  }, 300);
+}
+
+function closeCartOutside(e) {
+  if (e.target === document.getElementById('cartOverlay')) closeCart();
+}
+
+function renderCartPanel() {
+  var itemsEl  = document.getElementById('cartItems');
+  var footerEl = document.getElementById('cartFooter');
+  var emptyEl  = document.getElementById('cartEmpty');
+
+  if (!cart.length) {
+    itemsEl.innerHTML = '';
+    footerEl.style.display = 'none';
+    emptyEl.style.display  = 'flex';
+    return;
+  }
+
+  emptyEl.style.display  = 'none';
+  footerEl.style.display = 'block';
+
+  var total = 0;
+  itemsEl.innerHTML = cart.map(function(item) {
+    var subtotal = item.price * item.qty;
+    total += subtotal;
+    return '<div class="cart-item">'
+      + '<div class="cart-item-info">'
+      + '<div class="cart-item-name">' + item.name + '</div>'
+      + (item.size ? '<div class="cart-item-size">' + item.size + '</div>' : '')
+      + '<div class="cart-item-price">€' + item.price.toFixed(2) + ' / unité</div>'
+      + '</div>'
+      + '<div class="cart-item-controls">'
+      + '<button onclick="changeQty(\'' + item.id + '\', -1)">−</button>'
+      + '<span>' + item.qty + '</span>'
+      + '<button onclick="changeQty(\'' + item.id + '\', 1)">+</button>'
+      + '<button class="cart-item-del" onclick="removeFromCart(\'' + item.id + '\')">🗑️</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+
+  document.getElementById('cartTotal').textContent = '€' + total.toFixed(2);
+
+  // WhatsApp link
+  var msg = 'Bonjour ! Je voudrais commander :\n\n';
+  cart.forEach(function(item) {
+    msg += '• ' + item.name + (item.size ? ' (' + item.size + ')' : '') + ' x' + item.qty + ' — €' + (item.price * item.qty).toFixed(2) + '\n';
+  });
+  msg += '\nTotal : €' + total.toFixed(2) + '\n\nMerci !';
+  document.getElementById('whatsappBtn').href =
+    'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(msg);
+}
+
+function changeQty(id, delta) {
+  var item = cart.find(function(i) { return i.id === id; });
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(function(i) { return i.id !== id; });
+  saveCart();
+  renderCartPanel();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(function(i) { return i.id !== id; });
+  saveCart();
+  renderCartPanel();
+}
+
+function clearCart() {
+  cart = [];
+  saveCart();
+  renderCartPanel();
+}
+
 const catColors = {}; // DB'den doldurulur
 
 window.addEventListener('DOMContentLoaded', function() {
   // Önce kategorileri yükle, sonra ürünleri — renk eşleşmesi için
   loadCategories().then(function() { loadProducts(0); });
+  updateCartBadge();
 
   // Event delegation — kart tıklamaları
   document.getElementById('productGrid').addEventListener('click', function(e) {
@@ -155,7 +279,10 @@ function renderCard(p) {
     + '</div>'
     + '<div class="tc-bottom">'
     + (p.flavor ? '<div class="tc-chips">' + renderFlavorChips(p.flavor, catColor) + '</div>' : '')
-    + (p.size ? '<div class="tc-size-wrap"><span class="tc-size" style="background:' + catColor + '">' + p.size + '</span></div>' : '')
+    + '<div class="tc-bottom-row">'
+    + (p.size ? '<span class="tc-size" style="background:' + catColor + '">' + p.size + '</span>' : '<span></span>')
+    + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒</button>'
+    + '</div>'
     + '</div>'
     + '</div>'
     + '</div>'
