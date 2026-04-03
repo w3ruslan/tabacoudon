@@ -122,7 +122,7 @@ $stag   = $settings['shop_tagline']    ?? SHOP_TAGLINE;
     <div class="settings-group">
       <label>Numéro WhatsApp</label>
       <input type="text" id="waNumber" value="<?= htmlspecialchars($wa) ?>" placeholder="ex: 905551234567">
-      <div class="settings-hint">Format : indicatif pays + numéro, sans + ni espaces. Turquie : 90… &nbsp;|&nbsp; France : 33…</div>
+      <div class="settings-hint">Format : indicatif pays + numéro, sans + ni espaces. Ex : 33612345678 (France)</div>
     </div>
     <button class="btn-save-settings" onclick="saveSettings()">💾 Enregistrer</button>
     <span class="save-feedback" id="saveFeedback">✅ Enregistré !</span>
