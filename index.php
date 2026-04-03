@@ -1,4 +1,18 @@
-<?php require_once 'config.php'; ?>
+<?php
+require_once 'config.php';
+// Read WhatsApp number from DB settings (falls back to config constant)
+function getSetting(string $key, string $default = ''): string {
+    try {
+        $db   = getDB();
+        $db->exec("CREATE TABLE IF NOT EXISTS settings (`key` VARCHAR(100) PRIMARY KEY, `value` TEXT NOT NULL DEFAULT '')");
+        $stmt = $db->prepare("SELECT `value` FROM settings WHERE `key`=?");
+        $stmt->execute([$key]);
+        $row  = $stmt->fetch();
+        return ($row && $row['value'] !== '') ? $row['value'] : $default;
+    } catch (Exception $e) { return $default; }
+}
+$waNumber = getSetting('whatsapp_number', WHATSAPP_NUMBER);
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -124,7 +138,7 @@
   </div>
 </div>
 
-<script>const WHATSAPP_NUMBER = '<?= WHATSAPP_NUMBER ?>';</script>
+<script>const WHATSAPP_NUMBER = '<?= htmlspecialchars($waNumber, ENT_QUOTES) ?>';</script>
 <script src="assets/app.js?v=<?= filemtime(__DIR__.'/assets/app.js') ?>"></script>
 </body>
 </html>

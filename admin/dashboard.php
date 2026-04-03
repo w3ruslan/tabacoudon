@@ -100,6 +100,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
   <nav class="sidebar-nav">
     <a href="dashboard.php"  class="nav-item active">📦 Produits</a>
     <a href="categories.php" class="nav-item">🏷️ Catégories</a>
+    <a href="settings.php"   class="nav-item">⚙️ Paramètres</a>
     <a href="../index.php"   class="nav-item" target="_blank">🌐 Voir le site</a>
     <a href="logout.php"     class="nav-item logout">🚪 Déconnexion</a>
   </nav>
