@@ -290,7 +290,7 @@ body {
   perspective: 900px;
   background: transparent;
   box-shadow: none;
-  height: 390px;
+  height: 430px;
 }
 .tc-card-inner,
 .tc-card-front,
@@ -947,7 +947,7 @@ body {
 @media (max-width: 600px) {
   .catalog-main { padding: 0 10px; margin: 12px auto 40px; }
   .product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
-  .tc-card { height: 360px; }
+  .tc-card { height: 400px; }
   .tc-img-wrap { height: 150px; }
   .tc-name { font-size: 11px; }
   .tc-price { font-size: 14px; }
