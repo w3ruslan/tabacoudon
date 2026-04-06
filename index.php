@@ -24,6 +24,50 @@ $waNumber = getSetting('whatsapp_number', WHATSAPP_NUMBER);
 </head>
 <body>
 
+<!-- ══ AGE GATE ══ -->
+<div id="ageGate" class="age-gate-overlay">
+  <div class="age-gate-box">
+    <div class="age-gate-logo">🌬️</div>
+    <div class="age-gate-brand"><?= SHOP_NAME ?></div>
+    <div class="age-gate-title">Vérification d'âge</div>
+    <p class="age-gate-text">
+      Ce site vend des produits à base de nicotine.<br>
+      L'accès est <strong>strictement réservé aux personnes majeures</strong>.
+    </p>
+    <p class="age-gate-question">Avez-vous <strong>18 ans ou plus</strong> ?</p>
+    <div class="age-gate-btns">
+      <button class="age-gate-yes" onclick="ageAccept()">✅ Oui, j'ai 18 ans ou plus</button>
+      <button class="age-gate-no"  onclick="ageDecline()">❌ Non, j'ai moins de 18 ans</button>
+    </div>
+    <p class="age-gate-legal">En entrant sur ce site, vous confirmez avoir l'âge légal requis et acceptez nos conditions d'utilisation.</p>
+  </div>
+</div>
+
+<script>
+(function() {
+  // Show every session (sessionStorage resets when browser/tab is closed)
+  if (!sessionStorage.getItem('age_ok')) {
+    document.getElementById('ageGate').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+})();
+function ageAccept() {
+  sessionStorage.setItem('age_ok', '1');
+  var g = document.getElementById('ageGate');
+  g.classList.add('age-gate-hide');
+  setTimeout(function(){ g.style.display = 'none'; document.body.style.overflow = ''; }, 400);
+}
+function ageDecline() {
+  document.getElementById('ageGate').innerHTML =
+    '<div class="age-gate-box" style="text-align:center">' +
+    '<div style="font-size:56px">🚫</div>' +
+    '<h2 style="margin:16px 0 10px;color:#e94560">Accès refusé</h2>' +
+    '<p style="color:#888;font-size:15px">Désolé, ce site est réservé aux personnes majeures.<br>Vous allez être redirigé(e).</p>' +
+    '</div>';
+  setTimeout(function(){ window.location.href = 'https://www.google.fr'; }, 2500);
+}
+</script>
+
 <!-- HEADER -->
 <header class="site-header">
   <div class="header-inner">

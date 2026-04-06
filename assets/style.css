@@ -3,6 +3,63 @@
 ══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── Age Gate ─────────────────────────── */
+.age-gate-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10,10,20,.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.age-gate-box {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 36px 32px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0,0,0,.5);
+  animation: agePop .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes agePop {
+  from { transform: scale(.85); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.age-gate-hide { animation: ageFade .4s ease forwards; }
+@keyframes ageFade {
+  to { opacity: 0; transform: scale(.95); }
+}
+.age-gate-logo  { font-size: 52px; margin-bottom: 6px; }
+.age-gate-brand { font-size: 22px; font-weight: 900; color: #1a1a2e; margin-bottom: 4px; }
+.age-gate-title { font-size: 13px; font-weight: 700; color: #e94560; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+.age-gate-text  { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 16px; }
+.age-gate-question { font-size: 20px; color: #1a1a2e; margin-bottom: 24px; }
+.age-gate-btns  { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.age-gate-yes {
+  padding: 14px 20px;
+  background: #1a1a2e;
+  color: #fff;
+  border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: background .2s;
+}
+.age-gate-yes:hover { background: #2d2d4e; }
+.age-gate-no {
+  padding: 13px 20px;
+  background: #fff;
+  color: #e94560;
+  border: 2px solid #e94560; border-radius: 12px;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background .2s;
+}
+.age-gate-no:hover { background: #fff5f5; }
+.age-gate-legal { font-size: 11px; color: #bbb; line-height: 1.5; }
+
 :root {
   --primary:   #1a1a2e;
   --accent:    #e94560;
