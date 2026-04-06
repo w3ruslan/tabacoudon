@@ -321,7 +321,16 @@ function showDetail(id) {
   if (!p) { alert('Erreur: produit introuvable'); return; }
 
   var catColor  = catColors[p.category_name] || '#e94560';
-  var parts     = (p.description || '').split('\n\n');
+  var desc      = p.description || '';
+
+  // ── YouTube embed detection ──────────────────────
+  function getYoutubeId(text) {
+    var m = text.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/);
+    return m ? m[1] : null;
+  }
+  var ytId      = getYoutubeId(desc);
+  var cleanDesc = desc.replace(/https?:\/\/[^\s]*(youtube\.com|youtu\.be)[^\s]*/g, '').trim();
+  var parts     = cleanDesc.split('\n\n');
   var shortDesc = parts[0] || '';
   var fullDesc  = parts[1] || '';
 
@@ -336,6 +345,16 @@ function showDetail(id) {
     ? '<img class="dt-img" src="' + p.image_url + '" alt="' + p.name + '">'
     : '<div class="dt-no-img">🌬️</div>';
 
+  // If there's a YouTube video, hide the product image and show the embed instead
+  var ytHtml = '';
+  if (ytId) {
+    imgHtml = ''; // hide static image when video present
+    ytHtml  = '<div class="dt-yt-wrap">'
+            + '<iframe class="dt-yt-frame" src="https://www.youtube.com/embed/' + ytId + '?rel=0&playsinline=1" '
+            + 'frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+            + '</div>';
+  }
+
   var overlay = document.getElementById('detailOverlay');
   overlay.innerHTML =
     '<div class="dt-bg" onclick="closeDetail()"></div>'
@@ -349,6 +368,7 @@ function showDetail(id) {
   + '  <div class="dt-body">'
   + (p.category_name ? '<span class="dt-cat" style="background:' + catColor + '">' + (p.category_icon||'') + ' ' + p.category_name + '</span>' : '')
   + (flavorTags ? '<div class="dt-tags">' + flavorTags + '</div>' : '')
+  +    ytHtml
   + (shortDesc ? '<div class="dt-short" style="border-color:' + catColor + '">"' + shortDesc + '"</div>' : '')
   + (fullDesc  ? '<div class="dt-full">' + fullDesc + '</div>'  : '')
   + '    <div class="dt-price">'
