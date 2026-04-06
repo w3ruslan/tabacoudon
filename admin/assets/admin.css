@@ -95,6 +95,45 @@ body {
 .stat-num { font-size: 36px; font-weight: 900; color: var(--accent); }
 .stat-lbl { font-size: 13px; color: var(--muted); margin-top: 2px; }
 
+/* ── Admin filter bar ─────────────────── */
+.admin-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.admin-search-input {
+  width: 100%;
+  padding: 10px 16px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+  background: #fff;
+}
+.admin-search-input:focus { border-color: var(--accent); }
+
+.admin-cat-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.admin-cat-tab {
+  padding: 5px 12px;
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  white-space: nowrap;
+}
+.admin-cat-tab:hover  { border-color: var(--accent); color: var(--accent); }
+.admin-cat-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
 /* ── Admin product card grid ───────────── */
 .prod-grid {
   display: grid !important;

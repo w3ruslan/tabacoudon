@@ -141,12 +141,27 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     <button class="bulk-btn bulk-clear" onclick="clearSelection()">✕ Désélectionner</button>
   </div>
 
+  <!-- Search + category filter -->
+  <div class="admin-filter-bar">
+    <input type="text" id="adminSearch" placeholder="🔍 Rechercher un produit..." oninput="filterAdminCards()" class="admin-search-input">
+    <div class="admin-cat-tabs" id="adminCatTabs">
+      <button class="admin-cat-tab active" data-cat="0" onclick="filterAdminCat(0,this)">Tous (<?= $total ?>)</button>
+      <?php foreach ($categories as $c): ?>
+        <?php $cnt = count(array_filter($products, fn($p) => $p['category_id'] == $c['id'])); ?>
+        <button class="admin-cat-tab" data-cat="<?= $c['id'] ?>" onclick="filterAdminCat(<?= $c['id'] ?>,this)">
+          <?= $c['icon'] ?> <?= htmlspecialchars($c['name']) ?> (<?= $cnt ?>)
+        </button>
+      <?php endforeach; ?>
+    </div>
+  </div>
+
   <!-- Sélectionner tout -->
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
     <label style="display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer">
       <input type="checkbox" id="checkAll" onchange="toggleAll(this)" style="width:16px;height:16px">
       Tout sélectionner
     </label>
+    <span id="adminVisibleCount" style="font-size:12px;color:var(--muted)"></span>
   </div>
 
   <!-- Product card grid -->
@@ -156,7 +171,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
       $imgSrc = $p['image_url'] ?? '';
       if ($imgSrc && strpos($imgSrc, 'uploads/') === 0) $imgSrc = '../' . $imgSrc;
     ?>
-    <div class="admin-card <?= $p['active'] ? '' : 'inactive' ?>" id="row-<?= $p['id'] ?>" data-id="<?= $p['id'] ?>">
+    <div class="admin-card <?= $p['active'] ? '' : 'inactive' ?>" id="row-<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" data-cat="<?= (int)($p['category_id'] ?? 0) ?>" data-name="<?= strtolower(htmlspecialchars($p['name'].' '.($p['flavor']??'').' '.($p['brand']??''))) ?>">
       <div class="ac-topbar">
         <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
         <input type="checkbox" class="row-check" value="<?= $p['id'] ?>" onchange="updateBulkBar()">
@@ -302,6 +317,31 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
 
 <script>
 const CATEGORIES = <?= json_encode($categories) ?>;
+
+// ─── Admin search + category filter ─────────────
+var adminActiveCat = 0;
+
+function filterAdminCat(catId, btn) {
+  adminActiveCat = catId;
+  document.querySelectorAll('.admin-cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterAdminCards();
+}
+
+function filterAdminCards() {
+  var q    = (document.getElementById('adminSearch').value || '').toLowerCase().trim();
+  var cards = document.querySelectorAll('#productTableBody .admin-card');
+  var shown = 0;
+  cards.forEach(function(card) {
+    var catMatch  = adminActiveCat === 0 || parseInt(card.dataset.cat) === adminActiveCat;
+    var nameMatch = !q || (card.dataset.name || '').includes(q);
+    var visible   = catMatch && nameMatch;
+    card.style.display = visible ? '' : 'none';
+    if (visible) shown++;
+  });
+  var cnt = document.getElementById('adminVisibleCount');
+  if (cnt) cnt.textContent = shown + ' produit(s)';
+}
 
 // ─── Drag-and-drop sort ───────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
