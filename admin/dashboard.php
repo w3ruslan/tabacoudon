@@ -336,7 +336,7 @@ function filterAdminCards() {
     var catMatch  = adminActiveCat === 0 || parseInt(card.dataset.cat) === adminActiveCat;
     var nameMatch = !q || (card.dataset.name || '').includes(q);
     var visible   = catMatch && nameMatch;
-    card.style.display = visible ? '' : 'none';
+    card.style.setProperty('display', visible ? 'flex' : 'none', 'important');
     if (visible) shown++;
   });
   var cnt = document.getElementById('adminVisibleCount');
