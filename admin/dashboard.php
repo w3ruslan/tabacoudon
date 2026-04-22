@@ -312,12 +312,12 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
 
         <!-- Sur commande toggle -->
         <div class="form-group" style="margin-bottom:20px">
-          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none">
-            <div style="position:relative;width:48px;height:26px;flex-shrink:0">
-              <input type="checkbox" id="fSurCommande" style="opacity:0;width:0;height:0;position:absolute">
-              <span id="scSlider" onclick="document.getElementById('fSurCommande').click();updateScSlider()" style="
+          <div style="display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none" onclick="toggleSC()">
+            <div style="position:relative;width:48px;height:26px;flex-shrink:0" onclick="event.stopPropagation();toggleSC()">
+              <input type="checkbox" id="fSurCommande" style="opacity:0;width:0;height:0;position:absolute" tabindex="-1">
+              <span id="scSlider" style="
                 position:absolute;inset:0;border-radius:26px;background:#ddd;
-                transition:.25s;cursor:pointer;
+                transition:.25s;pointer-events:none;
               ">
                 <span id="scKnob" style="
                   position:absolute;width:20px;height:20px;border-radius:50%;
@@ -330,7 +330,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
               <div style="font-size:14px;font-weight:700;color:#1a1a2e">📦 Sur commande uniquement</div>
               <div style="font-size:11px;color:#888;margin-top:2px">Le client verra un badge "Sur commande" sur la carte produit</div>
             </div>
-          </label>
+          </div>
         </div>
 
         <div class="form-group" style="margin-bottom:20px">
@@ -850,13 +850,18 @@ function closeAdminScanner() {
   document.getElementById('adminScannerOverlay').style.display = 'none';
 }
 
-// ─── Sur commande slider ─────────────────────
+// ─── Sur commande toggle ──────────────────────
+function toggleSC() {
+  var cb = document.getElementById('fSurCommande');
+  cb.checked = !cb.checked;
+  updateScSlider();
+}
 function updateScSlider() {
   var checked = document.getElementById('fSurCommande').checked;
   var slider  = document.getElementById('scSlider');
   var knob    = document.getElementById('scKnob');
   if (slider) slider.style.background = checked ? '#e94560' : '#ddd';
-  if (knob)   knob.style.left         = checked ? '25px'   : '3px';
+  if (knob)   knob.style.left         = checked ? '25px'    : '3px';
 }
 
 function clearForm() {
