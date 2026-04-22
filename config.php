@@ -41,6 +41,12 @@ function getDB(): PDO {
         } catch (PDOException $e) {
             die(json_encode(['error' => 'Connexion BDD échouée']));
         }
+        // Migration: add sur_commande column if it doesn't exist yet
+        try {
+            $pdo->exec("ALTER TABLE products ADD COLUMN sur_commande TINYINT(1) NOT NULL DEFAULT 0");
+        } catch (PDOException $e) {
+            // Column already exists — silently ignore
+        }
     }
     return $pdo;
 }

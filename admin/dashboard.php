@@ -53,6 +53,16 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     .skip-ai { text-align:center; margin-top:8px; }
     .skip-ai button { background:none; border:none; color:var(--muted); font-size:13px; cursor:pointer; text-decoration:underline; }
 
+    /* Sur commande badge on admin card */
+    .sc-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #fff3e0; color: #d97706;
+      border: 1px solid #fcd34d;
+      border-radius: 20px; padding: 2px 8px;
+      font-size: 10px; font-weight: 700;
+      margin-top: 4px; white-space: nowrap;
+    }
+
     /* Description field */
     textarea#fDesc {
       width:100%; padding:11px 14px;
@@ -194,6 +204,9 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
           <?php endif; ?>
           <span class="ac-price"><?= $p['price'] ? '€'.number_format($p['price'],2) : '—' ?></span>
         </div>
+        <?php if (!empty($p['sur_commande'])): ?>
+          <span class="sc-badge">📦 Sur commande</span>
+        <?php endif; ?>
       </div>
       <div class="ac-actions">
         <button class="ac-eye-btn <?= $p['active'] ? '' : 'eye-off' ?>"
@@ -295,6 +308,29 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
               <option value="0">❌ Non</option>
             </select>
           </div>
+        </div>
+
+        <!-- Sur commande toggle -->
+        <div class="form-group" style="margin-bottom:20px">
+          <label style="display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none">
+            <div style="position:relative;width:48px;height:26px;flex-shrink:0">
+              <input type="checkbox" id="fSurCommande" style="opacity:0;width:0;height:0;position:absolute">
+              <span id="scSlider" onclick="document.getElementById('fSurCommande').click();updateScSlider()" style="
+                position:absolute;inset:0;border-radius:26px;background:#ddd;
+                transition:.25s;cursor:pointer;
+              ">
+                <span id="scKnob" style="
+                  position:absolute;width:20px;height:20px;border-radius:50%;
+                  background:white;top:3px;left:3px;transition:.25s;
+                  box-shadow:0 1px 4px rgba(0,0,0,.3);
+                "></span>
+              </span>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:#1a1a2e">📦 Sur commande uniquement</div>
+              <div style="font-size:11px;color:#888;margin-top:2px">Le client verra un badge "Sur commande" sur la carte produit</div>
+            </div>
+          </label>
         </div>
 
         <div class="form-group" style="margin-bottom:20px">
@@ -626,6 +662,8 @@ function editProduct(p) {
   const barcodeEl = document.getElementById('fBarcode');
   if (descEl)    descEl.value    = p.description || '';
   if (barcodeEl) barcodeEl.value = p.barcode     || '';
+  var scEl = document.getElementById('fSurCommande');
+  if (scEl) { scEl.checked = parseInt(p.sur_commande || 0) === 1; updateScSlider(); }
 
   selectedImgUrl = p.image_url || '';
   const imgEl = document.getElementById('selectedImg');
@@ -672,8 +710,9 @@ async function saveProduct() {
     barcode:     document.getElementById('fBarcode').value.trim(),
     category_id: document.getElementById('fCategory').value || null,
     price:       document.getElementById('fPrice').value || null,
-    image_url:   selectedImgUrl,
-    active:      parseInt(document.getElementById('fActive').value),
+    image_url:    selectedImgUrl,
+    active:       parseInt(document.getElementById('fActive').value),
+    sur_commande: document.getElementById('fSurCommande').checked ? 1 : 0,
   };
 
   try {
@@ -811,11 +850,22 @@ function closeAdminScanner() {
   document.getElementById('adminScannerOverlay').style.display = 'none';
 }
 
+// ─── Sur commande slider ─────────────────────
+function updateScSlider() {
+  var checked = document.getElementById('fSurCommande').checked;
+  var slider  = document.getElementById('scSlider');
+  var knob    = document.getElementById('scKnob');
+  if (slider) slider.style.background = checked ? '#e94560' : '#ddd';
+  if (knob)   knob.style.left         = checked ? '25px'   : '3px';
+}
+
 function clearForm() {
   ['fName','fBrand','fFlavor','fSize','fBarcode','fPrice'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('fDesc').value     = '';
   document.getElementById('fCategory').value = '';
   document.getElementById('fActive').value   = '1';
+  var scEl = document.getElementById('fSurCommande');
+  if (scEl) { scEl.checked = false; updateScSlider(); }
   const imgEl = document.getElementById('selectedImg');
   imgEl.src = '';
   imgEl.style.display = 'none';

@@ -71,18 +71,19 @@ if ($method === 'POST' && $action === 'add') {
     $data = json_decode(file_get_contents('php://input'), true);
     $db   = getDB();
     $stmt = $db->prepare('INSERT INTO products
-        (name, brand, flavor, size, barcode, category_id, price, image_url, description)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        (name, brand, flavor, size, barcode, category_id, price, image_url, description, sur_commande)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     $stmt->execute([
-        $data['name']        ?? '',
-        $data['brand']       ?? '',
-        $data['flavor']      ?? '',
-        $data['size']        ?? '',
-        $data['barcode']     ?? '',
-        $data['category_id'] ?? null,
-        $data['price']       ?? null,
-        $data['image_url']   ?? '',
-        $data['description'] ?? '',
+        $data['name']         ?? '',
+        $data['brand']        ?? '',
+        $data['flavor']       ?? '',
+        $data['size']         ?? '',
+        $data['barcode']      ?? '',
+        $data['category_id']  ?? null,
+        $data['price']        ?? null,
+        $data['image_url']    ?? '',
+        $data['description']  ?? '',
+        $data['sur_commande'] ?? 0,
     ]);
     echo json_encode(['id' => $db->lastInsertId(), 'ok' => true]);
     exit;
@@ -93,19 +94,20 @@ if ($method === 'PUT' && $action === 'edit') {
     $data = json_decode(file_get_contents('php://input'), true);
     $db   = getDB();
     $stmt = $db->prepare('UPDATE products
-        SET name=?, brand=?, flavor=?, size=?, barcode=?, category_id=?, price=?, image_url=?, active=?, description=?
+        SET name=?, brand=?, flavor=?, size=?, barcode=?, category_id=?, price=?, image_url=?, active=?, description=?, sur_commande=?
         WHERE id=?');
     $stmt->execute([
-        $data['name']        ?? '',
-        $data['brand']       ?? '',
-        $data['flavor']      ?? '',
-        $data['size']        ?? '',
-        $data['barcode']     ?? '',
-        $data['category_id'] ?? null,
-        $data['price']       ?? null,
-        $data['image_url']   ?? '',
-        $data['active']      ?? 1,
-        $data['description'] ?? '',
+        $data['name']         ?? '',
+        $data['brand']        ?? '',
+        $data['flavor']       ?? '',
+        $data['size']         ?? '',
+        $data['barcode']      ?? '',
+        $data['category_id']  ?? null,
+        $data['price']        ?? null,
+        $data['image_url']    ?? '',
+        $data['active']       ?? 1,
+        $data['description']  ?? '',
+        $data['sur_commande'] ?? 0,
         $data['id'],
     ]);
     echo json_encode(['ok' => true]);
