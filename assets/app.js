@@ -253,7 +253,7 @@ function renderCard(p) {
   if (desc.length > 150) desc = desc.slice(0, 148) + '…';
 
   var price = p.price ? '€' + parseFloat(p.price).toFixed(2) : '—';
-  var surCmde = p.sur_commande ? '<div class="tc-sur-commande">📦 Sur commande uniquement</div>' : '';
+  var surCmde = p.sur_commande ? '<span class="tc-sc-pill" title="Sur commande uniquement">📦 Sur cmd</span>' : '';
 
   var flavorChipsBack = '';
   if (p.flavor) {
@@ -280,9 +280,9 @@ function renderCard(p) {
     + '</div>'
     + '<div class="tc-bottom">'
     + (p.flavor ? '<div class="tc-chips">' + renderFlavorChips(p.flavor, catColor) + '</div>' : '')
-    + surCmde
     + '<div class="tc-bottom-row">'
     + (p.size ? '<span class="tc-size" style="background:' + catColor + '">' + p.size + '</span>' : '<span></span>')
+    + surCmde
     + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒</button>'
     + '</div>'
     + '</div>'
