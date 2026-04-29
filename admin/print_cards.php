@@ -173,8 +173,9 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
     width: 2,
     height: 45,
     displayValue: true,
-    fontSize: 8,
-    textMargin: 1,
+    fontSize: 9,
+    textMargin: 2,
+    textPosition: 'bottom',
     margin: 4,
     background: '#ffffff',
     lineColor: '#111827'
