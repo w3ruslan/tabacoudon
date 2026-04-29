@@ -110,12 +110,19 @@ function categoryColor(?string $color): string {
     <article class="product-print-label label-theme-<?= e($theme) ?>" style="--category-color: <?= e($categoryColor) ?>">
       <div class="label-frame">
         <header class="label-photo-panel">
-          <div class="label-photo-box">
-            <?php if ($image): ?>
-              <img src="<?= e($image) ?>" alt="<?= e($name) ?>">
-            <?php else: ?>
-              <span class="label-photo-fallback"><?= e($name) ?></span>
-            <?php endif; ?>
+          <div class="label-photo-box <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
+            <div class="label-image-box">
+              <?php if ($image): ?>
+                <img src="<?= e($image) ?>" alt="<?= e($name) ?>">
+              <?php else: ?>
+                <span class="label-photo-fallback"><?= e($name) ?></span>
+              <?php endif; ?>
+            </div>
+            <div class="label-vertical-barcode-box <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
+              <?php if ($barcode): ?>
+                <svg class="label-vertical-barcode" data-barcode="<?= e($barcode) ?>"></svg>
+              <?php endif; ?>
+            </div>
           </div>
           <?php if ($category): ?>
             <div class="label-category"><?= e($category) ?></div>
@@ -128,16 +135,7 @@ function categoryColor(?string $color): string {
               <div class="label-left-main">
                 <h2><?= e($name) ?></h2>
                 <?php if ($brand): ?><p class="label-brand"><?= e($brand) ?></p><?php endif; ?>
-              </div>
-
-              <div class="label-meta-row">
                 <?php if ($size): ?><span class="label-size"><?= e($size) ?></span><?php endif; ?>
-              </div>
-
-              <div class="label-barcode <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
-                <?php if ($barcode): ?>
-                  <svg data-barcode="<?= e($barcode) ?>"></svg>
-                <?php endif; ?>
               </div>
             </div>
 
@@ -170,12 +168,10 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
   var digits = code.replace(/\D/g, '');
   var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
   var opts = {
-    width: 1.35,
-    height: 38,
-    displayValue: true,
-    fontSize: 8,
-    textMargin: 2,
-    margin: 10,
+    width: 2,
+    height: 48,
+    displayValue: false,
+    margin: 4,
     background: '#ffffff',
     lineColor: '#111827'
   };
@@ -183,7 +179,7 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
     JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
   } catch (e) {
     try { JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' })); }
-    catch (e2) { svg.closest('.label-barcode').style.display = 'none'; }
+    catch (e2) { svg.closest('.label-vertical-barcode-box').style.visibility = 'hidden'; }
   }
 });
 console.log('Product label size: 63.333mm x 92.333mm; A4 grid: 3 columns x 3 rows; page padding: 6mm; gutter: 4mm.');
