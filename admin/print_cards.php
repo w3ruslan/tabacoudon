@@ -125,7 +125,7 @@ function categoryColor(?string $color): string {
         <section class="label-info-grid <?= $notes ? 'label-has-notes' : 'label-no-notes' ?>">
           <div class="label-detail-row">
             <div class="label-left">
-              <div>
+              <div class="label-left-main">
                 <h2><?= e($name) ?></h2>
                 <?php if ($brand): ?><p class="label-brand"><?= e($brand) ?></p><?php endif; ?>
               </div>
@@ -134,11 +134,11 @@ function categoryColor(?string $color): string {
                 <?php if ($size): ?><span class="label-size"><?= e($size) ?></span><?php endif; ?>
               </div>
 
-              <?php if ($barcode): ?>
-                <div class="label-barcode">
+              <div class="label-barcode <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
+                <?php if ($barcode): ?>
                   <svg data-barcode="<?= e($barcode) ?>"></svg>
-                </div>
-              <?php endif; ?>
+                <?php endif; ?>
+              </div>
             </div>
 
             <?php if ($notes): ?>
