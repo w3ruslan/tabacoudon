@@ -5,12 +5,7 @@ session_start();
 header('Content-Type: application/json');
 $method = $_SERVER['REQUEST_METHOD'];
 
-// ── Ensure settings table exists ─────────────────
 $db = getDB();
-$db->exec("CREATE TABLE IF NOT EXISTS settings (
-    `key`   VARCHAR(100) PRIMARY KEY,
-    `value` TEXT NOT NULL DEFAULT ''
-)");
 
 // ── GET — public read ─────────────────────────────
 if ($method === 'GET') {
@@ -35,6 +30,7 @@ if (!isset($_SESSION['admin'])) {
     echo json_encode(['error' => 'Non autorisé']);
     exit;
 }
+verifyCsrf();
 
 if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);

@@ -5,10 +5,6 @@ if (!isset($_SESSION['admin'])) { header('Location: index.php'); exit; }
 
 // Load current settings from DB
 $db = getDB();
-$db->exec("CREATE TABLE IF NOT EXISTS settings (
-    `key`   VARCHAR(100) PRIMARY KEY,
-    `value` TEXT NOT NULL DEFAULT ''
-)");
 $rows = $db->query("SELECT `key`, `value` FROM settings")->fetchAll();
 $settings = [];
 foreach ($rows as $r) $settings[$r['key']] = $r['value'];
@@ -145,6 +141,7 @@ $stag   = $settings['shop_tagline']    ?? SHOP_TAGLINE;
 </div>
 
 <script>
+const CSRF_TOKEN = <?= json_encode(csrfToken(), JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
 async function saveSettings() {
   const body = {
     whatsapp_number: document.getElementById('waNumber').value.trim(),
@@ -154,7 +151,7 @@ async function saveSettings() {
   try {
     const res = await fetch('../api/settings.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF_TOKEN },
       body: JSON.stringify(body)
     });
     const json = await res.json();

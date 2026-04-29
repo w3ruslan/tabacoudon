@@ -3,3 +3,9 @@ Options -Indexes
 <Files "config.php">
     Deny from all
 </Files>
+<Files "config.local.php">
+    Deny from all
+</Files>
+<Files "config.keys.php">
+    Deny from all
+</Files>

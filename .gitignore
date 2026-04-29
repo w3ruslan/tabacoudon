@@ -1,2 +1,3 @@
 config.keys.php
+config.local.php
 .DS_Store

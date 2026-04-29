@@ -1,6 +1,15 @@
 <?php
+require_once __DIR__ . '/../config.php';
+session_start();
+
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+
+if (!isset($_SESSION['admin'])) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Non autorisé']);
+    exit;
+}
+verifyCsrf();
 
 $query = trim($_POST['query'] ?? $_GET['query'] ?? '');
 if (!$query) { echo json_encode(['results' => []]); exit; }
@@ -18,7 +27,8 @@ curl_setopt_array($ch, [
     CURLOPT_USERAGENT      => $ua,
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_TIMEOUT        => 12,
-    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
     CURLOPT_HTTPHEADER     => ['Accept-Language: fr-FR,fr;q=0.9,en;q=0.8'],
 ]);
 $html = curl_exec($ch);
@@ -33,7 +43,8 @@ if ($html && preg_match('/vqd=([\d-]+)/', $html, $m)) {
         CURLOPT_USERAGENT      => $ua,
         CURLOPT_REFERER        => 'https://duckduckgo.com/',
         CURLOPT_TIMEOUT        => 12,
-        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
     ]);
     $json = curl_exec($ch);
     curl_close($ch);
@@ -59,7 +70,8 @@ curl_setopt_array($ch, [
     CURLOPT_USERAGENT      => $ua,
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_TIMEOUT        => 12,
-    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
     CURLOPT_HTTPHEADER     => [
         'Accept-Language: fr-FR,fr;q=0.9',
         'Accept: text/html,application/xhtml+xml',

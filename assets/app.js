@@ -3,6 +3,25 @@ let currentCat   = 0;
 let pubScanner   = null;
 let productsCache = [];
 
+function escapeHtml(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[ch];
+  });
+}
+
+function safeColor(value) {
+  var color = String(value || '');
+  return /^#[0-9a-f]{3,8}$/i.test(color) ? color : '#e94560';
+}
+
+function safeImageUrl(value) {
+  var url = String(value || '').trim();
+  if (!url) return '';
+  if (/^uploads\/[A-Za-z0-9._/-]+\.(jpe?g|png|gif|webp)$/i.test(url)) return url;
+  if (/^https?:\/\//i.test(url)) return url.replace(/"/g, '%22').replace(/</g, '%3C').replace(/>/g, '%3E');
+  return '';
+}
+
 // ─── Cart ─────────────────────────────────────────
 var cart = JSON.parse(localStorage.getItem('tc_cart') || '[]');
 
@@ -79,18 +98,19 @@ function renderCartPanel() {
   var total = 0;
   itemsEl.innerHTML = cart.map(function(item) {
     var subtotal = item.price * item.qty;
+    var itemId = String(item.id).replace(/[^A-Za-z0-9_-]/g, '');
     total += subtotal;
     return '<div class="cart-item">'
       + '<div class="cart-item-info">'
-      + '<div class="cart-item-name">' + item.name + '</div>'
-      + (item.size ? '<div class="cart-item-size">' + item.size + '</div>' : '')
+      + '<div class="cart-item-name">' + escapeHtml(item.name) + '</div>'
+      + (item.size ? '<div class="cart-item-size">' + escapeHtml(item.size) + '</div>' : '')
       + '<div class="cart-item-price">€' + item.price.toFixed(2) + ' / unité</div>'
       + '</div>'
       + '<div class="cart-item-controls">'
-      + '<button onclick="changeQty(\'' + item.id + '\', -1)">−</button>'
+      + '<button onclick="changeQty(\'' + itemId + '\', -1)">−</button>'
       + '<span>' + item.qty + '</span>'
-      + '<button onclick="changeQty(\'' + item.id + '\', 1)">+</button>'
-      + '<button class="cart-item-del" onclick="removeFromCart(\'' + item.id + '\')">🗑️</button>'
+      + '<button onclick="changeQty(\'' + itemId + '\', 1)">+</button>'
+      + '<button class="cart-item-del" onclick="removeFromCart(\'' + itemId + '\')">🗑️</button>'
       + '</div>'
       + '</div>';
   }).join('');
@@ -100,7 +120,7 @@ function renderCartPanel() {
   // WhatsApp link
   var msg = 'Bonjour ! Je voudrais commander :\n\n';
   cart.forEach(function(item) {
-    msg += '• ' + item.name + (item.size ? ' (' + item.size + ')' : '') + ' x' + item.qty + ' — €' + (item.price * item.qty).toFixed(2) + '\n';
+    msg += '• ' + item.name + (item.size ? ' (' + item.size + ')' : '') + ' x' + item.qty + ' - €' + (item.price * item.qty).toFixed(2) + '\n';
   });
   msg += '\nTotal : €' + total.toFixed(2) + '\n\nMerci !';
   document.getElementById('whatsappBtn').href =
@@ -139,7 +159,10 @@ window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('productGrid').addEventListener('click', function(e) {
     var el = e.target;
     while (el && el !== this) {
-      if (el.classList && el.classList.contains('tc-cart-btn')) return;
+      if (el.classList && el.classList.contains('tc-cart-btn')) {
+        addToCart(el.dataset.id, el.dataset.name, parseFloat(el.dataset.price || '0'), el.dataset.size || '', e);
+        return;
+      }
       if (el.classList && el.classList.contains('tc-card')) {
         showDetail(el.getAttribute('data-id'));
         return;
@@ -154,7 +177,7 @@ function loadCategories() {
     .then(function(r){ return r.json(); })
     .then(function(cats){
       cats.forEach(function(c){
-        catColors[c.name] = c.color || '#e94560';
+        catColors[c.name] = safeColor(c.color);
       });
       var wrap = document.getElementById('catButtons');
       cats.forEach(function(c){
@@ -239,12 +262,17 @@ function clearSearch() {
 }
 
 function renderCard(p) {
-  var catColor = catColors[p.category_name] || '#e94560';
-  var catLabel = p.category_name || '';
-  var catIcon  = p.category_icon || '';
+  var catColor = safeColor(catColors[p.category_name]);
+  var catLabel = escapeHtml(p.category_name || '');
+  var catIcon  = escapeHtml(p.category_icon || '');
+  var imageUrl = safeImageUrl(p.image_url);
+  var name     = escapeHtml(p.name || '');
+  var brand    = escapeHtml(p.brand || '');
+  var size     = escapeHtml(p.size || '');
+  var barcode  = escapeHtml(p.barcode || '');
 
-  var imgHtml = p.image_url
-    ? '<img src="' + p.image_url + '" alt="' + p.name + '" loading="lazy" onerror="this.style.display=\'none\'">'
+  var imgHtml = imageUrl
+    ? '<img src="' + imageUrl + '" alt="' + name + '" loading="lazy" onerror="this.style.display=\'none\'">'
     : '<span class="tc-no-img">🌬️</span>';
 
   var price   = p.price ? '€' + parseFloat(p.price).toFixed(2) : '';
@@ -257,7 +285,7 @@ function renderCard(p) {
     specsHtml = '<div class="tc-spec-title">NOTES</div>'
       + '<div class="tc-spec-chips">'
       + flavors.slice(0, 4).map(function(f){
-          return '<span class="tc-spec-chip" style="background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '35">' + f + '</span>';
+          return '<span class="tc-spec-chip" style="background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '35">' + escapeHtml(f) + '</span>';
         }).join('')
       + '</div>';
   } else if (catLabel) {
@@ -273,18 +301,18 @@ function renderCard(p) {
     // ── Bottom two columns ──
     + '<div class="tc-card-bot">'
     + '<div class="tc-bot-left">'
-    + '<div class="tc-card-name">' + p.name + '</div>'
-    + (p.brand ? '<div class="tc-card-brand">' + p.brand + '</div>' : '')
+    + '<div class="tc-card-name">' + name + '</div>'
+    + (brand ? '<div class="tc-card-brand">' + brand + '</div>' : '')
     + '<div class="tc-bot-tags">'
-    + (p.size ? '<span class="tc-size-label">' + p.size + '</span>' : '')
+    + (size ? '<span class="tc-size-label">' + size + '</span>' : '')
     + surCmde
     + '</div>'
-    + (p.barcode ? '<div class="tc-barcode-wrap"><svg class="tc-barcode-svg" data-barcode="' + p.barcode + '"></svg></div>' : '')
+    + (barcode ? '<div class="tc-barcode-wrap"><svg class="tc-barcode-svg" data-barcode="' + barcode + '"></svg></div>' : '')
     + '</div>'
     + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
     + '</div>'
     // ── Absolute overlay: combined cart + price pill (bottom-left) ──
-    + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒'
+    + '<button class="tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="background:' + catColor + '">🛒'
     + (price ? '<span class="tc-pill-price">' + price + '</span>' : '')
     + '</button>'
     + '</div>';
@@ -322,7 +350,7 @@ function showDetail(id) {
   }
   if (!p) { alert('Erreur: produit introuvable'); return; }
 
-  var catColor  = catColors[p.category_name] || '#e94560';
+  var catColor  = safeColor(catColors[p.category_name]);
   var desc      = p.description || '';
 
   // ── YouTube embed detection ──────────────────────
@@ -339,12 +367,13 @@ function showDetail(id) {
   var flavorTags = '';
   if (p.flavor) {
     p.flavor.split(/[,\/]+/).forEach(function(f){
-      flavorTags += '<span class="dt-tag">' + f.trim() + '</span>';
+      flavorTags += '<span class="dt-tag">' + escapeHtml(f.trim()) + '</span>';
     });
   }
 
-  var imgHtml = p.image_url
-    ? '<img class="dt-img" src="' + p.image_url + '" alt="' + p.name + '">'
+  var detailImg = safeImageUrl(p.image_url);
+  var imgHtml = detailImg
+    ? '<img class="dt-img" src="' + detailImg + '" alt="' + escapeHtml(p.name || '') + '">'
     : '<div class="dt-no-img">🌬️</div>';
 
   // If there's a YouTube video, hide the product image and show the embed instead
@@ -364,15 +393,15 @@ function showDetail(id) {
   + '  <div class="dt-header" style="background:linear-gradient(135deg,' + catColor + ' 0%,#1a1a2e 70%)">'
   + '    <button class="dt-close" onclick="closeDetail()">✕</button>'
   +      imgHtml
-  + '    <div class="dt-hname">' + p.name + '</div>'
-  + (p.brand ? '<div class="dt-hbrand">' + p.brand + (p.size ? ' · '+p.size : '') + '</div>' : '')
+  + '    <div class="dt-hname">' + escapeHtml(p.name || '') + '</div>'
+  + (p.brand ? '<div class="dt-hbrand">' + escapeHtml(p.brand) + (p.size ? ' · '+escapeHtml(p.size) : '') + '</div>' : '')
   + '  </div>'
   + '  <div class="dt-body">'
-  + (p.category_name ? '<span class="dt-cat" style="background:' + catColor + '">' + (p.category_icon||'') + ' ' + p.category_name + '</span>' : '')
+  + (p.category_name ? '<span class="dt-cat" style="background:' + catColor + '">' + escapeHtml(p.category_icon||'') + ' ' + escapeHtml(p.category_name) + '</span>' : '')
   + (flavorTags ? '<div class="dt-tags">' + flavorTags + '</div>' : '')
   +    ytHtml
-  + (shortDesc ? '<div class="dt-short" style="border-color:' + catColor + '">"' + shortDesc + '"</div>' : '')
-  + (fullDesc  ? '<div class="dt-full">' + fullDesc + '</div>'  : '')
+  + (shortDesc ? '<div class="dt-short" style="border-color:' + catColor + '">"' + escapeHtml(shortDesc) + '"</div>' : '')
+  + (fullDesc  ? '<div class="dt-full">' + escapeHtml(fullDesc) + '</div>'  : '')
   + '    <div class="dt-price">'
   + (p.price ? '<small>€</small>' + parseFloat(p.price).toFixed(2) : '<span style="color:#bbb;font-size:16px">Prix non défini</span>')
   + '    </div>'
@@ -488,15 +517,16 @@ function findProductByBarcode(barcode) {
 }
 
 function showFoundPopup(p) {
-  var color = catColors[p.category_name] || '#e94560';
-  document.getElementById('foundImg').innerHTML = p.image_url
-    ? '<img src="' + p.image_url + '" style="width:120px;height:120px;object-fit:contain">'
+  var color = safeColor(catColors[p.category_name]);
+  var img = safeImageUrl(p.image_url);
+  document.getElementById('foundImg').innerHTML = img
+    ? '<img src="' + img + '" style="width:120px;height:120px;object-fit:contain">'
     : '<div style="font-size:72px">🌬️</div>';
   document.getElementById('foundName').textContent   = p.name;
   document.getElementById('foundFlavor').textContent = p.flavor ? '🍓 ' + p.flavor : '';
   document.getElementById('foundPrice').textContent  = p.price ? '€ ' + parseFloat(p.price).toFixed(2) : '';
   document.getElementById('foundCat').innerHTML = p.category_name
-    ? '<span style="background:' + color + ';color:white;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">' + (p.category_icon||'') + ' ' + p.category_name + '</span>'
+    ? '<span style="background:' + color + ';color:white;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700">' + escapeHtml(p.category_icon||'') + ' ' + escapeHtml(p.category_name) + '</span>'
     : '';
   document.getElementById('foundPopup').style.display = 'flex';
 }

@@ -4,7 +4,6 @@ require_once 'config.php';
 function getSetting(string $key, string $default = ''): string {
     try {
         $db   = getDB();
-        $db->exec("CREATE TABLE IF NOT EXISTS settings (`key` VARCHAR(100) PRIMARY KEY, `value` TEXT NOT NULL DEFAULT '')");
         $stmt = $db->prepare("SELECT `value` FROM settings WHERE `key`=?");
         $stmt->execute([$key]);
         $row  = $stmt->fetch();

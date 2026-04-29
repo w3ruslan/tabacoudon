@@ -9,6 +9,7 @@ if (!isset($_SESSION['admin'])) {
     echo json_encode(['error' => 'Non autorisé']);
     exit;
 }
+verifyCsrf();
 
 $data = json_decode(file_get_contents('php://input'), true);
 $url  = trim($data['url'] ?? '');
@@ -22,6 +23,12 @@ if (!$url || !filter_var($url, FILTER_VALIDATE_URL)) {
 $parsed = parse_url($url);
 if (!in_array($parsed['scheme'] ?? '', ['http', 'https'])) {
     echo json_encode(['error' => 'Protocole non autorisé']);
+    exit;
+}
+$host = $parsed['host'] ?? '';
+$ip = $host ? gethostbyname($host) : '';
+if (!$host || !$ip || !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+    echo json_encode(['error' => 'Domaine non autorisé']);
     exit;
 }
 
@@ -38,7 +45,8 @@ curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_FOLLOWLOCATION => true,
     CURLOPT_TIMEOUT        => 15,
-    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
     CURLOPT_USERAGENT      => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
     CURLOPT_MAXREDIRS      => 5,
 ]);
@@ -49,6 +57,10 @@ curl_close($ch);
 
 if (!$imageData || $httpCode !== 200) {
     echo json_encode(['error' => 'Téléchargement échoué (HTTP ' . $httpCode . ')']);
+    exit;
+}
+if (strlen($imageData) > 5 * 1024 * 1024) {
+    echo json_encode(['error' => 'Image trop volumineuse (max 5 Mo)']);
     exit;
 }
 

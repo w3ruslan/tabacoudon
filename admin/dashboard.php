@@ -148,11 +148,11 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     <button class="bulk-btn bulk-hide"  onclick="bulkSetActive(0)">🙈 Masquer</button>
     <button class="bulk-btn bulk-price" onclick="bulkPricePrompt()">💶 Changer prix</button>
     <button class="bulk-btn bulk-del"   onclick="bulkDelete()">🗑️ Supprimer</button>
-    <button class="bulk-btn" style="background:#1a1a2e;color:#fff;border-color:#1a1a2e" onclick="bulkExportPDF()">🖨️ PDF</button>
+    <button class="bulk-btn" style="background:#1a1a2e;color:#fff;border-color:#1a1a2e" onclick="bulkExportPDF()">PDF</button>
     <button class="bulk-btn bulk-clear" onclick="clearSelection()">✕ Désélectionner</button>
   </div>
 
-  <!-- Hidden form for PDF export (opens new tab) -->
+  <!-- Hidden form for product label print page (opens new tab) -->
   <form id="pdfForm" action="print_cards.php" method="POST" target="_blank" style="display:none">
     <input type="hidden" id="pdfIds" name="ids">
   </form>
@@ -222,7 +222,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
           <?= $p['active'] ? '👁️' : '🙈' ?>
         </button>
         <button class="btn-edit" onclick='editProduct(<?= json_encode($p, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>✏️</button>
-        <button class="btn-del"  onclick="deleteProduct(<?= $p['id'] ?>, '<?= addslashes($p['name']) ?>')">🗑️</button>
+        <button class="btn-del"  onclick='deleteProduct(<?= (int)$p['id'] ?>, <?= json_encode($p['name'], JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>)'>🗑️</button>
       </div>
     </div>
     <?php endforeach; ?>
@@ -358,7 +358,23 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
 </div>
 
 <script>
-const CATEGORIES = <?= json_encode($categories) ?>;
+const CSRF_TOKEN = <?= json_encode(csrfToken(), JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+const CATEGORIES = <?= json_encode($categories, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+async function adminFetch(url, options) {
+  options = options || {};
+  options.headers = Object.assign({}, options.headers || {}, { 'X-CSRF-Token': CSRF_TOKEN });
+  return fetch(url, options);
+}
+function escapeHtml(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, function(ch) {
+    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[ch];
+  });
+}
+function safeImageUrl(value) {
+  const url = String(value || '').trim();
+  if (/^https?:\/\//i.test(url)) return url.replace(/"/g, '%22').replace(/</g, '%3C').replace(/>/g, '%3E');
+  return '';
+}
 
 // ─── Admin search + category filter ─────────────
 var adminActiveCat = 0;
@@ -394,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
     onEnd: async function() {
       const ids = [...document.querySelectorAll('#productTableBody [data-id]')]
         .map(el => el.dataset.id);
-      await fetch('../api/products.php?action=reorder', {
+      await adminFetch('../api/products.php?action=reorder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids })
@@ -406,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // ─── Toggle single product visibility ────────────
 async function toggleSingleActive(id, currentActive) {
   const newVal = currentActive ? 0 : 1;
-  await fetch('../api/products.php?action=bulk_active', {
+  await adminFetch('../api/products.php?action=bulk_active', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids: [String(id)], active: newVal })
@@ -463,7 +479,7 @@ async function analyzeWithAI() {
   document.getElementById('aiResult').style.display = 'none';
 
   try {
-    const res  = await fetch('../api/ai_product.php', {
+    const res  = await adminFetch('../api/ai_product.php', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({
@@ -495,17 +511,17 @@ async function analyzeWithAI() {
 function renderAIResult(d) {
   const catMatch = CATEGORIES.find(c => c.name === d.category);
   const catHtml  = catMatch
-    ? `<span class="ai-cat-badge">${catMatch.icon} ${catMatch.name}</span>`
-    : `<span class="ai-tag">${d.category}</span>`;
+    ? `<span class="ai-cat-badge">${escapeHtml(catMatch.icon)} ${escapeHtml(catMatch.name)}</span>`
+    : `<span class="ai-tag">${escapeHtml(d.category)}</span>`;
 
   document.getElementById('aiResultBody').innerHTML = `
     <div style="margin-bottom:8px">
-      ${d.brand ? `<span class="ai-tag">🏷️ ${d.brand}</span>` : ''}
-      ${d.flavor ? `<span class="ai-tag">🍓 ${d.flavor}</span>` : ''}
+      ${d.brand ? `<span class="ai-tag">🏷️ ${escapeHtml(d.brand)}</span>` : ''}
+      ${d.flavor ? `<span class="ai-tag">🍓 ${escapeHtml(d.flavor)}</span>` : ''}
       ${catHtml}
     </div>
-    <div class="ai-desc-preview">"${d.card_description || ''}"</div>
-    ${d.full_description ? `<div class="ai-desc-preview" style="margin-top:6px;font-style:normal;font-size:12px;color:#777">${d.full_description}</div>` : ''}
+    <div class="ai-desc-preview">"${escapeHtml(d.card_description || '')}"</div>
+    ${d.full_description ? `<div class="ai-desc-preview" style="margin-top:6px;font-style:normal;font-size:12px;color:#777">${escapeHtml(d.full_description)}</div>` : ''}
   `;
 }
 
@@ -575,7 +591,7 @@ async function searchImages() {
   try {
     const fd = new FormData();
     fd.append('query', query);
-    const res  = await fetch('../api/search.php', { method: 'POST', body: fd });
+    const res  = await adminFetch('../api/search.php', { method: 'POST', body: fd });
     const data = await res.json();
 
     if (!data.results || !data.results.length) {
@@ -602,7 +618,7 @@ function renderImgGrid(results, query) {
   results.forEach(r => {
     const d = document.createElement('div');
     d.className = 'img-option';
-    d.innerHTML = `<img src="${r.thumbnail || r.imageUrl}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌬️</text></svg>'">`;
+    d.innerHTML = `<img src="${safeImageUrl(r.thumbnail || r.imageUrl)}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌬️</text></svg>'">`;
     d.onclick = () => selectImg(r.imageUrl, query);
     grid.appendChild(d);
   });
@@ -636,7 +652,7 @@ async function selectImg(url, query) {
 
   // Save image to server in background
   try {
-    const res  = await fetch('../api/save_image.php', {
+    const res  = await adminFetch('../api/save_image.php', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ url }),
@@ -722,7 +738,7 @@ async function saveProduct() {
   };
 
   try {
-    const res  = await fetch(`../api/products.php?action=${action}`, {
+    const res  = await adminFetch(`../api/products.php?action=${action}`, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload)
@@ -746,7 +762,7 @@ async function saveProduct() {
 // ─── Supprimer ───────────────────────────────────
 async function deleteProduct(id, name) {
   if (!confirm(`Supprimer "${name}" ?`)) return;
-  await fetch(`../api/products.php?action=delete&id=${id}`, { method: 'DELETE' });
+  await adminFetch(`../api/products.php?action=delete&id=${id}`, { method: 'DELETE' });
   document.getElementById('row-' + id)?.remove();
 }
 
@@ -782,7 +798,7 @@ async function bulkSetActive(val) {
   if (!ids.length) return;
   const label = val ? 'afficher' : 'masquer';
   if (!confirm(`${label.charAt(0).toUpperCase()+label.slice(1)} ${ids.length} produit(s) ?`)) return;
-  await fetch('../api/products.php?action=bulk_active', {
+  await adminFetch('../api/products.php?action=bulk_active', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids, active: val })
@@ -794,7 +810,7 @@ async function bulkDelete() {
   const ids = getSelectedIds();
   if (!ids.length) return;
   if (!confirm(`Supprimer définitivement ${ids.length} produit(s) ?`)) return;
-  await fetch('../api/products.php?action=bulk_delete', {
+  await adminFetch('../api/products.php?action=bulk_delete', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids })
@@ -826,7 +842,7 @@ async function applyBulkPrice() {
   const ids   = getSelectedIds();
   const price = parseFloat(document.getElementById('bulkPriceInput').value);
   if (!ids.length || isNaN(price) || price < 0) return;
-  await fetch('../api/products.php?action=bulk_price', {
+  await adminFetch('../api/products.php?action=bulk_price', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids, price })
@@ -929,7 +945,7 @@ async function loadImageFromUrl() {
 
   // Save to server in background
   try {
-    const res  = await fetch('../api/save_image.php', {
+    const res  = await adminFetch('../api/save_image.php', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ url }),

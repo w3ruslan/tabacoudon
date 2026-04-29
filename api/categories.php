@@ -6,11 +6,9 @@ header('Content-Type: application/json');
 $db     = getDB();
 $action = $_GET['action'] ?? '';
 
-// ── Auto-migrate: add color column if missing ────────────
-try {
-    $db->query('SELECT color FROM categories LIMIT 1');
-} catch (Exception $e) {
-    $db->exec("ALTER TABLE categories ADD COLUMN color VARCHAR(20) DEFAULT '#e94560'");
+function normalizeColor(string $color): string {
+    $color = trim($color);
+    return preg_match('/^#[0-9a-fA-F]{6}$/', $color) ? $color : '#e94560';
 }
 
 // ── GET: liste ──────────────────────────────────────────
@@ -26,6 +24,7 @@ if (!isset($_SESSION['admin'])) {
     echo json_encode(['error' => 'Non autorisé']);
     exit;
 }
+verifyCsrf();
 
 // ── POST: ekle ──────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'add') {
@@ -37,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'add') {
     $stmt->execute([
         ':name'          => trim($data['name']),
         ':icon'          => trim($data['icon'] ?? '📦'),
-        ':color'         => trim($data['color'] ?? '#e94560'),
+        ':color'         => normalizeColor($data['color'] ?? '#e94560'),
         ':display_order' => (int)($data['display_order'] ?? $maxOrder),
     ]);
     echo json_encode(['id' => $db->lastInsertId()]);
@@ -53,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT' && $action === 'edit') {
     $stmt->execute([
         ':name'          => trim($data['name']),
         ':icon'          => trim($data['icon'] ?? '📦'),
-        ':color'         => trim($data['color'] ?? '#e94560'),
+        ':color'         => normalizeColor($data['color'] ?? '#e94560'),
         ':display_order' => (int)$data['display_order'],
         ':id'            => (int)$data['id'],
     ]);

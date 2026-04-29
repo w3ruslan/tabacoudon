@@ -9,6 +9,7 @@ if (!isset($_SESSION['admin'])) {
     echo json_encode(['error' => 'Non autorisé']);
     exit;
 }
+verifyCsrf();
 
 $data = json_decode(file_get_contents('php://input'), true);
 $name = trim($data['name'] ?? '');
@@ -16,6 +17,10 @@ $size = trim($data['size'] ?? '');
 
 if (!$name) {
     echo json_encode(['error' => 'Nom manquant']);
+    exit;
+}
+if (GROQ_API_KEY === '') {
+    echo json_encode(['error' => 'Clé API Groq manquante']);
     exit;
 }
 
@@ -60,7 +65,8 @@ curl_setopt_array($ch, [
     ],
     CURLOPT_POSTFIELDS     => json_encode($payload),
     CURLOPT_TIMEOUT        => 30,
-    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
 ]);
 
 $response = curl_exec($ch);

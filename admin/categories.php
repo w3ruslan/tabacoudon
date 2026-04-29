@@ -112,7 +112,7 @@ $categories = $db->query('SELECT * FROM categories ORDER BY display_order')->fet
           <td class="order-num">#<?= $c['display_order'] ?></td>
           <td>
             <button class="btn-edit" onclick='editCat(<?= json_encode($c, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>✏️</button>
-            <button class="btn-del"  onclick="deleteCat(<?= $c['id'] ?>, '<?= addslashes($c['name']) ?>')">🗑️</button>
+            <button class="btn-del"  onclick='deleteCat(<?= (int)$c['id'] ?>, <?= json_encode($c['name'], JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>)'>🗑️</button>
           </td>
         </tr>
         <?php endforeach; ?>
@@ -205,7 +205,13 @@ $categories = $db->query('SELECT * FROM categories ORDER BY display_order')->fet
 </div>
 
 <script>
+const CSRF_TOKEN = <?= json_encode(csrfToken(), JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
 let isEditing = false;
+async function adminFetch(url, options) {
+  options = options || {};
+  options.headers = Object.assign({}, options.headers || {}, { 'X-CSRF-Token': CSRF_TOKEN });
+  return fetch(url, options);
+}
 
 function openAddModal() {
   isEditing = false;
@@ -274,7 +280,7 @@ async function saveCat() {
   };
 
   try {
-    await fetch(`../api/categories.php?action=${action}`, {
+    await adminFetch(`../api/categories.php?action=${action}`, {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -290,7 +296,7 @@ async function saveCat() {
 
 async function deleteCat(id, name) {
   if (!confirm(`Supprimer la catégorie "${name}" ?\n\nLes produits de cette catégorie ne seront PAS supprimés, mais leur catégorie sera retirée.`)) return;
-  await fetch(`../api/categories.php?action=delete&id=${id}`, { method: 'DELETE' });
+  await adminFetch(`../api/categories.php?action=delete&id=${id}`, { method: 'DELETE' });
   document.getElementById('crow-' + id)?.remove();
 }
 </script>

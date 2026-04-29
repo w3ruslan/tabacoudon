@@ -65,6 +65,7 @@ if (!isset($_SESSION['admin'])) {
     echo json_encode(['error' => 'Non autorisé']);
     exit;
 }
+verifyCsrf();
 
 // ── POST — ajouter produit ────────────────────────
 if ($method === 'POST' && $action === 'add') {

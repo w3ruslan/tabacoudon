@@ -9,7 +9,8 @@ if (isset($_SESSION['admin'])) {
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (($_POST['password'] ?? '') === ADMIN_PASSWORD) {
+    if (isAdminPasswordValid($_POST['password'] ?? '')) {
+        session_regenerate_id(true);
         $_SESSION['admin'] = true;
         header('Location: dashboard.php'); exit;
     } else {
