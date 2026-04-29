@@ -330,7 +330,7 @@ body {
 .label-notes h3 {
   height: 6mm;
   min-height: 6mm;
-  margin-bottom: 1.6mm;
+  margin-bottom: 0.8mm;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -347,7 +347,7 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 1.2mm;
+  gap: 0.35mm;
   overflow: hidden;
 }
 
@@ -356,8 +356,8 @@ body {
   display: flex;
   align-items: center;
   gap: 1.4mm;
-  min-height: 5mm;
-  padding: 0 0 0.6mm;
+  min-height: 3.8mm;
+  padding: 0 0 0.25mm;
   border-bottom: 0.3mm solid #e5e7eb;
   color: var(--ink);
   font-size: 7pt;
