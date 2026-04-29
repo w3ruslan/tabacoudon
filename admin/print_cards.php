@@ -110,12 +110,19 @@ function categoryColor(?string $color): string {
     <article class="product-print-label label-theme-<?= e($theme) ?>" style="--category-color: <?= e($categoryColor) ?>">
       <div class="label-frame">
         <header class="label-photo-panel">
-          <div class="label-photo-box">
+          <div class="label-photo-box <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
             <div class="label-image-box">
               <?php if ($image): ?>
                 <img src="<?= e($image) ?>" alt="<?= e($name) ?>">
               <?php else: ?>
                 <span class="label-photo-fallback"><?= e($name) ?></span>
+              <?php endif; ?>
+            </div>
+            <div class="label-vertical-barcode-box <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
+              <?php if ($barcode): ?>
+                <div class="label-vertical-barcode-rotator">
+                  <svg class="label-vertical-barcode" data-barcode="<?= e($barcode) ?>"></svg>
+                </div>
               <?php endif; ?>
             </div>
           </div>
@@ -146,10 +153,6 @@ function categoryColor(?string $color): string {
             <?php endif; ?>
           </div>
 
-          <div class="label-barcode-area <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
-            <?php if ($barcode): ?><svg class="label-horizontal-barcode" data-barcode="<?= e($barcode) ?>"></svg><?php endif; ?>
-          </div>
-
           <?php if ($price): ?><div class="label-price"><?= e($price) ?></div><?php endif; ?>
 
         </section>
@@ -167,12 +170,12 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
   var digits = code.replace(/\D/g, '');
   var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
   var opts = {
-    width: 1.8,
-    height: 34,
+    width: 2,
+    height: 45,
     displayValue: true,
     fontSize: 8,
     textMargin: 1,
-    margin: 8,
+    margin: 4,
     background: '#ffffff',
     lineColor: '#111827'
   };
@@ -180,7 +183,7 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
     JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
   } catch (e) {
     try { JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' })); }
-    catch (e2) { svg.closest('.label-barcode-area').style.visibility = 'hidden'; }
+    catch (e2) { svg.closest('.label-vertical-barcode-box').style.visibility = 'hidden'; }
   }
 });
 console.log('Product label size: 63.333mm x 92.333mm; A4 grid: 3 columns x 3 rows; page padding: 6mm; gutter: 4mm.');
