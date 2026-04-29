@@ -137,15 +137,9 @@ window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('productGrid').addEventListener('click', function(e) {
     var el = e.target;
     while (el && el !== this) {
+      if (el.classList && el.classList.contains('tc-cart-btn')) return;
       if (el.classList && el.classList.contains('tc-card')) {
-        var card = el;
-        var id = card.getAttribute('data-id');
-        // Kart yarı dönünce (görünmez) detay aç
-        card.classList.add('flipping');
-        setTimeout(function() {
-          showDetail(id);
-          setTimeout(function() { card.classList.remove('flipping'); }, 50);
-        }, 780);
+        showDetail(el.getAttribute('data-id'));
         return;
       }
       el = el.parentElement;
@@ -246,67 +240,33 @@ function renderCard(p) {
   var catIcon  = p.category_icon || '';
 
   var imgHtml = p.image_url
-    ? '<img src="' + p.image_url + '" alt="' + p.name + '" onerror="this.style.display=\'none\'">'
+    ? '<img src="' + p.image_url + '" alt="' + p.name + '" loading="lazy" onerror="this.style.display=\'none\'">'
     : '<span class="tc-no-img">🌬️</span>';
 
-  var desc = (p.description || '').split('\n\n')[0];
-  if (desc.length > 150) desc = desc.slice(0, 148) + '…';
-
-  var price = p.price ? '€' + parseFloat(p.price).toFixed(2) : '—';
-  var surCmde = p.sur_commande ? '<span class="tc-sc-pill" title="Sur commande uniquement">📦 Sur cmd</span>' : '';
-
-  var flavorChipsBack = '';
-  if (p.flavor) {
-    p.flavor.split(/[,\/]+/).forEach(function(f){
-      f = f.trim();
-      if (f) flavorChipsBack += '<span class="tc-back-chip">' + f + '</span>';
-    });
-  }
-
-  var backImgHtml = p.image_url
-    ? '<img class="tc-back-img" src="' + p.image_url + '" alt="' + p.name + '" onerror="this.style.display=\'none\'">'
-    : '<div style="font-size:52px;margin-bottom:8px">🌬️</div>';
+  var price   = p.price ? '€' + parseFloat(p.price).toFixed(2) : '';
+  var surCmde = p.sur_commande ? '<span class="tc-sc-pill">📦 Sur cmd</span>' : '';
 
   return '<div class="tc-card" data-id="' + p.id + '" style="--cc:' + catColor + '">'
-    + '<div class="tc-card-inner">'
-    // ── Ön yüz ──
-    + '<div class="tc-card-front">'
-    + '<div class="tc-frame">'
-    + '<div class="tc-header">' + catIcon + ' ' + catLabel + '</div>'
-    + '<div class="tc-img-wrap">' + imgHtml + '</div>'
-    + '<div class="tc-namebar">'
-    + '<span class="tc-name">' + p.name + '</span>'
-    + '<span class="tc-price">' + price + '</span>'
+    // ── Glow image zone ──
+    + '<div class="tc-glow-zone">'
+    + imgHtml
+    + (price ? '<span class="tc-price-tag">' + price + '</span>' : '')
     + '</div>'
-    + '<div class="tc-bottom">'
-    + (p.flavor ? '<div class="tc-chips">' + renderFlavorChips(p.flavor, catColor) + '</div>' : '')
-    + '<div class="tc-bottom-row">'
-    + (p.size ? '<span class="tc-size" style="background:' + catColor + '">' + p.size + '</span>' : '<span></span>')
+    // ── Info zone ──
+    + '<div class="tc-info-zone">'
+    + (catLabel ? '<div class="tc-iz-cat">' + catIcon + ' ' + catLabel + '</div>' : '')
+    + '<div class="tc-iz-name">' + p.name + '</div>'
+    + (p.brand  ? '<div class="tc-iz-brand">'  + p.brand  + '</div>' : '')
+    + (p.flavor ? '<div class="tc-iz-flavor">' + p.flavor + '</div>' : '')
+    + '<div class="tc-iz-footer">'
+    + (p.size ? '<span class="tc-size-label">' + p.size + '</span>' : '')
     + surCmde
     + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒</button>'
-    + '</div>'
-    + '</div>'
-    + '</div>'
-    + '</div>'
-    // ── Arka yüz ──
-    + '<div class="tc-card-back" style="background:linear-gradient(160deg,var(--cc) 0%,#0d0d1a 80%)">'
-    + backImgHtml
-    + '<div class="tc-back-name">' + p.name + '</div>'
-    + (flavorChipsBack ? '<div class="tc-back-chips">' + flavorChipsBack + '</div>' : '')
-    + (desc ? '<div class="tc-back-desc">' + desc + '</div>' : '')
-    + '<div class="tc-back-price">' + price + '</div>'
     + '</div>'
     + '</div>'
     + '</div>';
 }
 
-function renderFlavorChips(flavor, color) {
-  return flavor.split(/[,\/]+/).map(function(f){
-    f = f.trim();
-    if (!f) return '';
-    return '<span class="tc-chip" style="background:' + color + '22;color:' + color + ';border-color:' + color + '44">' + f + '</span>';
-  }).join('');
-}
 
 function addToCache(p) {
   for (var i = 0; i < productsCache.length; i++) {
