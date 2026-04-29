@@ -195,6 +195,7 @@ function loadProducts(catId) {
       if (!products.length) { empty.style.display = 'block'; return; }
       grid.innerHTML     = products.map(renderCard).join('');
       grid.style.display = 'grid';
+      initBarcodes();
     });
 }
 
@@ -225,6 +226,7 @@ function filterProducts(query) {
     grid.innerHTML     = filtered.map(renderCard).join('');
     grid.style.display = 'grid';
     empty.style.display = 'none';
+    initBarcodes();
   }
 }
 
@@ -278,6 +280,7 @@ function renderCard(p) {
     + (p.size ? '<span class="tc-size-label">' + p.size + '</span>' : '')
     + surCmde
     + '</div>'
+    + (p.barcode ? '<div class="tc-barcode-wrap"><svg class="tc-barcode-svg" data-barcode="' + p.barcode + '"></svg></div>' : '')
     + '</div>'
     + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
     + '</div>'
@@ -285,6 +288,23 @@ function renderCard(p) {
     + '</div>';
 }
 
+
+function initBarcodes() {
+  if (typeof JsBarcode === 'undefined') return;
+  document.querySelectorAll('svg.tc-barcode-svg[data-barcode]').forEach(function(svg) {
+    var code = svg.getAttribute('data-barcode');
+    if (!code || svg.getAttribute('data-bc-done')) return;
+    svg.setAttribute('data-bc-done', '1');
+    var opts = { width: 0.9, height: 22, displayValue: true, fontSize: 7,
+                 margin: 1, background: 'transparent', lineColor: '#555' };
+    try {
+      JsBarcode(svg, code, Object.assign({}, opts, { format: 'auto' }));
+    } catch(e) {
+      try { JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' })); }
+      catch(e2) { svg.closest('.tc-barcode-wrap').style.display = 'none'; }
+    }
+  });
+}
 
 function addToCache(p) {
   for (var i = 0; i < productsCache.length; i++) {

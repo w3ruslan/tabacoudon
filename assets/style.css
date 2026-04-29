@@ -535,6 +535,18 @@ body {
   margin-bottom: 5px;
 }
 
+/* Barcode on customer card */
+.tc-barcode-wrap {
+  margin-top: 4px;
+  overflow: hidden;
+}
+.tc-barcode-svg {
+  width: 100%;
+  max-width: 120px;
+  height: auto;
+  display: block;
+}
+
 /* Flavor chips — oval, category color */
 .tc-spec-chips {
   display: flex;

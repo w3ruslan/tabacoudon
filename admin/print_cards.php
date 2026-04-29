@@ -1,0 +1,379 @@
+<?php
+require_once __DIR__ . '/../config.php';
+session_start();
+if (!isset($_SESSION['admin'])) { header('Location: index.php'); exit; }
+
+// Accept IDs via POST
+$raw = $_POST['ids'] ?? '';
+$ids = array_filter(array_map('intval', json_decode($raw, true) ?: []));
+
+if (empty($ids)) {
+    echo '<p style="font-family:sans-serif;padding:40px;color:#e94560">❌ Aucun produit sélectionné.</p>';
+    exit;
+}
+
+$db = getDB();
+$placeholders = implode(',', array_fill(0, count($ids), '?'));
+$stmt = $db->prepare(
+    "SELECT p.*, c.name AS category_name, c.color AS category_color, c.icon AS category_icon
+     FROM products p
+     LEFT JOIN categories c ON p.category_id = c.id
+     WHERE p.id IN ($placeholders)"
+);
+$stmt->execute(array_values($ids));
+$fetched = $stmt->fetchAll();
+
+// Keep original selection order
+$products = [];
+foreach ($ids as $id) {
+    foreach ($fetched as $p) {
+        if ((int)$p['id'] === (int)$id) { $products[] = $p; break; }
+    }
+}
+
+// Split into pages of 9
+$pages = array_chunk($products, 9);
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Étiquettes — <?= SHOP_NAME ?></title>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #e8e8e8;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* ── Toolbar (screen only) ── */
+    .toolbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      background: #1a1a2e; color: #fff;
+      padding: 11px 24px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .toolbar h2 { flex: 1; font-size: 15px; font-weight: 700; }
+    .toolbar .info { font-size: 12px; color: rgba(255,255,255,.55); }
+    .btn-print {
+      background: #e94560; color: #fff; border: none; border-radius: 8px;
+      padding: 9px 22px; font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: opacity .2s;
+    }
+    .btn-print:hover { opacity: .85; }
+    .btn-close {
+      background: #333; color: #fff; border: none; border-radius: 8px;
+      padding: 9px 14px; font-size: 14px; cursor: pointer;
+    }
+
+    /* ── A4 page wrapper (screen preview) ── */
+    @media screen {
+      .pages-wrap { padding: 76px 24px 40px; }
+      .page-sheet {
+        width: 210mm;
+        min-height: 297mm;
+        background: #fff;
+        margin: 0 auto 24px;
+        box-shadow: 0 4px 24px rgba(0,0,0,.18);
+        display: grid;
+        grid-template-columns: repeat(3, 66.6mm);
+        grid-template-rows: repeat(3, 93.3mm);
+        gap: 0;
+        padding: 8.55mm 5.1mm;
+        align-content: start;
+      }
+    }
+
+    /* ── Print: remove toolbar, no margins ── */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: none; }
+      .toolbar, .pages-wrap > .no-print { display: none !important; }
+      .pages-wrap { padding: 0; }
+      .page-sheet {
+        width: 199.8mm;
+        height: 279.9mm;
+        display: grid;
+        grid-template-columns: repeat(3, 66.6mm);
+        grid-template-rows: repeat(3, 93.3mm);
+        gap: 0;
+        page-break-after: always;
+        break-after: page;
+        margin: 0;
+        background: none;
+        box-shadow: none;
+      }
+      .page-sheet:last-child { page-break-after: avoid; break-after: avoid; }
+    }
+    @page { size: A4 portrait; margin: 8.55mm 5.1mm; }
+
+    /* ══════════════════════════════════
+       CARD STYLES  (66.6 × 93.3 mm)
+    ══════════════════════════════════ */
+    .tc-card {
+      width: 66.6mm;
+      height: 93.3mm;
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border: 0.25mm solid rgba(0,0,0,.1);
+    }
+
+    /* Top gradient zone */
+    .tc-card-top {
+      height: 52mm;
+      background: linear-gradient(145deg, var(--cc) 0%, #1a1a2e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4mm;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .tc-img-box {
+      width: 70%;
+      aspect-ratio: 1;
+      background: #fff;
+      border-radius: 3.5mm;
+      padding: 2mm;
+      box-shadow: 0 3mm 7mm rgba(0,0,0,.28);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .tc-img-box img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+    }
+    .tc-no-img { font-size: 22pt; opacity: .3; }
+
+    .tc-cat-icon-sm {
+      position: absolute;
+      top: 2mm; left: 2mm;
+      font-size: 9pt; opacity: .85;
+    }
+
+    .tc-price-tag {
+      position: absolute;
+      top: 2mm; right: 2mm;
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      font-size: 7.5pt; font-weight: 800;
+      padding: 0.8mm 2.2mm;
+      border-radius: 10mm;
+      letter-spacing: -.2px;
+    }
+
+    /* Bottom section */
+    .tc-card-bot {
+      flex: 1;
+      background: #fff;
+      padding: 2.2mm 2.8mm 2mm;
+      display: flex;
+      gap: 2mm;
+      border-top: 0.25mm solid rgba(0,0,0,.07);
+      overflow: hidden;
+    }
+
+    .tc-bot-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1mm;
+      min-width: 0;
+    }
+
+    .tc-card-name {
+      font-size: 7.8pt;
+      font-weight: 900;
+      color: #1a1a2e;
+      line-height: 1.2;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .tc-card-brand {
+      font-size: 5.5pt;
+      color: #bbb;
+      font-weight: 600;
+    }
+
+    .tc-bot-tags {
+      display: flex;
+      align-items: center;
+      gap: 1mm;
+      flex-wrap: wrap;
+    }
+
+    .tc-size-label {
+      font-size: 5pt; font-weight: 700; color: #666;
+      background: #f0f0f0; border-radius: 1mm;
+      padding: 0.5mm 1.5mm;
+    }
+
+    .tc-sc-pill {
+      font-size: 4.5pt; font-weight: 800;
+      color: #d97706; background: #fff8e1;
+      border: 0.2mm solid #fde68a;
+      border-radius: 5mm; padding: 0.4mm 1.2mm;
+    }
+
+    /* Barcode */
+    .tc-barcode-area { margin-top: 1.5mm; }
+    .tc-barcode-svg  { width: 100%; max-width: 30mm; height: auto; display: block; }
+
+    /* Right column */
+    .tc-bot-right {
+      flex: 1;
+      border-left: 0.25mm solid #f0f0f0;
+      padding-left: 2mm;
+      min-width: 0; overflow: hidden;
+    }
+
+    .tc-spec-title {
+      font-size: 4.5pt; font-weight: 900;
+      color: var(--cc);
+      text-transform: uppercase; letter-spacing: .5px;
+      margin-bottom: 1mm;
+    }
+
+    .tc-spec-chips { display: flex; flex-direction: column; gap: 0.8mm; }
+    .tc-spec-chip {
+      display: block;
+      border-radius: 5mm;
+      padding: 0.7mm 2mm;
+      font-size: 5.5pt; font-weight: 700;
+      line-height: 1.3; word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <h2>🖨️ Aperçu — <?= count($products) ?> produit(s) · <?= count($pages) ?> page(s) A4</h2>
+  <span class="info">9 cartes / page · 66.6 × 93.3 mm</span>
+  <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+  <button class="btn-close" onclick="window.close()">✕ Fermer</button>
+</div>
+
+<div class="pages-wrap">
+<?php foreach ($pages as $pi => $page): ?>
+  <div class="page-sheet">
+    <?php foreach ($page as $p):
+      $cc     = $p['category_color'] ?: '#e94560';
+      $icon   = $p['category_icon']  ?: '';
+      $label  = $p['category_name']  ?: '';
+      $price  = $p['price'] ? '€' . number_format((float)$p['price'], 2) : '';
+
+      $img = $p['image_url'] ?? '';
+      if ($img && strpos($img, 'uploads/') === 0) $img = '../' . $img;
+
+      $flavors = [];
+      if (!empty($p['flavor'])) {
+        $flavors = array_slice(
+          array_filter(array_map('trim', preg_split('/[,\/]+/', $p['flavor']))),
+          0, 4
+        );
+        $flavors = array_values($flavors);
+      }
+    ?>
+    <div class="tc-card" style="--cc:<?= htmlspecialchars($cc) ?>">
+
+      <!-- ── Top ── -->
+      <div class="tc-card-top">
+        <?php if ($icon): ?><span class="tc-cat-icon-sm"><?= $icon ?></span><?php endif; ?>
+        <div class="tc-img-box">
+          <?php if ($img): ?>
+            <img src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($p['name']) ?>">
+          <?php else: ?>
+            <span class="tc-no-img">🌬️</span>
+          <?php endif; ?>
+        </div>
+        <?php if ($price): ?><span class="tc-price-tag"><?= $price ?></span><?php endif; ?>
+      </div>
+
+      <!-- ── Bottom ── -->
+      <div class="tc-card-bot">
+
+        <div class="tc-bot-left">
+          <div class="tc-card-name"><?= htmlspecialchars($p['name']) ?></div>
+          <?php if (!empty($p['brand'])): ?>
+            <div class="tc-card-brand"><?= htmlspecialchars($p['brand']) ?></div>
+          <?php endif; ?>
+          <div class="tc-bot-tags">
+            <?php if (!empty($p['size'])): ?>
+              <span class="tc-size-label"><?= htmlspecialchars($p['size']) ?></span>
+            <?php endif; ?>
+            <?php if (!empty($p['sur_commande'])): ?>
+              <span class="tc-sc-pill">📦 Sur cmd</span>
+            <?php endif; ?>
+          </div>
+          <?php if (!empty($p['barcode'])): ?>
+          <div class="tc-barcode-area">
+            <svg class="tc-barcode-svg"
+                 data-barcode="<?= htmlspecialchars($p['barcode']) ?>"></svg>
+          </div>
+          <?php endif; ?>
+        </div>
+
+        <?php if ($flavors || $label): ?>
+        <div class="tc-bot-right">
+          <?php if ($flavors): ?>
+            <div class="tc-spec-title">Saveur</div>
+            <div class="tc-spec-chips">
+              <?php foreach ($flavors as $f): ?>
+                <span class="tc-spec-chip"
+                  style="background:<?= $cc ?>18;color:<?= $cc ?>;border:0.2mm solid <?= $cc ?>55">
+                  <?= htmlspecialchars($f) ?>
+                </span>
+              <?php endforeach; ?>
+            </div>
+          <?php elseif ($label): ?>
+            <div class="tc-spec-title">Catégorie</div>
+            <div class="tc-spec-chips">
+              <span class="tc-spec-chip"
+                style="background:<?= $cc ?>18;color:<?= $cc ?>;border:0.2mm solid <?= $cc ?>55">
+                <?= htmlspecialchars($label) ?>
+              </span>
+            </div>
+          <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+      </div>
+    </div>
+    <?php endforeach; ?>
+  </div>
+<?php endforeach; ?>
+</div>
+
+<script>
+// Render barcodes
+document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
+  var code = svg.getAttribute('data-barcode');
+  if (!code) return;
+  var opts = {
+    width: 1.0, height: 22,
+    displayValue: true, fontSize: 7,
+    margin: 0, background: 'transparent', lineColor: '#333'
+  };
+  try {
+    JsBarcode(svg, code, Object.assign({}, opts, { format: 'auto' }));
+  } catch(e) {
+    try { JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' })); }
+    catch(e2) { svg.style.display = 'none'; }
+  }
+});
+</script>
+</body>
+</html>

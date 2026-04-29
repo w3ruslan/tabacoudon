@@ -148,8 +148,14 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     <button class="bulk-btn bulk-hide"  onclick="bulkSetActive(0)">🙈 Masquer</button>
     <button class="bulk-btn bulk-price" onclick="bulkPricePrompt()">💶 Changer prix</button>
     <button class="bulk-btn bulk-del"   onclick="bulkDelete()">🗑️ Supprimer</button>
+    <button class="bulk-btn" style="background:#1a1a2e;color:#fff;border-color:#1a1a2e" onclick="bulkExportPDF()">🖨️ PDF</button>
     <button class="bulk-btn bulk-clear" onclick="clearSelection()">✕ Désélectionner</button>
   </div>
+
+  <!-- Hidden form for PDF export (opens new tab) -->
+  <form id="pdfForm" action="print_cards.php" method="POST" target="_blank" style="display:none">
+    <input type="hidden" id="pdfIds" name="ids">
+  </form>
 
   <!-- Search + category filter -->
   <div class="admin-filter-bar">
@@ -794,6 +800,13 @@ async function bulkDelete() {
     body: JSON.stringify({ ids })
   });
   location.reload();
+}
+
+function bulkExportPDF() {
+  var ids = getSelectedIds();
+  if (!ids.length) { alert('Aucun produit sélectionné.'); return; }
+  document.getElementById('pdfIds').value = JSON.stringify(ids);
+  document.getElementById('pdfForm').submit();
 }
 
 function bulkPricePrompt() {
