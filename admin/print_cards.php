@@ -68,7 +68,18 @@ $pages = array_chunk($products, 9);
       padding: 9px 14px; font-size: 14px; cursor: pointer;
     }
 
-    /* ── A4 page sheet ── */
+    /*
+      Layout maths (all exact):
+        A4 = 210 × 297 mm
+        @page margin = 13.5mm top/bottom,  12mm left/right
+        Print area   = 186 × 270 mm
+        Cards        = 60 × 88 mm  (3 per row/col)
+        Gap          = 3mm  between every card
+        3×60 + 2×3   = 186mm  ✓ width
+        3×88 + 2×3   = 270mm  ✓ height
+    */
+
+    /* ── A4 page sheet (screen preview) ── */
     @media screen {
       .pages-wrap { padding: 76px 24px 48px; }
       .page-sheet {
@@ -76,11 +87,11 @@ $pages = array_chunk($products, 9);
         background: #fff;
         margin: 0 auto 28px;
         box-shadow: 0 6px 28px rgba(0,0,0,.22);
-        padding: 8.55mm 5.1mm;
+        padding: 13.5mm 12mm;          /* mirrors @page margin */
         display: grid;
-        grid-template-columns: repeat(3, 66.6mm);
-        grid-template-rows: repeat(3, 93.3mm);
-        gap: 0;
+        grid-template-columns: repeat(3, 60mm);
+        grid-template-rows: repeat(3, 88mm);
+        gap: 3mm;
         align-content: start;
       }
     }
@@ -91,43 +102,43 @@ $pages = array_chunk($products, 9);
       .toolbar { display: none !important; }
       .pages-wrap { padding: 0; }
       .page-sheet {
-        width: 199.8mm; height: 279.9mm;
+        width: 186mm; height: 270mm;
         padding: 0; margin: 0;
         background: #fff;
         display: grid;
-        grid-template-columns: repeat(3, 66.6mm);
-        grid-template-rows: repeat(3, 93.3mm);
-        gap: 0;
+        grid-template-columns: repeat(3, 60mm);
+        grid-template-rows: repeat(3, 88mm);
+        gap: 3mm;
         page-break-after: always; break-after: page;
       }
       .page-sheet:last-child { page-break-after: avoid; break-after: avoid; }
     }
-    @page { size: A4 portrait; margin: 8.55mm 5.1mm; }
+    @page { size: A4 portrait; margin: 13.5mm 12mm; }
 
     /* ══════════════════════════════════════════
        CARD  —  66.6 × 93.3 mm
        Replicates customer .tc-card exactly.
     ══════════════════════════════════════════ */
     .tc-card {
-      width: 66.6mm;
-      height: 93.3mm;
+      width: 60mm;
+      height: 88mm;
       background: #fff;
-      border-radius: 4.7mm;          /* = 18px on 252px-wide customer card */
+      border-radius: 4.2mm;          /* proportional to 18px */
       overflow: hidden;
       position: relative;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 1mm 4mm rgba(0,0,0,.13), 0 0 0 0.5px rgba(0,0,0,.07);
+      box-shadow: 0 1mm 4mm rgba(0,0,0,.13), 0 0 0 0.5px rgba(0,0,0,.08);
     }
 
     /* ── Top gradient ── */
     .tc-card-top {
-      height: 53mm;                  /* 200px / 352px ≈ 57% of 93.3mm */
+      height: 50mm;                  /* 57% of 88mm */
       background: linear-gradient(145deg, var(--cc) 0%, #1a1a2e 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 3.7mm;                /* = 14px */
+      padding: 3.5mm;
       flex-shrink: 0;
       position: relative;
     }
