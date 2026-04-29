@@ -606,7 +606,7 @@ body {
 }
 
 .tc-spec-title {
-  height: 26px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -617,7 +617,7 @@ body {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: .9px;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   text-align: center;
 }
 
@@ -637,24 +637,24 @@ body {
 .tc-spec-chips {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
   overflow: hidden;
 }
 .tc-spec-chip {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 28px;
+  gap: 7px;
+  min-height: 22px;
   border: 0 !important;
   border-bottom: 1px solid #e5e7eb !important;
   border-radius: 0;
-  padding: 4px 0;
+  padding: 2px 0;
   background: transparent !important;
   color: #0f172a !important;
   font-size: 12px;
   font-weight: 750;
-  line-height: 1.15;
+  line-height: 1.05;
   word-break: break-word;
   text-align: left;
 }
@@ -1047,7 +1047,7 @@ body {
   .tc-card-name { font-size: 14px; }
   .tc-card-brand { font-size: 11px; }
   .tc-spec-title { height: 24px; font-size: 10px; }
-  .tc-spec-chip { font-size: 10px; min-height: 24px; padding: 3px 0; }
+  .tc-spec-chip { font-size: 10px; min-height: 20px; padding: 2px 0; }
   .tc-pill-price { font-size: 20px; }
   .tc-img-wrap { height: 150px; }
   .tc-name { font-size: 11px; }
