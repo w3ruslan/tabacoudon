@@ -41,160 +41,156 @@ $pages = array_chunk($products, 9);
   <title>Étiquettes — <?= SHOP_NAME ?></title>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
   <style>
+    /* ─────────────────────────────────────────────────────
+       Font sizes mapped from customer CSS (×0.75 px→pt):
+       14px name → 10.5pt  |  9px brand/size/chip → 6.75pt
+       15px price → 11.25pt |  8px spec-title → 6pt
+    ───────────────────────────────────────────────────── */
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      background: #e8e8e8;
-      font-family: 'Segoe UI', Arial, sans-serif;
-    }
+    body { background: #d4d4d4; font-family: 'Segoe UI', Arial, sans-serif; }
 
     /* ── Toolbar (screen only) ── */
     .toolbar {
       position: fixed; top: 0; left: 0; right: 0; z-index: 999;
       background: #1a1a2e; color: #fff;
-      padding: 11px 24px;
-      display: flex; align-items: center; gap: 14px;
+      padding: 11px 24px; display: flex; align-items: center; gap: 14px;
     }
     .toolbar h2 { flex: 1; font-size: 15px; font-weight: 700; }
-    .toolbar .info { font-size: 12px; color: rgba(255,255,255,.55); }
+    .toolbar .info { font-size: 12px; color: rgba(255,255,255,.5); }
     .btn-print {
       background: #e94560; color: #fff; border: none; border-radius: 8px;
       padding: 9px 22px; font-size: 14px; font-weight: 700; cursor: pointer;
-      transition: opacity .2s;
     }
     .btn-print:hover { opacity: .85; }
     .btn-close {
-      background: #333; color: #fff; border: none; border-radius: 8px;
+      background: #444; color: #fff; border: none; border-radius: 8px;
       padding: 9px 14px; font-size: 14px; cursor: pointer;
     }
 
-    /* ── A4 page wrapper (screen preview) ── */
+    /* ── A4 page sheet ── */
     @media screen {
-      .pages-wrap { padding: 76px 24px 40px; }
+      .pages-wrap { padding: 76px 24px 48px; }
       .page-sheet {
-        width: 210mm;
-        min-height: 297mm;
+        width: 210mm; min-height: 297mm;
         background: #fff;
-        margin: 0 auto 24px;
-        box-shadow: 0 4px 24px rgba(0,0,0,.18);
+        margin: 0 auto 28px;
+        box-shadow: 0 6px 28px rgba(0,0,0,.22);
+        padding: 8.55mm 5.1mm;
         display: grid;
         grid-template-columns: repeat(3, 66.6mm);
         grid-template-rows: repeat(3, 93.3mm);
         gap: 0;
-        padding: 8.55mm 5.1mm;
         align-content: start;
       }
     }
 
-    /* ── Print: remove toolbar, no margins ── */
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      body { background: none; }
-      .toolbar, .pages-wrap > .no-print { display: none !important; }
+      body { background: #fff; }
+      .toolbar { display: none !important; }
       .pages-wrap { padding: 0; }
       .page-sheet {
-        width: 199.8mm;
-        height: 279.9mm;
+        width: 199.8mm; height: 279.9mm;
+        padding: 0; margin: 0;
+        background: #fff;
         display: grid;
         grid-template-columns: repeat(3, 66.6mm);
         grid-template-rows: repeat(3, 93.3mm);
         gap: 0;
-        page-break-after: always;
-        break-after: page;
-        margin: 0;
-        background: none;
-        box-shadow: none;
+        page-break-after: always; break-after: page;
       }
       .page-sheet:last-child { page-break-after: avoid; break-after: avoid; }
     }
     @page { size: A4 portrait; margin: 8.55mm 5.1mm; }
 
-    /* ══════════════════════════════════
-       CARD STYLES  (66.6 × 93.3 mm)
-    ══════════════════════════════════ */
+    /* ══════════════════════════════════════════
+       CARD  —  66.6 × 93.3 mm
+       Replicates customer .tc-card exactly.
+    ══════════════════════════════════════════ */
     .tc-card {
       width: 66.6mm;
       height: 93.3mm;
       background: #fff;
+      border-radius: 4.7mm;          /* = 18px on 252px-wide customer card */
       overflow: hidden;
       position: relative;
       display: flex;
       flex-direction: column;
-      border: 0.25mm solid rgba(0,0,0,.1);
+      box-shadow: 0 1mm 4mm rgba(0,0,0,.13), 0 0 0 0.5px rgba(0,0,0,.07);
     }
 
-    /* Top gradient zone */
+    /* ── Top gradient ── */
     .tc-card-top {
-      height: 52mm;
+      height: 53mm;                  /* 200px / 352px ≈ 57% of 93.3mm */
       background: linear-gradient(145deg, var(--cc) 0%, #1a1a2e 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 4mm;
+      padding: 3.7mm;                /* = 14px */
       flex-shrink: 0;
       position: relative;
     }
 
+    /* White image box */
     .tc-img-box {
       width: 70%;
       aspect-ratio: 1;
       background: #fff;
-      border-radius: 3.5mm;
-      padding: 2mm;
-      box-shadow: 0 3mm 7mm rgba(0,0,0,.28);
+      border-radius: 4.2mm;          /* = 16px */
+      padding: 2.1mm;                /* = 8px */
+      box-shadow: 0 2.1mm 7.4mm rgba(0,0,0,.28);
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1;
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
     }
-    .tc-img-box img {
-      width: 100%; height: 100%;
-      object-fit: contain;
-    }
-    .tc-no-img { font-size: 22pt; opacity: .3; }
+    .tc-img-box img { width: 100%; height: 100%; object-fit: contain; }
+    .tc-no-img { font-size: 20pt; opacity: .3; }
 
+    /* Category icon top-left */
     .tc-cat-icon-sm {
-      position: absolute;
-      top: 2mm; left: 2mm;
-      font-size: 9pt; opacity: .85;
+      position: absolute; top: 2mm; left: 2mm;
+      font-size: 8pt; opacity: .8;
     }
 
+    /* Price pill top-right */
     .tc-price-tag {
-      position: absolute;
-      top: 2mm; right: 2mm;
+      position: absolute; top: 2.1mm; right: 2.1mm;
       background: rgba(0,0,0,.65);
       color: #fff;
-      font-size: 7.5pt; font-weight: 800;
-      padding: 0.8mm 2.2mm;
+      font-size: 11.25pt;            /* = 15px */
+      font-weight: 800;
+      padding: 1mm 2.6mm;
       border-radius: 10mm;
-      letter-spacing: -.2px;
+      letter-spacing: -.3px;
+      white-space: nowrap;
     }
 
-    /* Bottom section */
+    /* ── Bottom section ── */
     .tc-card-bot {
       flex: 1;
       background: #fff;
-      padding: 2.2mm 2.8mm 2mm;
+      padding: 2.6mm 3.2mm 3.2mm;   /* = 10px 12px 12px */
       display: flex;
-      gap: 2mm;
-      border-top: 0.25mm solid rgba(0,0,0,.07);
+      gap: 2.1mm;                    /* = 8px */
+      border-top: 0.5px solid rgba(0,0,0,.05);
       overflow: hidden;
     }
 
+    /* Left column */
     .tc-bot-left {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 1mm;
+      display: flex; flex-direction: column;
+      gap: 1.05mm;                   /* = 4px */
       min-width: 0;
     }
 
     .tc-card-name {
-      font-size: 7.8pt;
+      font-size: 10.5pt;             /* = 14px */
       font-weight: 900;
       color: #1a1a2e;
       line-height: 1.2;
+      letter-spacing: -.1px;
       overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -202,57 +198,62 @@ $pages = array_chunk($products, 9);
     }
 
     .tc-card-brand {
-      font-size: 5.5pt;
-      color: #bbb;
-      font-weight: 600;
+      font-size: 6.75pt;             /* = 9px */
+      color: #bbb; font-weight: 600;
+      letter-spacing: .2px;
     }
 
     .tc-bot-tags {
-      display: flex;
-      align-items: center;
-      gap: 1mm;
-      flex-wrap: wrap;
+      display: flex; align-items: center;
+      gap: 1mm; flex-wrap: wrap;
+      margin-top: 0.5mm;
     }
 
     .tc-size-label {
-      font-size: 5pt; font-weight: 700; color: #666;
-      background: #f0f0f0; border-radius: 1mm;
-      padding: 0.5mm 1.5mm;
+      font-size: 6.75pt;             /* = 9px */
+      font-weight: 700; color: #666;
+      background: #f0f0f0;
+      border-radius: 1.3mm;          /* = 5px */
+      padding: 0.5mm 1.85mm;        /* = 2px 7px */
     }
 
     .tc-sc-pill {
-      font-size: 4.5pt; font-weight: 800;
+      font-size: 6pt; font-weight: 800;
       color: #d97706; background: #fff8e1;
       border: 0.2mm solid #fde68a;
-      border-radius: 5mm; padding: 0.4mm 1.2mm;
+      border-radius: 5mm; padding: 0.5mm 1.6mm;
     }
 
     /* Barcode */
     .tc-barcode-area { margin-top: 1.5mm; }
-    .tc-barcode-svg  { width: 100%; max-width: 30mm; height: auto; display: block; }
+    .tc-barcode-svg  { width: 100%; max-width: 28mm; height: auto; display: block; }
 
     /* Right column */
     .tc-bot-right {
       flex: 1;
-      border-left: 0.25mm solid #f0f0f0;
-      padding-left: 2mm;
+      border-left: 0.5px solid #f0f0f0;
+      padding-left: 2.4mm;
       min-width: 0; overflow: hidden;
     }
 
     .tc-spec-title {
-      font-size: 4.5pt; font-weight: 900;
+      font-size: 6pt;                /* = 8px */
+      font-weight: 900;
       color: var(--cc);
-      text-transform: uppercase; letter-spacing: .5px;
-      margin-bottom: 1mm;
+      text-transform: uppercase; letter-spacing: .9px;
+      margin-bottom: 1.3mm;
     }
 
     .tc-spec-chips { display: flex; flex-direction: column; gap: 0.8mm; }
+
     .tc-spec-chip {
       display: block;
-      border-radius: 5mm;
-      padding: 0.7mm 2mm;
-      font-size: 5.5pt; font-weight: 700;
-      line-height: 1.3; word-break: break-word;
+      border-radius: 5.3mm;          /* = 20px */
+      padding: 0.8mm 2.4mm;          /* = 3px 9px */
+      font-size: 6.75pt;             /* = 9px */
+      font-weight: 700;
+      line-height: 1.35;
+      word-break: break-word;
     }
   </style>
 </head>
