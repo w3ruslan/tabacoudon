@@ -680,8 +680,7 @@ body {
   z-index: 800;
   display: flex; align-items: center; justify-content: center;
   padding: 16px;
-  perspective: 1200px;
-  transform-style: preserve-3d;
+  perspective: 1800px;
 }
 
 .dt-bg {
@@ -692,33 +691,25 @@ body {
 }
 
 .dt-flip-stage {
-  --dt-start-x: 0px;
-  --dt-start-y: 0px;
-  --dt-start-scale: .64;
   position: relative;
-  width: 100%; max-width: 420px;
+  width: min(92vw, 420px);
   aspect-ratio: 63.333 / 92.333;
-  transform:
-    translate3d(var(--dt-start-x), var(--dt-start-y), -220px)
-    scale(var(--dt-start-scale))
-    rotateY(0deg);
+  transform: scale(.94) rotateY(0deg);
   transform-origin: center center;
   transform-style: preserve-3d;
-  opacity: 1;
+  opacity: 0;
   transition:
-    transform .72s cubic-bezier(.18,.9,.2,1),
-    opacity .24s ease;
+    transform .62s cubic-bezier(.2,.75,.2,1),
+    opacity .16s ease;
 }
 .dt-flip-stage.dt-in {
-  transform: translate3d(0, 0, 0) scale(1) rotateY(180deg);
+  transform: scale(1) rotateY(180deg);
+  opacity: 1;
 }
 .dt-flip-stage.dt-out {
-  transform:
-    translate3d(var(--dt-start-x), var(--dt-start-y), -220px)
-    scale(var(--dt-start-scale))
-    rotateY(0deg);
+  transform: scale(.94) rotateY(0deg);
   opacity: 0;
-  transition-duration: .46s;
+  transition-duration: .32s;
 }
 
 .dt-card-face {
@@ -727,10 +718,12 @@ body {
   overflow: hidden;
   border-radius: 24px;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   transform-style: preserve-3d;
 }
 .dt-card-front {
   background: white;
+  transform: rotateY(0deg) translateZ(1px);
 }
 .dt-card-front .tc-card {
   width: 100%;
@@ -739,7 +732,7 @@ body {
   transform: none !important;
 }
 .dt-card-back {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(1px);
   background: white;
   box-shadow: 0 24px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.08);
 }

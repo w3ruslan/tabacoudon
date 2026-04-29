@@ -421,17 +421,6 @@ function showDetail(id, sourceCard) {
   + '</div>';
 
   overlay.style.display = 'flex';
-  var stage = document.getElementById('dtFlipStage');
-  if (stage && sourceCard && sourceCard.getBoundingClientRect) {
-    var rect = sourceCard.getBoundingClientRect();
-    var cardCenterX = rect.left + rect.width / 2;
-    var cardCenterY = rect.top + rect.height / 2;
-    var viewCenterX = window.innerWidth / 2;
-    var viewCenterY = window.innerHeight / 2;
-    stage.style.setProperty('--dt-start-x', (cardCenterX - viewCenterX) + 'px');
-    stage.style.setProperty('--dt-start-y', (cardCenterY - viewCenterY) + 'px');
-    stage.style.setProperty('--dt-start-scale', Math.min(1, rect.width / 420).toFixed(3));
-  }
   setTimeout(function(){
     var activeStage = document.getElementById('dtFlipStage');
     if (activeStage) activeStage.classList.add('dt-in');
@@ -447,7 +436,7 @@ function closeDetail() {
     var ov = document.getElementById('detailOverlay');
     ov.style.display = 'none';
     ov.innerHTML = '';
-  }, 520);
+  }, 360);
 }
 
 // ── Scanner (Quagga2) ─────────────────────
