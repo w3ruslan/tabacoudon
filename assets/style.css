@@ -425,7 +425,7 @@ body {
   z-index: 1;
 }
 .tc-img-box.has-barcode {
-  padding-right: calc(23% + 8px);
+  padding-right: calc(24% + 8px);
 }
 .tc-img-box img {
   width: 100%;
@@ -444,7 +444,7 @@ body {
   top: 12px;
   right: 10px;
   bottom: 12px;
-  width: 23%;
+  width: 24%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -458,8 +458,8 @@ body {
 }
 .tc-vertical-barcode-rotator {
   position: absolute;
-  width: 150px;
-  height: 56px;
+  width: 156px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -467,8 +467,8 @@ body {
   transform-origin: center center;
 }
 .tc-vertical-barcode-svg {
-  width: 150px !important;
-  height: 56px !important;
+  width: 156px !important;
+  height: 60px !important;
   display: block;
   transform: none !important;
   image-rendering: auto;

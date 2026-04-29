@@ -162,7 +162,7 @@ body {
 }
 
 .label-photo-box.has-barcode .label-image-box {
-  padding-right: calc(23% + 1mm);
+  padding-right: calc(24% + 1mm);
 }
 
 .label-image-box img {
@@ -180,7 +180,7 @@ body {
   top: 2mm;
   right: 2mm;
   bottom: 2mm;
-  width: 23%;
+  width: 24%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -191,8 +191,8 @@ body {
 
 .label-vertical-barcode-rotator {
   position: absolute;
-  width: 39mm;
-  height: 14mm;
+  width: 40mm;
+  height: 15mm;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -209,8 +209,8 @@ body {
 }
 
 .label-vertical-barcode {
-  width: 39mm !important;
-  height: 14mm !important;
+  width: 40mm !important;
+  height: 15mm !important;
   display: block;
   transform: none !important;
   image-rendering: auto;

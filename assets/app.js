@@ -331,8 +331,8 @@ function initBarcodes() {
     svg.setAttribute('data-bc-done', '1');
     var digits = code.replace(/\D/g, '');
     var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
-    var opts = { width: 2, height: 45, displayValue: true, fontSize: 9, textMargin: 2, textPosition: 'bottom',
-                 margin: 4, background: '#ffffff', lineColor: '#111827' };
+    var opts = { width: 2.4, height: 52, displayValue: true, fontSize: 9, textMargin: 2, textPosition: 'bottom',
+                 margin: 6, background: '#ffffff', lineColor: '#111827' };
     try {
       JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
     } catch(e) {
