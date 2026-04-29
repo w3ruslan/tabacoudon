@@ -341,16 +341,18 @@ body {
 
 .tc-card {
   width: 100%;
+  aspect-ratio: 63.333 / 92.333;
+  container-type: inline-size;
   background: #fff;
-  border-radius: 18px;
+  border-radius: 17px;
   overflow: hidden;
   cursor: pointer;
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 405px;
-  padding: 13px;
-  border: 5px solid transparent;
+  min-height: 0;
+  padding: 5.05%;
+  border: 6px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
     linear-gradient(135deg, var(--cc), #0b3c5d) border-box;
@@ -368,17 +370,17 @@ body {
 .tc-card-top {
   position: relative;
   flex: 0 0 46%;
-  min-height: 176px;
+  min-height: 0;
   background:
     linear-gradient(#fff, #fff) padding-box,
     linear-gradient(135deg, var(--cc), #0b3c5d) border-box;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding: 7px;
+  padding: 1.9%;
   flex-shrink: 0;
   border: 0;
-  border-radius: 14px;
+  border-radius: 13px;
   overflow: hidden;
   background: #fff;
 }
@@ -477,7 +479,7 @@ body {
   flex: 1;
   min-height: 0;
   background: #fff;
-  padding: 10px 0 58px;
+  padding: 2.8% 0 15.5%;
   display: grid;
   grid-template-columns: minmax(0, 56%) 1px minmax(0, 44%);
   gap: 0;
@@ -497,12 +499,12 @@ body {
   min-width: 0;
   min-height: 0;
   display: block;
-  padding-right: 9px;
+  padding-right: 3.2%;
   overflow: hidden;
 }
 
 .tc-card-name {
-  font-size: 17px;
+  font-size: clamp(14px, 6.25cqw, 17px);
   font-weight: 900;
   color: #0f172a;
   line-height: 1.15;
@@ -515,8 +517,8 @@ body {
 }
 
 .tc-card-brand {
-  margin-top: 4px;
-  font-size: 13px;
+  margin-top: 1.4%;
+  font-size: clamp(11px, 4.8cqw, 13px);
   color: var(--cc);
   font-weight: 800;
   letter-spacing: .2px;
@@ -525,19 +527,19 @@ body {
 .tc-bot-tags {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 6px;
+  gap: 2%;
+  margin-top: 2.1%;
   flex-wrap: wrap;
 }
 
 .tc-size-label {
-  font-size: 12px;
+  font-size: clamp(10px, 4.4cqw, 12px);
   font-weight: 900;
   color: var(--cc);
   background: #fff;
   border: 1px solid var(--cc);
   border-radius: 8px;
-  padding: 4px 10px;
+  padding: 1.5% 4%;
   flex-shrink: 0;
 }
 
@@ -560,8 +562,8 @@ body {
   position: absolute;
   left: 16px;
   right: 16px;
-  bottom: 14px;
-  height: 44px;
+  bottom: 3.8%;
+  height: 9.75%;
   border-radius: 12px;
   border: none;
   cursor: pointer;
@@ -581,7 +583,7 @@ body {
 
 /* Price text inside the cart pill */
 .tc-pill-price {
-  font-size: 24px;
+  font-size: clamp(20px, 8.8cqw, 24px);
   font-weight: 900;
   letter-spacing: -.2px;
   pointer-events: none;
@@ -589,7 +591,7 @@ body {
 
 .tc-bot-right {
   grid-column: 3;
-  padding-left: 9px;
+  padding-left: 3.2%;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -606,18 +608,18 @@ body {
 }
 
 .tc-spec-title {
-  height: 24px;
+  height: 15%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9px;
+  border-radius: 8px;
   background: linear-gradient(135deg, var(--cc), #0b3c5d);
   color: #fff;
-  font-size: 12px;
+  font-size: clamp(10px, 4.4cqw, 12px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: .9px;
-  margin-bottom: 2px;
+  margin-bottom: 1.8%;
   text-align: center;
 }
 
@@ -644,15 +646,15 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 7px;
-  min-height: 22px;
+  gap: 4%;
+  min-height: 12%;
   border: 0 !important;
   border-bottom: 1px solid #e5e7eb !important;
   border-radius: 0;
-  padding: 2px 0;
+  padding: 1.4% 0;
   background: transparent !important;
   color: #0f172a !important;
-  font-size: 12px;
+  font-size: clamp(10px, 4.4cqw, 12px);
   font-weight: 750;
   line-height: 1.05;
   word-break: break-word;
@@ -1041,9 +1043,9 @@ body {
 @media (max-width: 600px) {
   .catalog-main { padding: 0 10px; margin: 12px auto 40px; }
   .product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
-  .tc-card { min-height: 405px; height: auto; padding: 8px; border-width: 3px; }
-  .tc-card-top { min-height: 156px; padding: 7px; border-width: 3px; }
-  .tc-card-bot { padding-bottom: 58px; }
+  .tc-card { min-height: 0; height: auto; padding: 5%; border-width: 4px; }
+  .tc-card-top { min-height: 0; padding: 1.9%; border-width: 0; }
+  .tc-card-bot { padding-bottom: 15.5%; }
   .tc-card-name { font-size: 14px; }
   .tc-card-brand { font-size: 11px; }
   .tc-spec-title { height: 24px; font-size: 10px; }
