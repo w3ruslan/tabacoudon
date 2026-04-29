@@ -167,18 +167,20 @@ function categoryColor(?string $color): string {
 document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
   var code = svg.getAttribute('data-barcode');
   if (!code || typeof JsBarcode === 'undefined') return;
+  var digits = code.replace(/\D/g, '');
+  var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
   var opts = {
-    width: 1.2,
-    height: 30,
+    width: 1.35,
+    height: 38,
     displayValue: true,
-    fontSize: 9,
-    textMargin: 1,
-    margin: 2,
+    fontSize: 8,
+    textMargin: 2,
+    margin: 10,
     background: '#ffffff',
     lineColor: '#111827'
   };
   try {
-    JsBarcode(svg, code, Object.assign({}, opts, { format: 'auto' }));
+    JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
   } catch (e) {
     try { JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' })); }
     catch (e2) { svg.closest('.label-barcode').style.display = 'none'; }
