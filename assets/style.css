@@ -496,34 +496,44 @@ body {
   flex-shrink: 0;
 }
 
-/* Cart button — circle, pinned to card BOTTOM-LEFT */
+/* Cart + price pill — oval, pinned to card BOTTOM-LEFT */
 .tc-cart-btn {
   position: absolute;
   bottom: 12px;
   left: 12px;
-  width: 38px;
   height: 38px;
-  border-radius: 50%;
+  border-radius: 20px;
   border: none;
   cursor: pointer;
   font-size: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 7px;
+  padding: 0 14px 0 11px;
   color: #fff;
   z-index: 5;
   box-shadow: 0 4px 14px rgba(0,0,0,.25);
   transition: transform .18s cubic-bezier(.34,1.56,.64,1), opacity .15s;
+  white-space: nowrap;
 }
-.tc-cart-btn:hover  { transform: scale(1.15); }
-.tc-cart-btn:active { transform: scale(.9); }
+.tc-cart-btn:hover  { transform: scale(1.06); }
+.tc-cart-btn:active { transform: scale(.93); }
+
+/* Price text inside the cart pill */
+.tc-pill-price {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -.2px;
+  pointer-events: none;
+}
 
 /* Right column — equal flex so divider is centered */
 .tc-bot-right {
   flex: 1;
   border-left: 1px solid #f0f0f0;
   padding-left: 9px;
-  padding-bottom: 46px;         /* clear price pill at bottom-right */
+  padding-bottom: 12px;
   min-width: 0;
   overflow: hidden;
 }

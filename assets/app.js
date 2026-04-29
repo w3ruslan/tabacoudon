@@ -31,11 +31,12 @@ function addToCart(id, name, price, size, event) {
   // Flash feedback on button
   var btn = document.querySelector('.tc-cart-btn[data-id="' + id + '"]');
   if (btn) {
-    var origBg = btn.style.background;
+    var origBg   = btn.style.background;
+    var origHTML = btn.innerHTML;
     btn.innerHTML = '✓';
     btn.style.background = '#2ecc71';
     setTimeout(function() {
-      btn.innerHTML = '🛒';
+      btn.innerHTML = origHTML;
       btn.style.background = origBg;
     }, 900);
   }
@@ -283,9 +284,10 @@ function renderCard(p) {
     + '</div>'
     + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
     + '</div>'
-    // ── Absolute overlays: cart btn (left) + price (right) ──
-    + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒</button>'
-    + (price ? '<span class="tc-price-tag" style="background:' + catColor + '">' + price + '</span>' : '')
+    // ── Absolute overlay: combined cart + price pill (bottom-left) ──
+    + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒'
+    + (price ? '<span class="tc-pill-price">' + price + '</span>' : '')
+    + '</button>'
     + '</div>';
 }
 
@@ -296,7 +298,7 @@ function initBarcodes() {
     var code = svg.getAttribute('data-barcode');
     if (!code || svg.getAttribute('data-bc-done')) return;
     svg.setAttribute('data-bc-done', '1');
-    var opts = { width: 1.5, height: 30, displayValue: true, fontSize: 8,
+    var opts = { width: 1.5, height: 48, displayValue: true, fontSize: 8,
                  margin: 10, background: '#ffffff', lineColor: '#000000' };
     try {
       JsBarcode(svg, code, Object.assign({}, opts, { format: 'auto' }));
