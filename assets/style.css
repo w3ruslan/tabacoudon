@@ -494,11 +494,11 @@ body {
   flex-shrink: 0;
 }
 
-/* Cart button — circle, pinned to card bottom-right */
+/* Cart button — circle, pinned to card BOTTOM-LEFT */
 .tc-cart-btn {
   position: absolute;
   bottom: 12px;
-  right: 12px;
+  left: 12px;
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -516,13 +516,11 @@ body {
 .tc-cart-btn:hover  { transform: scale(1.15); }
 .tc-cart-btn:active { transform: scale(.9); }
 
-/* Right column — 8px label / 11px values (8 × φ ≈ 12.9) */
+/* Right column — equal flex so divider is centered */
 .tc-bot-right {
-  width: 40%;
+  flex: 1;
   border-left: 1px solid #f0f0f0;
   padding-left: 9px;
-  padding-bottom: 46px; /* clear the absolute cart btn */
-  flex-shrink: 0;
   min-width: 0;
   overflow: hidden;
 }
@@ -537,15 +535,20 @@ body {
   margin-bottom: 5px;
 }
 
-/* 11px — value tier */
-.tc-spec-val {
-  font-size: 11px;
-  color: #333;
-  font-weight: 600;
-  line-height: 1.6;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Flavor chips — oval, category color */
+.tc-spec-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tc-spec-chip {
+  display: block;
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 /* ══════════════════════════════════════════

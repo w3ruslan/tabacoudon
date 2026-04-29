@@ -252,11 +252,14 @@ function renderCard(p) {
   var specsHtml = '';
   if (flavors.length) {
     specsHtml = '<div class="tc-spec-title">Saveur</div>'
+      + '<div class="tc-spec-chips">'
       + flavors.slice(0, 4).map(function(f){
-          return '<div class="tc-spec-val">' + f + '</div>';
-        }).join('');
+          return '<span class="tc-spec-chip" style="background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '35">' + f + '</span>';
+        }).join('')
+      + '</div>';
   } else if (catLabel) {
-    specsHtml = '<div class="tc-spec-title">Catégorie</div><div class="tc-spec-val">' + catLabel + '</div>';
+    specsHtml = '<div class="tc-spec-title">Catégorie</div>'
+      + '<div class="tc-spec-chips"><span class="tc-spec-chip" style="background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '35">' + catLabel + '</span></div>';
   }
 
   return '<div class="tc-card" data-id="' + p.id + '" style="--cc:' + catColor + '">'
