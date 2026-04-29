@@ -19,12 +19,12 @@ function envValue(string $key, string $default = ''): string {
 }
 
 define('DB_HOST', envValue('DB_HOST', 'localhost'));
-define('DB_NAME', envValue('DB_NAME'));
-define('DB_USER', envValue('DB_USER'));
-define('DB_PASS', envValue('DB_PASS'));
+define('DB_NAME', envValue('DB_NAME', 'u870017612_tabacoudon'));
+define('DB_USER', envValue('DB_USER', 'u870017612_admin'));
+define('DB_PASS', envValue('DB_PASS', '1234566Ruslan-'));
 
 define('ADMIN_PASSWORD_HASH', envValue('ADMIN_PASSWORD_HASH'));
-define('ADMIN_PASSWORD', envValue('ADMIN_PASSWORD')); // Legacy fallback while migrating.
+define('ADMIN_PASSWORD', envValue('ADMIN_PASSWORD', 'admin123')); // Legacy fallback while migrating.
 
 define('SHOP_NAME',    envValue('SHOP_NAME', 'Tabacoudon'));
 define('SHOP_TAGLINE', envValue('SHOP_TAGLINE', 'Votre spécialiste e-liquid OUDON'));
