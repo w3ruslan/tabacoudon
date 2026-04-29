@@ -438,7 +438,7 @@ body {
   flex: 1;
   min-height: 0;
   background: #fff;
-  padding: 10px 0 90px;
+  padding: 10px 0 112px;
   display: grid;
   grid-template-columns: minmax(0, 56%) 1px minmax(0, 44%);
   gap: 0;
@@ -519,8 +519,8 @@ body {
 /* Cart + price pill — oval, pinned to card BOTTOM-LEFT */
 .tc-cart-btn {
   position: absolute;
-  bottom: 12px;
-  right: 16px;
+  left: 16px;
+  bottom: 74px;
   width: 96px;
   height: 30px;
   border-radius: 9px;
@@ -551,8 +551,8 @@ body {
   position: absolute;
   left: 16px;
   right: 16px;
-  bottom: 48px;
-  height: 44px;
+  bottom: 14px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1030,7 +1030,7 @@ body {
   .product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
   .tc-card { min-height: 405px; height: auto; padding: 8px; border-width: 3px; }
   .tc-card-top { min-height: 156px; padding: 7px; border-width: 3px; }
-  .tc-card-bot { padding-bottom: 90px; }
+  .tc-card-bot { padding-bottom: 112px; }
   .tc-card-name { font-size: 14px; }
   .tc-card-brand { font-size: 11px; }
   .tc-spec-title { height: 24px; font-size: 10px; }
@@ -1048,5 +1048,4 @@ body {
 @media print {
   .tc-img-box  { box-shadow: none !important; }
   .tc-card     { box-shadow: none !important; }
-  .tc-cart-btn { display: none !important; }   /* no cart button on printouts */
 }

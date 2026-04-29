@@ -197,7 +197,7 @@ body {
   min-height: 0;
   display: block;
   padding-top: 2mm;
-  padding-bottom: 23mm;
+  padding-bottom: 25mm;
   overflow: hidden;
   background: #fff;
 }
@@ -355,8 +355,8 @@ body {
   position: absolute;
   left: 4mm;
   right: 4mm;
-  bottom: 9mm;
-  height: 12mm;
+  bottom: 2mm;
+  height: 14mm;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -381,8 +381,9 @@ body {
 
 .label-price {
   position: absolute;
+  left: 4mm;
   right: 4mm;
-  bottom: 3mm;
+  bottom: 17mm;
   width: 28mm;
   height: 6mm;
   min-height: 6mm;
