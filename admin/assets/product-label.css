@@ -144,13 +144,16 @@ body {
   overflow: hidden;
   border: 0.3mm solid #e6e6e6;
   border-radius: 2.5mm;
-  background: #f7f7f7;
+  background: #ffffff;
 }
 
 .label-photo-box img {
   width: 100%;
   height: 100%;
+  max-width: 92%;
+  max-height: 92%;
   object-fit: contain;
+  object-position: center center;
   display: block;
 }
 
