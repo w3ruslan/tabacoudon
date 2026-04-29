@@ -53,7 +53,7 @@ function productNotes(array $product): array {
     $parts = preg_split('/[,;|\n]+/', (string)$source);
     $parts = array_map('trim', $parts ?: []);
     $parts = array_values(array_filter($parts, fn($part) => $part !== ''));
-    return array_slice($parts, 0, 4);
+    return array_slice($parts, 0, 3);
 }
 
 function categoryTheme(?string $category): string {
@@ -96,7 +96,7 @@ function categoryTheme(?string $category): string {
       $size = trim((string)($p['size'] ?? ''));
       $barcode = trim((string)($p['barcode'] ?? ''));
       $category = trim((string)($p['category_name'] ?? ''));
-      $price = ($p['price'] ?? '') !== '' && $p['price'] !== null ? number_format((float)$p['price'], 2) . ' €' : '';
+      $price = ($p['price'] ?? '') !== '' && $p['price'] !== null ? '€' . number_format((float)$p['price'], 2) : '';
       $image = imagePath($p['image_url'] ?? '');
       $notes = productNotes($p);
       $theme = categoryTheme($category);
@@ -116,34 +116,39 @@ function categoryTheme(?string $category): string {
           <?php endif; ?>
         </header>
 
-        <section class="label-info-grid">
-          <div class="label-left">
-            <div>
-              <h2><?= e($name) ?></h2>
-              <?php if ($brand): ?><p class="label-brand"><?= e($brand) ?></p><?php endif; ?>
+        <section class="label-info-grid <?= $notes ? 'label-has-notes' : 'label-no-notes' ?>">
+          <div class="label-detail-row">
+            <div class="label-left">
+              <div>
+                <h2><?= e($name) ?></h2>
+                <?php if ($brand): ?><p class="label-brand"><?= e($brand) ?></p><?php endif; ?>
+              </div>
+
+              <div class="label-meta-row">
+                <?php if ($size): ?><span class="label-size"><?= e($size) ?></span><?php endif; ?>
+              </div>
+
+              <?php if ($barcode): ?>
+                <div class="label-barcode">
+                  <svg data-barcode="<?= e($barcode) ?>"></svg>
+                </div>
+              <?php endif; ?>
             </div>
 
-            <?php if ($size): ?><span class="label-size"><?= e($size) ?></span><?php endif; ?>
-
-            <?php if ($barcode): ?>
-              <div class="label-barcode">
-                <svg data-barcode="<?= e($barcode) ?>"></svg>
+            <?php if ($notes): ?>
+            <aside class="label-notes">
+              <h3>NOTES</h3>
+              <div class="label-note-list">
+                <?php foreach ($notes as $note): ?>
+                  <span><?= e($note) ?></span>
+                <?php endforeach; ?>
               </div>
+            </aside>
             <?php endif; ?>
-
-            <?php if ($price): ?><div class="label-price"><?= e($price) ?></div><?php endif; ?>
           </div>
 
-          <?php if ($notes): ?>
-          <aside class="label-notes">
-            <h3>NOTES</h3>
-            <div class="label-note-list">
-              <?php foreach ($notes as $note): ?>
-                <span><?= e($note) ?></span>
-              <?php endforeach; ?>
-            </div>
-          </aside>
-          <?php endif; ?>
+          <?php if ($price): ?><div class="label-price"><?= e($price) ?></div><?php endif; ?>
+
         </section>
       </div>
     </article>
@@ -157,10 +162,12 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
   var code = svg.getAttribute('data-barcode');
   if (!code || typeof JsBarcode === 'undefined') return;
   var opts = {
-    width: 1.45,
-    height: 42,
-    displayValue: false,
-    margin: 4,
+    width: 1.2,
+    height: 30,
+    displayValue: true,
+    fontSize: 9,
+    textMargin: 1,
+    margin: 2,
     background: '#ffffff',
     lineColor: '#111827'
   };
@@ -171,6 +178,7 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
     catch (e2) { svg.closest('.label-barcode').style.display = 'none'; }
   }
 });
+console.log('Product label size: 63.333mm x 92.333mm; A4 grid: 3 columns x 3 rows; page padding: 6mm; gutter: 4mm.');
 </script>
 </body>
 </html>
