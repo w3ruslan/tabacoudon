@@ -436,8 +436,8 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
   var code = svg.getAttribute('data-barcode');
   if (!code) return;
   var opts = {
-    width: 1.5, height: 30,
-    displayValue: true, fontSize: 8,
+    width: 1.5, height: 48,
+    displayValue: false,
     margin: 10, background: '#ffffff', lineColor: '#000000'
   };
   try {

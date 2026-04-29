@@ -297,7 +297,7 @@ function initBarcodes() {
     var code = svg.getAttribute('data-barcode');
     if (!code || svg.getAttribute('data-bc-done')) return;
     svg.setAttribute('data-bc-done', '1');
-    var opts = { width: 1.5, height: 48, displayValue: true, fontSize: 8,
+    var opts = { width: 1.5, height: 48, displayValue: false,
                  margin: 10, background: '#ffffff', lineColor: '#000000' };
     try {
       JsBarcode(svg, code, Object.assign({}, opts, { format: 'auto' }));
