@@ -155,15 +155,16 @@ $pages = array_chunk($products, 9);
 
     /* Price pill top-right */
     .tc-price-tag {
-      position: absolute; top: 2.1mm; right: 2.1mm;
-      background: rgba(0,0,0,.65);
+      position: absolute; top: 1.8mm; right: 1.8mm;
+      background: rgba(0,0,0,.72);
       color: #fff;
-      font-size: 11.25pt;            /* = 15px */
+      font-size: 8pt;                /* compact — fits corner without touching photo */
       font-weight: 800;
-      padding: 1mm 2.6mm;
+      padding: 0.7mm 1.8mm;
       border-radius: 10mm;
-      letter-spacing: -.3px;
+      letter-spacing: -.2px;
       white-space: nowrap;
+      z-index: 3;                    /* always above image box */
     }
 
     /* ── Bottom section ── */
@@ -177,16 +178,18 @@ $pages = array_chunk($products, 9);
       overflow: hidden;
     }
 
-    /* Left column */
+    /* Left column — centered */
     .tc-bot-left {
       flex: 1;
       display: flex; flex-direction: column;
-      gap: 1.05mm;                   /* = 4px */
+      align-items: center;           /* center children horizontally */
+      text-align: center;
+      gap: 1.05mm;
       min-width: 0;
     }
 
     .tc-card-name {
-      font-size: 10.5pt;             /* = 14px */
+      font-size: 10.5pt;
       font-weight: 900;
       color: #1a1a2e;
       line-height: 1.2;
@@ -195,26 +198,29 @@ $pages = array_chunk($products, 9);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+      text-align: center;
     }
 
     .tc-card-brand {
-      font-size: 6.75pt;             /* = 9px */
+      font-size: 6.75pt;
       color: #bbb; font-weight: 600;
       letter-spacing: .2px;
+      text-align: center;
     }
 
     .tc-bot-tags {
       display: flex; align-items: center;
+      justify-content: center;       /* center pills */
       gap: 1mm; flex-wrap: wrap;
       margin-top: 0.5mm;
     }
 
     .tc-size-label {
-      font-size: 6.75pt;             /* = 9px */
+      font-size: 6.75pt;
       font-weight: 700; color: #666;
       background: #f0f0f0;
-      border-radius: 1.3mm;          /* = 5px */
-      padding: 0.5mm 1.85mm;        /* = 2px 7px */
+      border-radius: 1.3mm;
+      padding: 0.5mm 1.85mm;
     }
 
     .tc-sc-pill {
@@ -224,36 +230,50 @@ $pages = array_chunk($products, 9);
       border-radius: 5mm; padding: 0.5mm 1.6mm;
     }
 
-    /* Barcode */
-    .tc-barcode-area { margin-top: 1.5mm; }
-    .tc-barcode-svg  { width: 100%; max-width: 28mm; height: auto; display: block; }
+    /* Barcode — centered */
+    .tc-barcode-area {
+      margin-top: 1.5mm;
+      display: flex; justify-content: center;
+      width: 100%;
+    }
+    .tc-barcode-svg { width: 100%; max-width: 28mm; height: auto; display: block; }
 
-    /* Right column */
+    /* Right column — centered */
     .tc-bot-right {
       flex: 1;
       border-left: 0.5px solid #f0f0f0;
       padding-left: 2.4mm;
       min-width: 0; overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center;           /* center children */
+      text-align: center;
     }
 
     .tc-spec-title {
-      font-size: 6pt;                /* = 8px */
+      font-size: 6pt;
       font-weight: 900;
       color: var(--cc);
       text-transform: uppercase; letter-spacing: .9px;
       margin-bottom: 1.3mm;
+      text-align: center;
     }
 
-    .tc-spec-chips { display: flex; flex-direction: column; gap: 0.8mm; }
+    .tc-spec-chips {
+      display: flex; flex-direction: column;
+      align-items: center;           /* center each chip */
+      gap: 0.8mm;
+      width: 100%;
+    }
 
     .tc-spec-chip {
       display: block;
-      border-radius: 5.3mm;          /* = 20px */
-      padding: 0.8mm 2.4mm;          /* = 3px 9px */
-      font-size: 6.75pt;             /* = 9px */
+      border-radius: 5.3mm;
+      padding: 0.8mm 2.4mm;
+      font-size: 6.75pt;
       font-weight: 700;
       line-height: 1.35;
       word-break: break-word;
+      text-align: center;
     }
   </style>
 </head>
