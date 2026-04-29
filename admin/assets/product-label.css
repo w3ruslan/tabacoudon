@@ -163,14 +163,14 @@ body {
 }
 
 .label-photo-box.has-barcode .label-image-box {
-  padding-right: 13mm;
+  padding-right: calc(20% + 1mm);
 }
 
 .label-image-box img {
   width: 100%;
   height: 100%;
-  max-width: 94%;
-  max-height: 94%;
+  max-width: 99%;
+  max-height: 99%;
   object-fit: contain;
   object-position: center center;
   display: block;
@@ -181,7 +181,7 @@ body {
   top: 2mm;
   right: 2mm;
   bottom: 2mm;
-  width: 12mm;
+  width: 20%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -192,8 +192,8 @@ body {
 
 .label-vertical-barcode-rotator {
   position: absolute;
-  width: 38mm;
-  height: 12mm;
+  width: 42mm;
+  height: 14mm;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -210,8 +210,8 @@ body {
 }
 
 .label-vertical-barcode {
-  width: 38mm !important;
-  height: 12mm !important;
+  width: 42mm !important;
+  height: 14mm !important;
   display: block;
   transform: none !important;
   image-rendering: auto;
@@ -328,7 +328,7 @@ body {
 .label-notes h3 {
   height: 6mm;
   min-height: 6mm;
-  margin-bottom: 1mm;
+  margin-bottom: 1.6mm;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -345,6 +345,7 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  gap: 1.2mm;
   overflow: hidden;
 }
 
@@ -352,12 +353,12 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1mm;
+  gap: 1.4mm;
   min-height: 5mm;
-  padding: 0.7mm 0;
-  border-bottom: 0.25mm solid #d1d5db;
+  padding: 0 0 0.6mm;
+  border-bottom: 0.3mm solid #e5e7eb;
   color: var(--ink);
-  font-size: 6.8pt;
+  font-size: 7pt;
   font-weight: 750;
   line-height: 1.15;
   text-align: left;
@@ -366,9 +367,9 @@ body {
 
 .label-note-list span::before {
   content: "";
-  width: 1.3mm;
-  height: 1.3mm;
-  flex: 0 0 1.3mm;
+  width: 1mm;
+  height: 1mm;
+  flex: 0 0 1mm;
   border-radius: 50%;
   background: var(--category-color);
 }
