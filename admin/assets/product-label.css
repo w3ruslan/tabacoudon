@@ -143,7 +143,7 @@ body {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: 78% 22%;
+  grid-template-columns: 80% 20%;
   align-items: stretch;
   overflow: hidden;
   border: 0.3mm solid #e6e6e6;
@@ -172,13 +172,14 @@ body {
 }
 
 .label-vertical-barcode-box {
+  width: 100%;
   min-width: 0;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 1.5mm;
+  padding: 2mm;
   background: #ffffff;
 }
 
@@ -191,9 +192,10 @@ body {
 }
 
 .label-vertical-barcode {
-  width: 36mm;
-  height: 12mm;
+  width: 40mm;
+  height: 8mm;
   display: block;
+  flex: 0 0 auto;
   transform: rotate(90deg);
   transform-origin: center center;
   image-rendering: auto;

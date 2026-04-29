@@ -168,8 +168,8 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
   var digits = code.replace(/\D/g, '');
   var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
   var opts = {
-    width: 2,
-    height: 48,
+    width: 2.5,
+    height: 60,
     displayValue: false,
     margin: 4,
     background: '#ffffff',
