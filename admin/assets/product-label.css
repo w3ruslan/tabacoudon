@@ -95,14 +95,14 @@ body {
   height: var(--label-height);
   display: flex;
   flex-direction: column;
-  padding: 3mm;
+  padding: 3.2mm;
   overflow: hidden;
-  border: 1.2mm solid transparent;
-  border-radius: 3.5mm;
+  border: 1.45mm solid transparent;
+  border-radius: 4mm;
   background:
     linear-gradient(#fff, #fff) padding-box,
     linear-gradient(135deg, var(--category-color), var(--navy)) border-box;
-  box-shadow: 0 0.6mm 1.2mm rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0.7mm 1.4mm rgba(0, 0, 0, 0.07);
   break-inside: avoid;
   page-break-inside: avoid;
 }
@@ -131,13 +131,11 @@ body {
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding: 2mm;
+  padding: 1.2mm;
   overflow: hidden;
-  border: 1.2mm solid transparent;
-  border-radius: 3.5mm;
-  background:
-    linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(135deg, var(--category-color), var(--navy)) border-box;
+  border: 0;
+  border-radius: 3mm;
+  background: #fff;
 }
 
 .label-photo-box {
@@ -148,8 +146,8 @@ body {
   align-items: stretch;
   justify-content: stretch;
   overflow: hidden;
-  border: 0.3mm solid #e6e6e6;
-  border-radius: 2.5mm;
+  border: 0.25mm solid color-mix(in srgb, var(--category-color) 58%, var(--navy));
+  border-radius: 2.4mm;
   background: #ffffff;
 }
 
