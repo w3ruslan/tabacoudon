@@ -98,13 +98,14 @@ $pages = array_chunk($products, 9);
 
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      body { background: #fff; }
+      /* Force white page — must be on html AND body */
+      html, body { background: white !important; background-color: white !important; }
       .toolbar { display: none !important; }
-      .pages-wrap { padding: 0; }
+      .pages-wrap { padding: 0; background: white !important; }
       .page-sheet {
         width: 186mm; height: 270mm;
         padding: 0; margin: 0;
-        background: #fff;
+        background: white !important;
         display: grid;
         grid-template-columns: repeat(3, 60mm);
         grid-template-rows: repeat(3, 88mm);
@@ -112,6 +113,12 @@ $pages = array_chunk($products, 9);
         page-break-after: always; break-after: page;
       }
       .page-sheet:last-child { page-break-after: avoid; break-after: avoid; }
+      /* CRITICAL: box-shadow bleeds beyond card bounds and fills the 3mm
+         gaps with dark color — replace with a hairline border in print */
+      .tc-card {
+        box-shadow: none !important;
+        border: 0.3mm solid rgba(0,0,0,.15) !important;
+      }
     }
     @page { size: A4 portrait; margin: 13.5mm 12mm; }
 
