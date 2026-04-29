@@ -680,7 +680,7 @@ body {
   z-index: 800;
   display: flex; align-items: center; justify-content: center;
   padding: 16px;
-  perspective: 1800px;
+  perspective: 2200px;
 }
 
 .dt-bg {
@@ -694,22 +694,23 @@ body {
   position: relative;
   width: min(92vw, 420px);
   aspect-ratio: 63.333 / 92.333;
-  transform: scale(.94) rotateY(0deg);
+  transform: translateY(14px) scale(.98) rotateY(0deg);
   transform-origin: center center;
   transform-style: preserve-3d;
   opacity: 0;
   transition:
-    transform .62s cubic-bezier(.2,.75,.2,1),
+    transform .52s cubic-bezier(.22,1,.36,1),
     opacity .16s ease;
+  will-change: transform, opacity;
 }
 .dt-flip-stage.dt-in {
-  transform: scale(1) rotateY(180deg);
+  transform: translateY(0) scale(1) rotateY(180deg);
   opacity: 1;
 }
 .dt-flip-stage.dt-out {
-  transform: scale(.94) rotateY(0deg);
+  transform: translateY(14px) scale(.98) rotateY(0deg);
   opacity: 0;
-  transition-duration: .32s;
+  transition-duration: .28s;
 }
 
 .dt-card-face {
@@ -730,6 +731,7 @@ body {
   height: 100%;
   pointer-events: none;
   transform: none !important;
+  box-shadow: none;
 }
 .dt-card-back {
   transform: rotateY(180deg) translateZ(1px);
@@ -745,6 +747,17 @@ body {
   border-radius: 24px;
   overflow-y: auto;
   box-shadow: none;
+}
+
+@media (min-width: 701px) {
+  #detailOverlay {
+    padding: 24px;
+  }
+
+  .dt-flip-stage {
+    width: min(74vh * .685921, 420px);
+    max-height: 74vh;
+  }
 }
 
 /* Header coloré */
@@ -1104,6 +1117,45 @@ body {
   .tc-namebar { height: 58px; padding: 7px 9px; }
   .header-inner { padding: 12px 16px; }
   .logo-tag { display: none; }
+
+  #detailOverlay {
+    align-items: flex-end;
+    padding: 12px;
+    perspective: none;
+  }
+
+  .dt-flip-stage,
+  .dt-flip-stage.dt-in,
+  .dt-flip-stage.dt-out {
+    width: 100%;
+    max-width: 420px;
+    height: min(88vh, 720px);
+    aspect-ratio: auto;
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    transition: opacity .18s ease;
+  }
+
+  .dt-card-front {
+    display: none;
+  }
+
+  .dt-card-back {
+    transform: none;
+    border-radius: 22px 22px 18px 18px;
+  }
+
+  .dt-card-face {
+    border-radius: 22px 22px 18px 18px;
+  }
+
+  .dt-panel {
+    border-radius: 22px 22px 18px 18px;
+  }
+
+  .dt-header {
+    padding-top: 20px;
+  }
 }
 
 /* ── Print: remove shadows so photo doesn't get dark halo on paper ── */
