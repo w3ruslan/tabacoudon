@@ -453,13 +453,21 @@ body {
 .tc-vertical-barcode-wrap.no-barcode {
   display: none;
 }
-.tc-vertical-barcode-svg {
+.tc-vertical-barcode-rotator {
   position: absolute;
-  width: 38mm !important;
-  height: 12mm !important;
-  display: block;
+  width: 150px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transform: rotate(90deg) !important;
   transform-origin: center center;
+}
+.tc-vertical-barcode-svg {
+  width: 150px !important;
+  height: 48px !important;
+  display: block;
+  transform: none !important;
   image-rendering: auto;
 }
 
@@ -633,15 +641,33 @@ body {
   overflow: hidden;
 }
 .tc-spec-chip {
-  display: block;
-  border-radius: 8px;
-  padding: 6px 7px;
-  background: #f9fafb !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 38px;
+  border: 0 !important;
+  border-bottom: 1px solid #d1d5db !important;
+  border-radius: 0;
+  padding: 7px 0;
+  background: transparent !important;
+  color: #0f172a !important;
   font-size: 12px;
   font-weight: 750;
   line-height: 1.15;
   word-break: break-word;
-  text-align: center;
+  text-align: left;
+}
+.tc-spec-chip::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: var(--cc);
+}
+.tc-spec-chip:last-child {
+  border-bottom: 0 !important;
 }
 
 /* ══════════════════════════════════════════

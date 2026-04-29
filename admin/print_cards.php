@@ -120,7 +120,9 @@ function categoryColor(?string $color): string {
             </div>
             <div class="label-vertical-barcode-box <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
               <?php if ($barcode): ?>
-                <svg class="label-vertical-barcode" data-barcode="<?= e($barcode) ?>"></svg>
+                <div class="label-vertical-barcode-rotator">
+                  <svg class="label-vertical-barcode" data-barcode="<?= e($barcode) ?>"></svg>
+                </div>
               <?php endif; ?>
             </div>
           </div>
@@ -170,7 +172,9 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
   var opts = {
     width: 2,
     height: 45,
-    displayValue: false,
+    displayValue: true,
+    fontSize: 10,
+    textMargin: 2,
     margin: 4,
     background: '#ffffff',
     lineColor: '#111827'

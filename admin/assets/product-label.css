@@ -190,6 +190,17 @@ body {
   background: #ffffff;
 }
 
+.label-vertical-barcode-rotator {
+  position: absolute;
+  width: 38mm;
+  height: 12mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg) !important;
+  transform-origin: center center;
+}
+
 .label-vertical-barcode-box.no-barcode {
   visibility: hidden;
 }
@@ -199,12 +210,10 @@ body {
 }
 
 .label-vertical-barcode {
-  position: absolute;
   width: 38mm !important;
   height: 12mm !important;
   display: block;
-  transform: rotate(90deg) !important;
-  transform-origin: center center;
+  transform: none !important;
   image-rendering: auto;
 }
 
@@ -340,18 +349,32 @@ body {
 }
 
 .label-note-list span {
-  display: block;
-  margin-bottom: 0.8mm;
-  padding: 1mm;
-  border: 0.3mm solid #d1d5db;
-  border-radius: 2mm;
-  background: #f9fafb;
-  color: var(--category-color);
-  font-size: 6.5pt;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1mm;
+  min-height: 5mm;
+  padding: 0.7mm 0;
+  border-bottom: 0.25mm solid #d1d5db;
+  color: var(--ink);
+  font-size: 6.8pt;
   font-weight: 750;
   line-height: 1.15;
-  text-align: center;
+  text-align: left;
   overflow-wrap: anywhere;
+}
+
+.label-note-list span::before {
+  content: "";
+  width: 1.3mm;
+  height: 1.3mm;
+  flex: 0 0 1.3mm;
+  border-radius: 50%;
+  background: var(--category-color);
+}
+
+.label-note-list span:last-child {
+  border-bottom: 0;
 }
 
 .label-no-notes .label-detail-row {

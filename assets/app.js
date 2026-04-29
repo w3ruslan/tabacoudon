@@ -299,7 +299,7 @@ function renderCard(p) {
     + '<div class="tc-img-box ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
     + imgHtml
     + '<div class="tc-vertical-barcode-wrap ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
-    + (barcode ? '<svg class="tc-vertical-barcode-svg" data-barcode="' + barcode + '"></svg>' : '')
+    + (barcode ? '<div class="tc-vertical-barcode-rotator"><svg class="tc-vertical-barcode-svg" data-barcode="' + barcode + '"></svg></div>' : '')
     + '</div>'
     + '</div>'
     + '</div>'
@@ -331,7 +331,7 @@ function initBarcodes() {
     svg.setAttribute('data-bc-done', '1');
     var digits = code.replace(/\D/g, '');
     var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
-    var opts = { width: 2, height: 45, displayValue: false,
+    var opts = { width: 2, height: 45, displayValue: true, fontSize: 10, textMargin: 2,
                  margin: 4, background: '#ffffff', lineColor: '#111827' };
     try {
       JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
