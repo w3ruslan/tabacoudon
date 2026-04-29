@@ -199,11 +199,11 @@ body {
 }
 
 .label-vertical-barcode {
-  width: 36mm;
-  height: 8mm;
+  position: absolute;
+  width: 38mm !important;
+  height: 12mm !important;
   display: block;
-  flex: 0 0 auto;
-  transform: rotate(90deg);
+  transform: rotate(90deg) !important;
   transform-origin: center center;
   image-rendering: auto;
 }

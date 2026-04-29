@@ -454,11 +454,11 @@ body {
   display: none;
 }
 .tc-vertical-barcode-svg {
-  width: 150px;
-  height: 32px;
+  position: absolute;
+  width: 38mm !important;
+  height: 12mm !important;
   display: block;
-  flex: 0 0 auto;
-  transform: rotate(90deg);
+  transform: rotate(90deg) !important;
   transform-origin: center center;
   image-rendering: auto;
 }

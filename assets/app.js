@@ -331,7 +331,7 @@ function initBarcodes() {
     svg.setAttribute('data-bc-done', '1');
     var digits = code.replace(/\D/g, '');
     var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
-    var opts = { width: 2.5, height: 60, displayValue: false,
+    var opts = { width: 2, height: 45, displayValue: false,
                  margin: 4, background: '#ffffff', lineColor: '#111827' };
     try {
       JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
