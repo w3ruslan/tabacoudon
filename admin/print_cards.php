@@ -205,14 +205,14 @@ $pages = array_chunk($products, 9);
       font-size: 8pt; opacity: .8;
     }
 
-    /* Price pill bottom-right of card */
+    /* Price pill — bottom-LEFT (matches customer card pill position) */
     .tc-price-tag {
-      position: absolute; bottom: 2.5mm; right: 2.5mm;
+      position: absolute; bottom: 2.5mm; left: 2.5mm;
       background: var(--cc);
       color: #fff;
       font-size: 10pt;
       font-weight: 900;
-      padding: 1mm 2.4mm;
+      padding: 1mm 2.8mm;
       border-radius: 10mm;
       letter-spacing: -.2px;
       white-space: nowrap;
@@ -237,6 +237,7 @@ $pages = array_chunk($products, 9);
       text-align: center;
       gap: 1.05mm;
       min-width: 0;
+      padding-bottom: 8mm;           /* clear the price pill at bottom-left */
     }
 
     .tc-card-name {
@@ -294,7 +295,7 @@ $pages = array_chunk($products, 9);
       flex: 1;
       border-left: 0.5px solid #f0f0f0;
       padding-left: 2.4mm;
-      padding-bottom: 7mm;           /* clear the absolute price pill */
+      padding-bottom: 3mm;
       min-width: 0; overflow: hidden;
       display: flex; flex-direction: column;
       align-items: center;           /* center children */
@@ -364,7 +365,6 @@ $pages = array_chunk($products, 9);
 
       <!-- ── Top ── -->
       <div class="tc-card-top">
-        <?php if ($icon): ?><span class="tc-cat-icon-sm"><?= $icon ?></span><?php endif; ?>
         <div class="tc-img-box">
           <?php if ($img): ?>
             <img src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($p['name']) ?>">

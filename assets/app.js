@@ -268,7 +268,6 @@ function renderCard(p) {
   return '<div class="tc-card" data-id="' + p.id + '" style="--cc:' + catColor + '">'
     // ── Top gradient + image (price moved to bottom) ──
     + '<div class="tc-card-top">'
-    + (catIcon ? '<span class="tc-cat-icon-sm">' + catIcon + '</span>' : '')
     + '<div class="tc-img-box">' + imgHtml + '</div>'
     + '</div>'
     // ── Bottom two columns ──
