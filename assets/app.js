@@ -31,12 +31,11 @@ function addToCart(id, name, price, size, event) {
   // Flash feedback on button
   var btn = document.querySelector('.tc-cart-btn[data-id="' + id + '"]');
   if (btn) {
-    var origBg   = btn.style.background;
-    var origText = btn.innerHTML;
-    btn.innerHTML = '✓ Ajouté !';
+    var origBg = btn.style.background;
+    btn.innerHTML = '✓';
     btn.style.background = '#2ecc71';
     setTimeout(function() {
-      btn.innerHTML = origText;
+      btn.innerHTML = '🛒';
       btn.style.background = origBg;
     }, 900);
   }
@@ -272,14 +271,14 @@ function renderCard(p) {
     + '<div class="tc-bot-left">'
     + '<div class="tc-card-name">' + p.name + '</div>'
     + (p.brand ? '<div class="tc-card-brand">' + p.brand + '</div>' : '')
-    + '<div class="tc-bot-actions">'
+    + '<div class="tc-bot-tags">'
     + (p.size ? '<span class="tc-size-label">' + p.size + '</span>' : '')
     + surCmde
     + '</div>'
-    + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒 Ajouter</button>'
     + '</div>'
     + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
     + '</div>'
+    + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒</button>'
     + '</div>';
 }
 

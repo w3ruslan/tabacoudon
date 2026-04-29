@@ -398,15 +398,15 @@ body {
 
 /* White rounded image box */
 .tc-img-box {
-  width: 82%;
+  width: 70%;
   aspect-ratio: 1;
   background: #fff;
-  border-radius: 18px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
-  box-shadow: 0 8px 30px rgba(0,0,0,.3);
+  padding: 8px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.28);
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -431,45 +431,55 @@ body {
   overflow: hidden;
 }
 
-/* Left column */
+/* Left column — golden ratio: 14 / φ / φ² */
 .tc-bot-left {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
+  padding-bottom: 46px; /* clear the absolute cart btn */
 }
+
+/* 14px — heading tier */
 .tc-card-name {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 900;
   color: #1a1a2e;
-  line-height: 1.25;
+  line-height: 1.2;
+  letter-spacing: -.1px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* 14 ÷ φ ≈ 8.7 → 9px — sub tier */
 .tc-card-brand {
   font-size: 9px;
-  color: #aaa;
+  color: #bbb;
   font-weight: 600;
+  letter-spacing: .2px;
 }
-.tc-bot-actions {
+
+.tc-bot-tags {
   display: flex;
   align-items: center;
   gap: 4px;
   margin-top: 2px;
   flex-wrap: wrap;
 }
+
 .tc-size-label {
   font-size: 9px;
   font-weight: 700;
   color: #666;
   background: #f0f0f0;
   border-radius: 5px;
-  padding: 2px 6px;
+  padding: 2px 7px;
   flex-shrink: 0;
 }
+
 .tc-sc-pill {
   display: inline-flex;
   align-items: center;
@@ -477,58 +487,62 @@ body {
   color: #d97706;
   border: 1px solid #fde68a;
   border-radius: 20px;
-  padding: 2px 5px;
+  padding: 2px 6px;
   font-size: 8px;
   font-weight: 800;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-/* "Ajouter" button — full width */
+/* Cart button — circle, pinned to card bottom-right */
 .tc-cart-btn {
-  margin-top: 8px;
-  width: 100%;
-  padding: 8px 6px;
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
   border: none;
-  border-radius: 20px;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 800;
   cursor: pointer;
-  letter-spacing: .2px;
-  transition: opacity .15s, transform .15s;
-  box-shadow: 0 3px 10px rgba(0,0,0,.2);
+  font-size: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  flex-shrink: 0;
+  color: #fff;
+  z-index: 5;
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  transition: transform .18s cubic-bezier(.34,1.56,.64,1), opacity .15s;
 }
-.tc-cart-btn:hover  { opacity: .86; }
-.tc-cart-btn:active { transform: scale(.95); }
+.tc-cart-btn:hover  { transform: scale(1.15); }
+.tc-cart-btn:active { transform: scale(.9); }
 
-/* Right column — specs */
+/* Right column — 8px label / 11px values (8 × φ ≈ 12.9) */
 .tc-bot-right {
-  width: 42%;
+  width: 40%;
   border-left: 1px solid #f0f0f0;
-  padding-left: 8px;
+  padding-left: 9px;
+  padding-bottom: 46px; /* clear the absolute cart btn */
   flex-shrink: 0;
   min-width: 0;
   overflow: hidden;
 }
+
+/* 8px — label tier */
 .tc-spec-title {
   font-size: 8px;
   font-weight: 900;
   color: var(--cc);
   text-transform: uppercase;
-  letter-spacing: .7px;
-  margin-bottom: 4px;
+  letter-spacing: .9px;
+  margin-bottom: 5px;
 }
+
+/* 11px — value tier */
 .tc-spec-val {
-  font-size: 10px;
+  font-size: 11px;
   color: #333;
   font-weight: 600;
-  line-height: 1.65;
+  line-height: 1.6;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -695,26 +709,7 @@ body {
 .btn-scan:hover  { background: #c73652; }
 .btn-scan:active { transform: scale(.97); }
 
-/* ── Cart button on card ── */
-.tc-bottom-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 10px 8px;
-  flex-shrink: 0;
-}
-.tc-cart-btn {
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  border: none;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: transform .15s, background .2s;
-  flex-shrink: 0;
-}
-.tc-cart-btn:active { transform: scale(.88); }
+/* ── Cart button on card — defined above in card section ── */
 
 /* ── Cart panel ── */
 .cart-overlay {
