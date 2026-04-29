@@ -14,7 +14,7 @@ if (empty($ids)) {
 $db = getDB();
 $placeholders = implode(',', array_fill(0, count($ids), '?'));
 $stmt = $db->prepare(
-    "SELECT p.*, c.name AS category_name
+    "SELECT p.*, c.name AS category_name, c.color AS category_color
      FROM products p
      LEFT JOIN categories c ON p.category_id = c.id
      WHERE p.id IN ($placeholders)"
@@ -68,6 +68,11 @@ function categoryTheme(?string $category): string {
     }
     return 'default';
 }
+
+function categoryColor(?string $color): string {
+    $color = trim((string)$color);
+    return preg_match('/^#[0-9a-fA-F]{6}$/', $color) ? $color : '#1E8E5A';
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -100,8 +105,9 @@ function categoryTheme(?string $category): string {
       $image = imagePath($p['image_url'] ?? '');
       $notes = productNotes($p);
       $theme = categoryTheme($category);
+      $categoryColor = categoryColor($p['category_color'] ?? '');
     ?>
-    <article class="product-print-label label-theme-<?= e($theme) ?>">
+    <article class="product-print-label label-theme-<?= e($theme) ?>" style="--category-color: <?= e($categoryColor) ?>">
       <div class="label-frame">
         <header class="label-photo-panel">
           <div class="label-photo-box">

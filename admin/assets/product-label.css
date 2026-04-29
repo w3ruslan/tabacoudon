@@ -13,6 +13,7 @@
   --ink: #0f172a;
   --muted: #64748b;
   --line: #e5e7eb;
+  --category-color: var(--green);
 }
 
 * {
@@ -96,9 +97,11 @@ body {
   flex-direction: column;
   padding: 3mm;
   overflow: hidden;
-  border: 0.4mm solid var(--line);
+  border: 1.2mm solid transparent;
   border-radius: 3.5mm;
-  background: #fff;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(135deg, var(--category-color), var(--navy)) border-box;
   box-shadow: 0 0.6mm 1.2mm rgba(0, 0, 0, 0.06);
   break-inside: avoid;
   page-break-inside: avoid;
@@ -109,6 +112,7 @@ body {
   --green-bright: #f97316;
   --green-dark: #7c2d12;
   --navy: #111827;
+  --category-color: #f97316;
 }
 
 .label-frame {
@@ -132,7 +136,7 @@ body {
   border-radius: 3.5mm;
   background:
     linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(135deg, var(--green), var(--navy)) border-box;
+    linear-gradient(135deg, var(--category-color), var(--navy)) border-box;
 }
 
 .label-photo-box {
@@ -227,7 +231,7 @@ body {
 
 .label-brand {
   margin-bottom: 1mm;
-  color: var(--green-bright);
+  color: var(--category-color);
   font-size: 7pt;
   font-weight: 800;
   line-height: 1.15;
@@ -242,9 +246,9 @@ body {
   display: inline-block;
   max-width: 100%;
   padding: 0.6mm 1.6mm;
-  border: 0.3mm solid var(--green-bright);
+  border: 0.3mm solid var(--category-color);
   border-radius: 2mm;
-  color: var(--green-bright);
+  color: var(--category-color);
   background: #fff;
   font-size: 6.5pt;
   font-weight: 900;
@@ -283,7 +287,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 2mm;
-  background: linear-gradient(135deg, var(--green), var(--navy));
+  background: linear-gradient(135deg, var(--category-color), var(--navy));
   color: #fff;
   font-size: 7pt;
   font-weight: 900;
@@ -304,7 +308,7 @@ body {
   border: 0.3mm solid #d1d5db;
   border-radius: 2mm;
   background: #f9fafb;
-  color: var(--green-dark);
+  color: var(--category-color);
   font-size: 6.5pt;
   font-weight: 750;
   line-height: 1.15;
@@ -333,7 +337,7 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 2.5mm;
-  background: linear-gradient(135deg, var(--green-bright), var(--green-dark));
+  background: linear-gradient(135deg, var(--category-color), var(--green-dark));
   color: #fff;
   font-size: 12pt;
   font-weight: 900;
