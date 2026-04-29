@@ -393,8 +393,12 @@ function showDetail(id, sourceCard) {
   }
 
   var overlay = document.getElementById('detailOverlay');
+  var frontHtml = sourceCard ? sourceCard.outerHTML : '';
   overlay.innerHTML =
     '<div class="dt-bg" onclick="closeDetail()"></div>'
+  + '<div class="dt-flip-stage" id="dtFlipStage">'
+  + '<div class="dt-card-face dt-card-front">' + frontHtml + '</div>'
+  + '<div class="dt-card-face dt-card-back">'
   + '<div class="dt-panel" id="dtPanel">'
   + '  <div class="dt-header" style="background:linear-gradient(135deg,' + catColor + ' 0%,#1a1a2e 70%)">'
   + '    <button class="dt-close" onclick="closeDetail()">✕</button>'
@@ -412,35 +416,38 @@ function showDetail(id, sourceCard) {
   + (p.price ? '<small>€</small>' + parseFloat(p.price).toFixed(2) : '<span style="color:#bbb;font-size:16px">Prix non défini</span>')
   + '    </div>'
   + '  </div>'
+  + '</div>'
+  + '</div>'
   + '</div>';
 
   overlay.style.display = 'flex';
-  var panel = document.getElementById('dtPanel');
-  if (panel && sourceCard && sourceCard.getBoundingClientRect) {
+  var stage = document.getElementById('dtFlipStage');
+  if (stage && sourceCard && sourceCard.getBoundingClientRect) {
     var rect = sourceCard.getBoundingClientRect();
     var cardCenterX = rect.left + rect.width / 2;
     var cardCenterY = rect.top + rect.height / 2;
     var viewCenterX = window.innerWidth / 2;
     var viewCenterY = window.innerHeight / 2;
-    panel.style.setProperty('--dt-start-x', (cardCenterX - viewCenterX) + 'px');
-    panel.style.setProperty('--dt-start-y', (cardCenterY - viewCenterY) + 'px');
+    stage.style.setProperty('--dt-start-x', (cardCenterX - viewCenterX) + 'px');
+    stage.style.setProperty('--dt-start-y', (cardCenterY - viewCenterY) + 'px');
+    stage.style.setProperty('--dt-start-scale', Math.min(1, rect.width / 420).toFixed(3));
   }
   setTimeout(function(){
-    var activePanel = document.getElementById('dtPanel');
-    if (activePanel) activePanel.classList.add('dt-in');
+    var activeStage = document.getElementById('dtFlipStage');
+    if (activeStage) activeStage.classList.add('dt-in');
   }, 10);
 }
 
 function closeDetail() {
-  var panel = document.getElementById('dtPanel');
-  if (!panel) return;
-  panel.classList.remove('dt-in');
-  panel.classList.add('dt-out');
+  var stage = document.getElementById('dtFlipStage');
+  if (!stage) return;
+  stage.classList.remove('dt-in');
+  stage.classList.add('dt-out');
   setTimeout(function(){
     var ov = document.getElementById('detailOverlay');
     ov.style.display = 'none';
     ov.innerHTML = '';
-  }, 350);
+  }, 520);
 }
 
 // ── Scanner (Quagga2) ─────────────────────

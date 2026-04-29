@@ -691,39 +691,67 @@ body {
   -webkit-backdrop-filter: blur(6px);
 }
 
-.dt-panel {
+.dt-flip-stage {
   --dt-start-x: 0px;
   --dt-start-y: 0px;
+  --dt-start-scale: .64;
   position: relative;
   width: 100%; max-width: 420px;
-  background: white;
-  border-radius: 24px;
-  max-height: 88vh;
-  overflow-y: auto;
+  aspect-ratio: 63.333 / 92.333;
   transform:
-    translate3d(var(--dt-start-x), var(--dt-start-y), -180px)
-    scale(.52)
-    rotateY(180deg);
+    translate3d(var(--dt-start-x), var(--dt-start-y), -220px)
+    scale(var(--dt-start-scale))
+    rotateY(0deg);
   transform-origin: center center;
   transform-style: preserve-3d;
-  backface-visibility: hidden;
-  opacity: 0;
+  opacity: 1;
   transition:
-    transform .58s cubic-bezier(.18,.9,.2,1),
-    opacity .22s ease;
+    transform .72s cubic-bezier(.18,.9,.2,1),
+    opacity .24s ease;
+}
+.dt-flip-stage.dt-in {
+  transform: translate3d(0, 0, 0) scale(1) rotateY(180deg);
+}
+.dt-flip-stage.dt-out {
+  transform:
+    translate3d(var(--dt-start-x), var(--dt-start-y), -220px)
+    scale(var(--dt-start-scale))
+    rotateY(0deg);
+  opacity: 0;
+  transition-duration: .46s;
+}
+
+.dt-card-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 24px;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+.dt-card-front {
+  background: white;
+}
+.dt-card-front .tc-card {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: none !important;
+}
+.dt-card-back {
+  transform: rotateY(180deg);
+  background: white;
   box-shadow: 0 24px 60px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.08);
 }
-.dt-panel.dt-in  {
-  transform: translate3d(0, 0, 0) scale(1) rotateY(0deg);
-  opacity: 1;
-}
-.dt-panel.dt-out {
-  transform:
-    translate3d(var(--dt-start-x), var(--dt-start-y), -180px)
-    scale(.52)
-    rotateY(-180deg);
-  opacity: 0;
-  transition-duration: .32s;
+
+.dt-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: white;
+  border-radius: 24px;
+  overflow-y: auto;
+  box-shadow: none;
 }
 
 /* Header coloré */
