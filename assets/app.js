@@ -296,7 +296,12 @@ function renderCard(p) {
   return '<div class="tc-card ' + (specsHtml ? 'tc-has-specs' : 'tc-no-specs') + '" data-id="' + p.id + '" style="--cc:' + catColor + '">'
     // ── Top gradient + image (price moved to bottom) ──
     + '<div class="tc-card-top">'
-    + '<div class="tc-img-box">' + imgHtml + '</div>'
+    + '<div class="tc-img-box ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
+    + imgHtml
+    + '<div class="tc-vertical-barcode-wrap ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
+    + (barcode ? '<svg class="tc-vertical-barcode-svg" data-barcode="' + barcode + '"></svg>' : '')
+    + '</div>'
+    + '</div>'
     + '</div>'
     // ── Bottom two columns ──
     + '<div class="tc-card-bot">'
@@ -306,9 +311,6 @@ function renderCard(p) {
     + '<div class="tc-bot-tags">'
     + (size ? '<span class="tc-size-label">' + size + '</span>' : '')
     + surCmde
-    + '</div>'
-    + '<div class="tc-barcode-wrap ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
-    + (barcode ? '<svg class="tc-barcode-svg" data-barcode="' + barcode + '"></svg>' : '')
     + '</div>'
     + '</div>'
     + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
@@ -323,17 +325,19 @@ function renderCard(p) {
 
 function initBarcodes() {
   if (typeof JsBarcode === 'undefined') return;
-  document.querySelectorAll('svg.tc-barcode-svg[data-barcode]').forEach(function(svg) {
+  document.querySelectorAll('svg.tc-vertical-barcode-svg[data-barcode]').forEach(function(svg) {
     var code = svg.getAttribute('data-barcode');
     if (!code || svg.getAttribute('data-bc-done')) return;
     svg.setAttribute('data-bc-done', '1');
-    var opts = { width: 1.2, height: 30, displayValue: true, fontSize: 9, textMargin: 1,
-                 margin: 2, background: '#ffffff', lineColor: '#111827' };
+    var digits = code.replace(/\D/g, '');
+    var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
+    var opts = { width: 2.5, height: 60, displayValue: false,
+                 margin: 4, background: '#ffffff', lineColor: '#111827' };
     try {
-      JsBarcode(svg, code, Object.assign({}, opts, { format: 'auto' }));
+      JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
     } catch(e) {
       try { JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' })); }
-      catch(e2) { svg.closest('.tc-barcode-wrap').style.display = 'none'; }
+      catch(e2) { svg.closest('.tc-vertical-barcode-wrap').style.display = 'none'; }
     }
   });
 }

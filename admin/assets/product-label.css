@@ -140,11 +140,12 @@ body {
 }
 
 .label-photo-box {
+  position: relative;
   width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-columns: 80% 20%;
+  display: flex;
   align-items: stretch;
+  justify-content: stretch;
   overflow: hidden;
   border: 0.3mm solid #e6e6e6;
   border-radius: 2.5mm;
@@ -161,6 +162,10 @@ body {
   background: #ffffff;
 }
 
+.label-photo-box.has-barcode .label-image-box {
+  padding-right: 13mm;
+}
+
 .label-image-box img {
   width: 100%;
   height: 100%;
@@ -172,9 +177,11 @@ body {
 }
 
 .label-vertical-barcode-box {
-  width: 100%;
-  min-width: 0;
-  height: 100%;
+  position: absolute;
+  top: 2mm;
+  right: 2mm;
+  bottom: 2mm;
+  width: 12mm;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -188,11 +195,11 @@ body {
 }
 
 .label-photo-box.no-barcode {
-  grid-template-columns: 1fr 0;
+  display: flex;
 }
 
 .label-vertical-barcode {
-  width: 40mm;
+  width: 36mm;
   height: 8mm;
   display: block;
   flex: 0 0 auto;
