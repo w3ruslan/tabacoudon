@@ -116,6 +116,7 @@ body {
 }
 
 .label-frame {
+  position: relative;
   height: 100%;
   min-height: 0;
   display: flex;
@@ -162,10 +163,6 @@ body {
   background: #ffffff;
 }
 
-.label-photo-box.has-barcode .label-image-box {
-  padding-right: calc(20% + 1mm);
-}
-
 .label-image-box img {
   width: 100%;
   height: 100%;
@@ -176,45 +173,8 @@ body {
   display: block;
 }
 
-.label-vertical-barcode-box {
-  position: absolute;
-  top: 2mm;
-  right: 2mm;
-  bottom: 2mm;
-  width: 20%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding: 2mm;
-  background: #ffffff;
-}
-
-.label-vertical-barcode-rotator {
-  position: absolute;
-  width: 42mm;
-  height: 14mm;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: rotate(90deg) !important;
-  transform-origin: center center;
-}
-
-.label-vertical-barcode-box.no-barcode {
-  visibility: hidden;
-}
-
 .label-photo-box.no-barcode {
   display: flex;
-}
-
-.label-vertical-barcode {
-  width: 42mm !important;
-  height: 14mm !important;
-  display: block;
-  transform: none !important;
-  image-rendering: auto;
 }
 
 .label-photo-fallback {
@@ -233,16 +193,17 @@ body {
 
 .label-info-grid {
   flex: 1 1 54%;
+  position: relative;
   min-height: 0;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) 10mm;
-  row-gap: 1mm;
+  display: block;
   padding-top: 2mm;
+  padding-bottom: 25mm;
   overflow: hidden;
   background: #fff;
 }
 
 .label-detail-row {
+  height: 100%;
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 56%) 0.3mm minmax(0, 44%);
@@ -390,10 +351,42 @@ body {
   padding-right: 0;
 }
 
+.label-barcode-area {
+  position: absolute;
+  left: 4mm;
+  right: 4mm;
+  bottom: 14mm;
+  height: 12mm;
+  margin-bottom: 1.5mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 3mm;
+  background: #fff;
+}
+
+.label-barcode-area.no-barcode {
+  visibility: hidden;
+}
+
+.label-horizontal-barcode {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  object-fit: contain;
+  transform: none !important;
+  rotate: 0deg !important;
+  image-rendering: auto;
+}
+
 .label-price {
-  width: 100%;
-  height: 10mm;
-  min-height: 10mm;
+  position: absolute;
+  left: 4mm;
+  right: 4mm;
+  bottom: 3mm;
+  height: 9mm;
+  min-height: 9mm;
   display: flex;
   align-items: center;
   justify-content: center;
