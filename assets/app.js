@@ -164,7 +164,7 @@ window.addEventListener('DOMContentLoaded', function() {
         return;
       }
       if (el.classList && el.classList.contains('tc-card')) {
-        showDetail(el.getAttribute('data-id'));
+        showDetail(el.getAttribute('data-id'), el);
         return;
       }
       el = el.parentElement;
@@ -349,7 +349,7 @@ function addToCache(p) {
   productsCache.push(p);
 }
 
-function showDetail(id) {
+function showDetail(id, sourceCard) {
   var p = null;
   for (var i = 0; i < productsCache.length; i++) {
     if (String(productsCache[i].id) === String(id)) { p = productsCache[i]; break; }
@@ -415,9 +415,19 @@ function showDetail(id) {
   + '</div>';
 
   overlay.style.display = 'flex';
+  var panel = document.getElementById('dtPanel');
+  if (panel && sourceCard && sourceCard.getBoundingClientRect) {
+    var rect = sourceCard.getBoundingClientRect();
+    var cardCenterX = rect.left + rect.width / 2;
+    var cardCenterY = rect.top + rect.height / 2;
+    var viewCenterX = window.innerWidth / 2;
+    var viewCenterY = window.innerHeight / 2;
+    panel.style.setProperty('--dt-start-x', (cardCenterX - viewCenterX) + 'px');
+    panel.style.setProperty('--dt-start-y', (cardCenterY - viewCenterY) + 'px');
+  }
   setTimeout(function(){
-    var panel = document.getElementById('dtPanel');
-    if (panel) panel.classList.add('dt-in');
+    var activePanel = document.getElementById('dtPanel');
+    if (activePanel) activePanel.classList.add('dt-in');
   }, 10);
 }
 
