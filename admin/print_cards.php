@@ -98,29 +98,61 @@ $pages = array_chunk($products, 9);
 
     @media print {
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      /* Force white page — must be on html AND body */
-      html, body { background: white !important; background-color: white !important; }
+
+      /* ── White page ── */
+      html, body {
+        background: white !important; background-color: white !important;
+        margin: 0; padding: 0;
+        /* Center the page-sheet horizontally regardless of actual
+           printer hardware margins (which vary per printer model) */
+        display: flex; flex-direction: column; align-items: center;
+      }
+
       .toolbar { display: none !important; }
-      .pages-wrap { padding: 0; background: white !important; }
-      .page-sheet {
-        width: 186mm; height: 270mm;
+
+      .pages-wrap {
         padding: 0; margin: 0;
         background: white !important;
+        display: flex; flex-direction: column; align-items: center;
+        width: 100%;
+      }
+
+      /* ── Page sheet: auto-center, no fixed width ──
+         Width is determined by the grid content (3×60 + 2×3 = 186mm).
+         margin:auto centers it whatever the real print area width is.   */
+      .page-sheet {
         display: grid;
         grid-template-columns: repeat(3, 60mm);
         grid-template-rows: repeat(3, 88mm);
         gap: 3mm;
+        width: max-content;          /* = 186mm, always */
+        margin: 0 auto;              /* center on page */
+        padding: 0;
+        background: white !important;
         page-break-after: always; break-after: page;
+        height: auto;                /* don't force page height */
       }
       .page-sheet:last-child { page-break-after: avoid; break-after: avoid; }
-      /* CRITICAL: box-shadow bleeds beyond card bounds and fills the 3mm
-         gaps with dark color — replace with a hairline border in print */
+
+      /* ── Cards: no shadow (bleeds into gaps), hairline border instead ── */
       .tc-card {
         box-shadow: none !important;
-        border: 0.3mm solid rgba(0,0,0,.15) !important;
+        border: 0.3mm solid rgba(0,0,0,.18) !important;
+      }
+
+      /* ── Photo box: no shadow halo under product image ── */
+      .tc-img-box {
+        box-shadow: none !important;
+      }
+
+      /* ── Barcode: white background so bars are readable ── */
+      .tc-barcode-svg {
+        background: white !important;
+        background-color: white !important;
       }
     }
-    @page { size: A4 portrait; margin: 13.5mm 12mm; }
+    /* Uniform 10mm margin — safe across all printers */
+    @page { size: A4 portrait; margin: 10mm; }
 
     /* ══════════════════════════════════════════
        CARD  —  66.6 × 93.3 mm
@@ -148,6 +180,8 @@ $pages = array_chunk($products, 9);
       padding: 3.5mm;
       flex-shrink: 0;
       position: relative;
+      border-bottom-left-radius: 3.7mm;
+      border-bottom-right-radius: 3.7mm;
     }
 
     /* White image box */
@@ -171,18 +205,18 @@ $pages = array_chunk($products, 9);
       font-size: 8pt; opacity: .8;
     }
 
-    /* Price pill top-right */
+    /* Price pill bottom-right of card */
     .tc-price-tag {
-      position: absolute; top: 1.8mm; right: 1.8mm;
-      background: rgba(0,0,0,.72);
+      position: absolute; bottom: 2.5mm; right: 2.5mm;
+      background: var(--cc);
       color: #fff;
-      font-size: 8pt;                /* compact — fits corner without touching photo */
-      font-weight: 800;
-      padding: 0.7mm 1.8mm;
+      font-size: 10pt;
+      font-weight: 900;
+      padding: 1mm 2.4mm;
       border-radius: 10mm;
       letter-spacing: -.2px;
       white-space: nowrap;
-      z-index: 3;                    /* always above image box */
+      z-index: 5;
     }
 
     /* ── Bottom section ── */
@@ -192,7 +226,6 @@ $pages = array_chunk($products, 9);
       padding: 2.6mm 3.2mm 3.2mm;   /* = 10px 12px 12px */
       display: flex;
       gap: 2.1mm;                    /* = 8px */
-      border-top: 0.5px solid rgba(0,0,0,.05);
       overflow: hidden;
     }
 
@@ -261,6 +294,7 @@ $pages = array_chunk($products, 9);
       flex: 1;
       border-left: 0.5px solid #f0f0f0;
       padding-left: 2.4mm;
+      padding-bottom: 7mm;           /* clear the absolute price pill */
       min-width: 0; overflow: hidden;
       display: flex; flex-direction: column;
       align-items: center;           /* center children */
@@ -338,7 +372,6 @@ $pages = array_chunk($products, 9);
             <span class="tc-no-img">🌬️</span>
           <?php endif; ?>
         </div>
-        <?php if ($price): ?><span class="tc-price-tag"><?= $price ?></span><?php endif; ?>
       </div>
 
       <!-- ── Bottom ── -->
@@ -368,7 +401,7 @@ $pages = array_chunk($products, 9);
         <?php if ($flavors || $label): ?>
         <div class="tc-bot-right">
           <?php if ($flavors): ?>
-            <div class="tc-spec-title">Saveur</div>
+            <div class="tc-spec-title">NOTES</div>
             <div class="tc-spec-chips">
               <?php foreach ($flavors as $f): ?>
                 <span class="tc-spec-chip"
@@ -390,6 +423,7 @@ $pages = array_chunk($products, 9);
         <?php endif; ?>
 
       </div>
+      <?php if ($price): ?><span class="tc-price-tag"><?= $price ?></span><?php endif; ?>
     </div>
     <?php endforeach; ?>
   </div>
@@ -402,9 +436,9 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
   var code = svg.getAttribute('data-barcode');
   if (!code) return;
   var opts = {
-    width: 1.0, height: 22,
-    displayValue: true, fontSize: 7,
-    margin: 0, background: 'transparent', lineColor: '#333'
+    width: 1.5, height: 30,
+    displayValue: true, fontSize: 8,
+    margin: 10, background: '#ffffff', lineColor: '#000000'
   };
   try {
     JsBarcode(svg, code, Object.assign({}, opts, { format: 'auto' }));

@@ -369,6 +369,9 @@ body {
   justify-content: center;
   padding: 14px;
   flex-shrink: 0;
+  /* Oval inner corners where gradient meets white */
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
 }
 
 /* Category icon — top left */
@@ -380,20 +383,20 @@ body {
   filter: drop-shadow(0 1px 4px rgba(0,0,0,.5));
 }
 
-/* Price badge — top right */
+/* Price pill — bottom right, next to cart button */
 .tc-price-tag {
   position: absolute;
-  top: 9px; right: 10px;
-  z-index: 1;
+  bottom: 10px; right: 10px;   /* next to cart btn (bottom-left) */
+  z-index: 5;
   background: var(--cc);
   color: #fff;
-  font-size: 11px;
+  font-size: 15px;              /* bigger than before */
   font-weight: 900;
-  padding: 4px 9px;
+  padding: 6px 14px;
   border-radius: 20px;
-  border: 2px solid rgba(255,255,255,.3);
-  box-shadow: 0 2px 8px rgba(0,0,0,.3);
-  letter-spacing: .2px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  letter-spacing: -.2px;
+  white-space: nowrap;
 }
 
 /* White rounded image box */
@@ -424,10 +427,9 @@ body {
 .tc-card-bot {
   flex: 1;
   background: #fff;
-  padding: 10px 12px 12px;
+  padding: 12px 12px 12px;      /* no border-top — rounded gradient provides separation */
   display: flex;
   gap: 8px;
-  border-top: 2px solid rgba(0,0,0,.04);
   overflow: hidden;
 }
 
@@ -521,6 +523,7 @@ body {
   flex: 1;
   border-left: 1px solid #f0f0f0;
   padding-left: 9px;
+  padding-bottom: 46px;         /* clear price pill at bottom-right */
   min-width: 0;
   overflow: hidden;
 }
@@ -533,6 +536,7 @@ body {
   text-transform: uppercase;
   letter-spacing: .9px;
   margin-bottom: 5px;
+  text-align: center;
 }
 
 /* Barcode on customer card */
@@ -542,15 +546,16 @@ body {
 }
 .tc-barcode-svg {
   width: 100%;
-  max-width: 120px;
+  max-width: 100%;              /* no artificial cap — full column width */
   height: auto;
   display: block;
 }
 
-/* Flavor chips — oval, category color */
+/* Flavor chips — oval, category color, centered */
 .tc-spec-chips {
   display: flex;
   flex-direction: column;
+  align-items: center;          /* center each chip horizontally */
   gap: 3px;
 }
 .tc-spec-chip {
@@ -561,6 +566,7 @@ body {
   font-weight: 700;
   line-height: 1.4;
   word-break: break-word;
+  text-align: center;           /* center text inside chip */
 }
 
 /* ══════════════════════════════════════════
@@ -941,4 +947,11 @@ body {
   .tc-namebar { height: 58px; padding: 7px 9px; }
   .header-inner { padding: 12px 16px; }
   .logo-tag { display: none; }
+}
+
+/* ── Print: remove shadows so photo doesn't get dark halo on paper ── */
+@media print {
+  .tc-img-box  { box-shadow: none !important; }
+  .tc-card     { box-shadow: none !important; }
+  .tc-cart-btn { display: none !important; }   /* no cart button on printouts */
 }

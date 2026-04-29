@@ -253,7 +253,7 @@ function renderCard(p) {
   var flavors = (p.flavor || '').split(/[,\/]+/).map(function(f){ return f.trim(); }).filter(Boolean);
   var specsHtml = '';
   if (flavors.length) {
-    specsHtml = '<div class="tc-spec-title">Saveur</div>'
+    specsHtml = '<div class="tc-spec-title">NOTES</div>'
       + '<div class="tc-spec-chips">'
       + flavors.slice(0, 4).map(function(f){
           return '<span class="tc-spec-chip" style="background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '35">' + f + '</span>';
@@ -265,11 +265,10 @@ function renderCard(p) {
   }
 
   return '<div class="tc-card" data-id="' + p.id + '" style="--cc:' + catColor + '">'
-    // ── Top gradient + image ──
+    // ── Top gradient + image (price moved to bottom) ──
     + '<div class="tc-card-top">'
     + (catIcon ? '<span class="tc-cat-icon-sm">' + catIcon + '</span>' : '')
     + '<div class="tc-img-box">' + imgHtml + '</div>'
-    + (price ? '<span class="tc-price-tag">' + price + '</span>' : '')
     + '</div>'
     // ── Bottom two columns ──
     + '<div class="tc-card-bot">'
@@ -284,7 +283,9 @@ function renderCard(p) {
     + '</div>'
     + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
     + '</div>'
+    // ── Absolute overlays: cart btn (left) + price (right) ──
     + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒</button>'
+    + (price ? '<span class="tc-price-tag" style="background:' + catColor + '">' + price + '</span>' : '')
     + '</div>';
 }
 
@@ -295,8 +296,8 @@ function initBarcodes() {
     var code = svg.getAttribute('data-barcode');
     if (!code || svg.getAttribute('data-bc-done')) return;
     svg.setAttribute('data-bc-done', '1');
-    var opts = { width: 0.9, height: 22, displayValue: true, fontSize: 7,
-                 margin: 1, background: 'transparent', lineColor: '#555' };
+    var opts = { width: 1.5, height: 30, displayValue: true, fontSize: 8,
+                 margin: 10, background: '#ffffff', lineColor: '#000000' };
     try {
       JsBarcode(svg, code, Object.assign({}, opts, { format: 'auto' }));
     } catch(e) {
