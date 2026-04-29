@@ -316,7 +316,7 @@ function renderCard(p) {
     + (barcode ? '<svg class="tc-horizontal-barcode-svg" data-barcode="' + barcode + '"></svg>' : '')
     + '</div>'
     // ── Absolute overlay: combined cart + price pill (bottom-left) ──
-    + '<button class="tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="background:' + catColor + '">🛒'
+    + '<button class="tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="background:' + catColor + '">'
     + (price ? '<span class="tc-pill-price">' + price + '</span>' : '')
     + '</button>'
     + '</div>';
@@ -331,7 +331,7 @@ function initBarcodes() {
     svg.setAttribute('data-bc-done', '1');
     var digits = code.replace(/\D/g, '');
     var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
-    var opts = { width: 2, height: 45, displayValue: false,
+    var opts = { width: 1.8, height: 42, displayValue: false,
                  margin: 8, background: '#ffffff', lineColor: '#111827' };
     try {
       JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
