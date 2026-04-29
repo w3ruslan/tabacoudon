@@ -31,12 +31,14 @@ function addToCart(id, name, price, size, event) {
   // Flash feedback on button
   var btn = document.querySelector('.tc-cart-btn[data-id="' + id + '"]');
   if (btn) {
-    btn.textContent = '✓';
+    var origBg   = btn.style.background;
+    var origText = btn.innerHTML;
+    btn.innerHTML = '✓ Ajouté !';
     btn.style.background = '#2ecc71';
     setTimeout(function() {
-      btn.textContent = '🛒';
-      btn.style.background = '';
-    }, 800);
+      btn.innerHTML = origText;
+      btn.style.background = origBg;
+    }, 900);
   }
 }
 
@@ -246,23 +248,37 @@ function renderCard(p) {
   var price   = p.price ? '€' + parseFloat(p.price).toFixed(2) : '';
   var surCmde = p.sur_commande ? '<span class="tc-sc-pill">📦 Sur cmd</span>' : '';
 
+  // Right column: flavor specs
+  var flavors = (p.flavor || '').split(/[,\/]+/).map(function(f){ return f.trim(); }).filter(Boolean);
+  var specsHtml = '';
+  if (flavors.length) {
+    specsHtml = '<div class="tc-spec-title">Saveur</div>'
+      + flavors.slice(0, 4).map(function(f){
+          return '<div class="tc-spec-val">' + f + '</div>';
+        }).join('');
+  } else if (catLabel) {
+    specsHtml = '<div class="tc-spec-title">Catégorie</div><div class="tc-spec-val">' + catLabel + '</div>';
+  }
+
   return '<div class="tc-card" data-id="' + p.id + '" style="--cc:' + catColor + '">'
-    // ── Glow image zone ──
-    + '<div class="tc-glow-zone">'
-    + imgHtml
+    // ── Top gradient + image ──
+    + '<div class="tc-card-top">'
+    + (catIcon ? '<span class="tc-cat-icon-sm">' + catIcon + '</span>' : '')
+    + '<div class="tc-img-box">' + imgHtml + '</div>'
     + (price ? '<span class="tc-price-tag">' + price + '</span>' : '')
     + '</div>'
-    // ── Info zone ──
-    + '<div class="tc-info-zone">'
-    + (catLabel ? '<div class="tc-iz-cat">' + catIcon + ' ' + catLabel + '</div>' : '')
-    + '<div class="tc-iz-name">' + p.name + '</div>'
-    + (p.brand  ? '<div class="tc-iz-brand">'  + p.brand  + '</div>' : '')
-    + (p.flavor ? '<div class="tc-iz-flavor">' + p.flavor + '</div>' : '')
-    + '<div class="tc-iz-footer">'
+    // ── Bottom two columns ──
+    + '<div class="tc-card-bot">'
+    + '<div class="tc-bot-left">'
+    + '<div class="tc-card-name">' + p.name + '</div>'
+    + (p.brand ? '<div class="tc-card-brand">' + p.brand + '</div>' : '')
+    + '<div class="tc-bot-actions">'
     + (p.size ? '<span class="tc-size-label">' + p.size + '</span>' : '')
     + surCmde
-    + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒</button>'
     + '</div>'
+    + '<button class="tc-cart-btn" data-id="' + p.id + '" style="background:' + catColor + '" onclick="addToCart(\'' + p.id + '\',\'' + (p.name||'').replace(/'/g,"\\'") + '\',' + (parseFloat(p.price)||0) + ',\'' + (p.size||'').replace(/'/g,"\\'") + '\',event)">🛒 Ajouter</button>'
+    + '</div>'
+    + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
     + '</div>'
     + '</div>';
 }
