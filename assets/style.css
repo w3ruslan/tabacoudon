@@ -549,10 +549,11 @@ body {
   text-align: center;
 }
 
-/* Barcode on customer card */
+/* Barcode on customer card — always pinned to the bottom of the left column */
 .tc-barcode-wrap {
-  margin-top: 4px;
+  margin-top: auto;   /* pushes barcode to bottom regardless of text height above */
   overflow: hidden;
+  width: 100%;
 }
 .tc-barcode-svg {
   width: 100%;

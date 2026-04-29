@@ -282,9 +282,9 @@ $pages = array_chunk($products, 9);
       border-radius: 5mm; padding: 0.5mm 1.6mm;
     }
 
-    /* Barcode — centered */
+    /* Barcode — always pinned to bottom of left column */
     .tc-barcode-area {
-      margin-top: 1.5mm;
+      margin-top: auto;   /* pushes barcode to bottom regardless of text height */
       display: flex; justify-content: center;
       width: 100%;
     }
