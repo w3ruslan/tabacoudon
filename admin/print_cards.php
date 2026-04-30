@@ -119,6 +119,7 @@ function categoryColor(?string $color): string {
               <?php endif; ?>
             </div>
             <?php if ($price): ?><div class="label-photo-price"><?= e($price) ?></div><?php endif; ?>
+            <div class="label-photo-cart"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></div>
           </div>
           <?php if ($category): ?>
             <div class="label-category"><?= e($category) ?></div>
@@ -166,10 +167,10 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
   var digits = code.replace(/\D/g, '');
   var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
   var opts = {
-    width: 2.4,
-    height: 38,
+    width: 2,
+    height: 45,
     displayValue: true,
-    fontSize: 8,
+    fontSize: 9,
     textMargin: 2,
     textPosition: 'bottom',
     margin: 8,

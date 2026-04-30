@@ -334,14 +334,14 @@ body {
    PRODUCT CARD — matches printable label style
 ══════════════════════════════════════════ */
 .product-grid {
-  grid-template-columns: repeat(auto-fill, minmax(320px, 390px));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 425px));
   gap: 26px;
   justify-content: start;
 }
 
 .tc-card {
   width: 100%;
-  aspect-ratio: 0.745;
+  aspect-ratio: 85 / 120;
   container-type: inline-size;
   background: #fff;
   border-radius: 22px;
@@ -351,25 +351,23 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  padding: 4.4%;
+  padding: 4.705%;
   border: 8px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
     linear-gradient(135deg, var(--cc), #0b3c5d) border-box;
   box-shadow: 0 5px 20px rgba(0,0,0,.11);
-  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s;
+  transition: box-shadow .22s;
   -webkit-tap-highlight-color: transparent;
 }
 .tc-card:hover {
-  transform: translateY(-6px) scale(1.025);
   box-shadow: 0 16px 40px rgba(0,0,0,.16);
 }
-.tc-card:active { transform: scale(.97); }
 
 /* ── Top: printable-label image area ── */
 .tc-card-top {
   position: relative;
-  flex: 0 0 44.5%;
+  flex: 0 0 42%;
   min-height: 0;
   background:
     linear-gradient(#fff, #fff) padding-box,
@@ -377,10 +375,10 @@ body {
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding: 1.5%;
+  padding: 0;
   flex-shrink: 0;
   border: 0;
-  border-radius: 17px;
+  border-radius: 18px;
   overflow: hidden;
   background: #fff;
 }
@@ -414,14 +412,14 @@ body {
 .tc-img-box {
   width: 100%;
   height: 100%;
-  background: #fff;
+  background: #f8f8f8;
   border: 1px solid color-mix(in srgb, var(--cc) 58%, #0b3c5d);
-  border-radius: 14px;
+  border-radius: 18px;
   display: grid;
-  grid-template-columns: minmax(0, 64%) minmax(96px, 31%);
-  column-gap: 5%;
+  grid-template-columns: minmax(0, 58%) minmax(0, 42%);
+  column-gap: 0;
   align-items: center;
-  padding: 5%;
+  padding: 7.06%;
   overflow: hidden;
   position: relative;
   z-index: 1;
@@ -436,87 +434,77 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: #f8f8f8;
 }
 
 .tc-product-visual img {
   width: 100%;
   height: 100%;
-  max-width: 104%;
-  max-height: 104%;
+  max-width: 70%;
+  max-height: 80%;
   object-fit: contain;
   object-position: center center;
-  transition: transform .3s ease;
 }
 
-.tc-card:hover .tc-product-visual img { transform: scale(1.06); }
 .tc-no-img { font-size: 38px; opacity: .2; }
 
 .tc-photo-price {
   position: absolute;
-  right: 5.5%;
-  top: 35%;
-  width: 33%;
-  height: 24%;
+  right: 7.06%;
+  top: 21.18%;
+  width: 37.65%;
+  height: 16.47%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #d7b45a;
-  border-radius: 13px;
-  background:
-    linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,0) 36%),
-    linear-gradient(135deg, var(--cc), #065f46 62%, #05405a);
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #22c55e, #065f46);
   color: #fff;
-  font-size: clamp(22px, 7.7cqw, 31px);
-  font-weight: 900;
+  font-size: clamp(24px, 6.7cqw, 33px);
+  font-weight: 800;
   line-height: 1;
-  text-shadow: 0 1px 2px rgba(0,0,0,.25);
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.55) inset,
-    0 2px 0 rgba(255,255,255,.20) inset,
-    0 5px 14px rgba(0,0,0,.22),
-    0 0 0 1px rgba(139, 92, 34, .18);
+  letter-spacing: -0.2px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
   z-index: 3;
 }
 
 .tc-photo-cart {
   position: absolute;
-  right: 6.2%;
-  top: 63%;
-  width: 31%;
-  height: 22%;
+  right: 7.06%;
+  top: calc(21.18% + 16.47% + 5%);
+  width: 42.35%;
+  height: 16.47%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 4px;
   padding: 0 8px;
-  border: 1.5px solid color-mix(in srgb, var(--cc) 64%, #e5e7eb);
-  border-radius: 12px;
-  background: rgba(255,255,255,.92);
-  color: var(--cc);
-  font-size: clamp(10px, 3.7cqw, 14px);
-  font-weight: 900;
+  border: 1.5px solid #22c55e;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #15803d;
+  font-size: clamp(10px, 3.75cqw, 14px);
+  font-weight: 800;
   line-height: 1.05;
   text-align: left;
   z-index: 3;
   cursor: pointer;
-  transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s;
+  transition: box-shadow .18s;
 }
 
 .tc-photo-cart:hover {
-  transform: scale(1.04);
   box-shadow: 0 4px 12px rgba(0,0,0,.14);
 }
-
-.tc-photo-cart:active {
-  transform: scale(.96);
-}
+.tc-photo-cart span { font-size: 12px; }
 
 /* ── Bottom: two-column info zone ── */
 .tc-card-bot {
   flex: 1;
   min-height: 0;
   background: #fff;
-  padding: 5.2% 0 17.5%;
+  padding: 5.4% 0 17.6%;
   display: grid;
   grid-template-columns: minmax(0, 56%) 1px minmax(0, 44%);
   gap: 0;
@@ -541,8 +529,8 @@ body {
 }
 
 .tc-card-name {
-  font-size: clamp(25px, 8.8cqw, 36px);
-  font-weight: 900;
+  font-size: clamp(25px, 8.47cqw, 36px);
+  font-weight: 800;
   color: #0f172a;
   line-height: 1.15;
   letter-spacing: 0;
@@ -555,9 +543,9 @@ body {
 
 .tc-card-brand {
   margin-top: 3%;
-  font-size: clamp(17px, 5.5cqw, 24px);
-  color: var(--cc);
-  font-weight: 800;
+  font-size: clamp(16px, 4.7cqw, 22px);
+  color: #22c55e;
+  font-weight: 600;
   letter-spacing: .2px;
 }
 
@@ -570,14 +558,13 @@ body {
 }
 
 .tc-size-label {
-  font-size: clamp(14px, 5.1cqw, 20px);
-  font-weight: 900;
-  color: var(--cc);
+  font-size: clamp(13px, 3.75cqw, 18px);
+  font-weight: 600;
+  color: #22c55e;
   background: #fff;
-  border: 1px solid var(--cc);
-  border: 1.5px solid var(--cc);
-  border-radius: 12px;
-  padding: 2.2% 6%;
+  border: 1.5px solid #22c55e;
+  border-radius: 999px;
+  padding: 1.76% 3.53%;
   flex-shrink: 0;
 }
 
@@ -598,15 +585,15 @@ body {
 /* Horizontal scanner barcode pinned to the bottom */
 .tc-horizontal-barcode-wrap {
   position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: 2.9%;
-  height: 11.5%;
+  left: 4.705%;
+  right: 4.705%;
+  bottom: 2.5%;
+  height: 13.33%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 0 12px;
+  padding: 0;
   background: #fff;
   z-index: 4;
 }
@@ -650,14 +637,14 @@ body {
 }
 
 .tc-spec-title {
-  height: 17%;
+  height: 18.75%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--cc), #0b3c5d);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #22c55e, #065f46);
   color: #fff;
-  font-size: clamp(15px, 4.8cqw, 20px);
+  font-size: clamp(13px, 3.75cqw, 18px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: .9px;
@@ -681,32 +668,32 @@ body {
 .tc-spec-chips {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 2mm;
   overflow: hidden;
 }
 .tc-spec-chip {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 5%;
-  min-height: 16%;
+  gap: 2mm;
+  min-height: 0;
   border: 0 !important;
   border-bottom: 1px solid #e5e7eb !important;
   border-radius: 0;
-  padding: 3.2% 0;
+  padding: 1.8% 0;
   background: transparent !important;
   color: #0f172a !important;
-  font-size: clamp(15px, 4.8cqw, 19px);
-  font-weight: 750;
-  line-height: 1.05;
+  font-size: clamp(13px, 3.75cqw, 18px);
+  font-weight: 700;
+  line-height: 1.4;
   word-break: break-word;
   text-align: left;
 }
 .tc-spec-chip::before {
   content: "";
-  width: 7px;
-  height: 7px;
-  flex: 0 0 7px;
+  width: 3mm;
+  height: 3mm;
+  flex: 0 0 3mm;
   border-radius: 50%;
   background: var(--cc);
 }
@@ -1168,17 +1155,11 @@ body {
 @media (max-width: 600px) {
   .catalog-main { padding: 0 10px; margin: 12px auto 40px; }
   .product-grid {
-    grid-template-columns: minmax(0, 360px) !important;
+    grid-template-columns: minmax(0, 390px) !important;
     justify-content: center;
     gap: 18px;
   }
-  .tc-card { min-height: 0; height: auto; padding: 5%; border-width: 5px; }
-  .tc-card-top { min-height: 0; padding: 1.9%; border-width: 0; }
-  .tc-card-bot { padding-bottom: 15.5%; }
-  .tc-card-name { font-size: 14px; }
-  .tc-card-brand { font-size: 11px; }
-  .tc-spec-title { height: 24px; font-size: 10px; }
-  .tc-spec-chip { font-size: 10px; min-height: 20px; padding: 2px 0; }
+  .tc-card { min-height: 0; height: auto; }
   .tc-img-wrap { height: 150px; }
   .tc-name { font-size: 11px; }
   .tc-price { font-size: 14px; }

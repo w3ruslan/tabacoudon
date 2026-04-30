@@ -95,7 +95,7 @@ body {
   height: var(--label-height);
   display: flex;
   flex-direction: column;
-  padding: 3.2mm;
+  padding: 3mm;
   overflow: hidden;
   border: 1.45mm solid transparent;
   border-radius: 4mm;
@@ -126,12 +126,12 @@ body {
 }
 
 .label-photo-panel {
-  flex: 0 0 46%;
+  flex: 0 0 42%;
   min-height: 0;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding: 1.2mm;
+  padding: 0;
   overflow: hidden;
   border: 0;
   border-radius: 3mm;
@@ -147,26 +147,27 @@ body {
   justify-content: stretch;
   overflow: hidden;
   border: 0.25mm solid color-mix(in srgb, var(--category-color) 58%, var(--navy));
-  border-radius: 2.4mm;
-  background: #ffffff;
+  border-radius: 3mm;
+  background: #f8f8f8;
 }
 
 .label-image-box {
-  width: 64%;
+  width: 58%;
   min-width: 0;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #ffffff;
+  padding: 4.5mm;
+  background: #f8f8f8;
 }
 
 .label-image-box img {
   width: 100%;
   height: 100%;
-  max-width: 99%;
-  max-height: 99%;
+  max-width: 70%;
+  max-height: 80%;
   object-fit: contain;
   object-position: center center;
   display: block;
@@ -188,27 +189,47 @@ body {
 
 .label-photo-price {
   position: absolute;
-  right: 3.4mm;
-  top: 36%;
-  width: 23.5mm;
-  height: 8.4mm;
+  right: 4.5mm;
+  top: 13.4mm;
+  width: 23.8mm;
+  height: 10.4mm;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 0.45mm solid #d7b45a;
-  border-radius: 2mm;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 36%),
-    linear-gradient(135deg, var(--category-color), var(--green-dark) 62%, var(--navy));
+  border: 0;
+  border-radius: 2.25mm;
+  background: linear-gradient(135deg, #22c55e, #065f46);
   color: #fff;
-  font-size: 9.4pt;
-  font-weight: 900;
+  font-size: 10.4pt;
+  font-weight: 800;
   line-height: 1;
-  text-shadow: 0 0.2mm 0.35mm rgba(0, 0, 0, 0.24);
-  box-shadow:
-    inset 0 0 0 0.2mm rgba(255, 255, 255, 0.46),
-    inset 0 0.35mm 0 rgba(255, 255, 255, 0.18),
-    0 0.45mm 0.9mm rgba(0, 0, 0, 0.18);
+  letter-spacing: -0.2px;
+  text-align: center;
+  box-shadow: 0 0.35mm 0.9mm rgba(0, 0, 0, 0.15);
+}
+
+.label-photo-cart {
+  position: absolute;
+  right: 4.5mm;
+  top: 25.2mm;
+  width: 26.8mm;
+  height: 10.4mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1mm;
+  border: 1.5px solid #22c55e;
+  border-radius: 2.25mm;
+  background: #ffffff;
+  color: #15803d;
+  font-size: 6pt;
+  font-weight: 800;
+  line-height: 1.05;
+  text-align: left;
+}
+
+.label-photo-cart span {
+  font-size: 12px;
 }
 
 .label-category {
@@ -220,7 +241,7 @@ body {
   position: relative;
   min-height: 0;
   display: block;
-  padding-top: 2.4mm;
+  padding-top: 3mm;
   padding-bottom: 15mm;
   overflow: hidden;
   background: #fff;
@@ -239,11 +260,10 @@ body {
   content: "";
   grid-column: 2;
   grid-row: 1;
-  width: 0.3mm;
+  width: 0.5mm;
   height: 100%;
   margin: 0 1.5mm;
   background: var(--line);
-  transform: translateX(-1.5mm);
 }
 
 .label-left {
@@ -265,9 +285,9 @@ body {
   margin-bottom: 1mm;
   overflow: hidden;
   color: var(--ink);
-  font-size: 9.8pt;
-  font-weight: 900;
-  line-height: 1.15;
+  font-size: 13.4pt;
+  font-weight: 800;
+  line-height: 1.1;
   letter-spacing: 0;
   text-transform: uppercase;
   overflow-wrap: anywhere;
@@ -275,9 +295,9 @@ body {
 
 .label-brand {
   margin-bottom: 1mm;
-  color: var(--category-color);
-  font-size: 7.6pt;
-  font-weight: 800;
+  color: #22c55e;
+  font-size: 7.45pt;
+  font-weight: 600;
   line-height: 1.15;
   overflow-wrap: anywhere;
 }
@@ -289,13 +309,13 @@ body {
 .label-size {
   display: inline-block;
   max-width: 100%;
-  padding: 0.6mm 1.6mm;
-  border: 0.3mm solid var(--category-color);
-  border-radius: 2mm;
-  color: var(--category-color);
+  padding: 1.1mm 2.25mm;
+  border: 1.5px solid #22c55e;
+  border-radius: 999px;
+  color: #22c55e;
   background: #fff;
-  font-size: 6.5pt;
-  font-weight: 900;
+  font-size: 6pt;
+  font-weight: 600;
   line-height: 1.1;
   overflow-wrap: anywhere;
 }
@@ -311,16 +331,16 @@ body {
 }
 
 .label-notes h3 {
-  height: 6mm;
-  min-height: 6mm;
+  height: 7.45mm;
+  min-height: 7.45mm;
   margin-bottom: 0.8mm;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 2mm;
-  background: linear-gradient(135deg, var(--category-color), var(--navy));
+  border-radius: 2.25mm;
+  background: linear-gradient(135deg, #22c55e, #065f46);
   color: #fff;
-  font-size: 7.4pt;
+  font-size: 6pt;
   font-weight: 900;
   line-height: 1;
 }
@@ -330,7 +350,7 @@ body {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35mm;
+  gap: 1.5mm;
   overflow: hidden;
 }
 
@@ -338,23 +358,23 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1.4mm;
-  min-height: 3.8mm;
+  gap: 1.5mm;
+  min-height: 0;
   padding: 0 0 0.25mm;
   border-bottom: 0.3mm solid #e5e7eb;
   color: var(--ink);
-  font-size: 7.2pt;
-  font-weight: 750;
-  line-height: 1.15;
+  font-size: 6pt;
+  font-weight: 700;
+  line-height: 1.4;
   text-align: left;
   overflow-wrap: anywhere;
 }
 
 .label-note-list span::before {
   content: "";
-  width: 1mm;
-  height: 1mm;
-  flex: 0 0 1mm;
+  width: 2.25mm;
+  height: 2.25mm;
+  flex: 0 0 2.25mm;
   border-radius: 50%;
   background: var(--category-color);
 }
@@ -377,15 +397,15 @@ body {
 
 .label-barcode-area {
   position: absolute;
-  left: 4mm;
-  right: 4mm;
-  bottom: 1.5mm;
-  height: 12.5mm;
+  left: 3mm;
+  right: 3mm;
+  bottom: 2.25mm;
+  height: 12mm;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 0 3mm;
+  padding: 0;
   background: #fff;
 }
 
