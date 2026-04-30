@@ -261,16 +261,20 @@
   padding-right: 3.5%;
 }
 
-.tc-card-name {
+.tc-card-name,
+.tc-title,
+.product-title,
+.tc-product-name {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
   color: #080f1d;
-  font-size: clamp(12px, 10cqw, 64px);
+  font-size: clamp(12px, 3.75cqw, 24px);
   font-weight: 900;
-  line-height: .92;
-  letter-spacing: -0.045em;
+  line-height: 1;
+  letter-spacing: -0.5px;
   text-transform: uppercase;
 }
 
