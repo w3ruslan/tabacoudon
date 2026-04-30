@@ -152,6 +152,7 @@ body {
 }
 
 .label-image-box {
+  width: 64%;
   min-width: 0;
   height: 100%;
   display: flex;

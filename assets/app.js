@@ -297,7 +297,9 @@ function renderCard(p) {
     // ── Top gradient + image (price and cart inside photo area) ──
     + '<div class="tc-card-top">'
     + '<div class="tc-img-box">'
+    + '<div class="tc-product-visual">'
     + imgHtml
+    + '</div>'
     + (price ? '<div class="tc-photo-price">' + price + '</div>' : '')
     + '<button class="tc-photo-cart tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="--cc:' + catColor + '"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>'
     + '</div>'
