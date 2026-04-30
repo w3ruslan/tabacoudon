@@ -1,10 +1,8 @@
 /* Shared product card: public catalog, mobile, and PDF/print */
 .product-grid {
-  --card-width: 210px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, var(--card-width, 210px)));
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--grid-gap, 16px);
-  justify-content: start;
 }
 
 .tc-card {
