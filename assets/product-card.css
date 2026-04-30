@@ -61,7 +61,7 @@
    HERO SECTION  (≈ 42% of card height)
 ───────────────────────────────────────────────────── */
 .tc-card-top {
-  flex: 0 0 42%;
+  flex: 0 0 46%;
   min-height: 0;
   display: flex;
   align-items: stretch;
@@ -103,17 +103,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow: visible;
   background: transparent;
 }
 
 .tc-product-visual img {
-  width: 165%;
-  height: 165%;
+  width: auto;
+  height: 190%;
+  max-width: 145%;
   object-fit: contain;
   object-position: center center;
   display: block;
-  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .12));
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .14));
 }
 
 .tc-no-img {
