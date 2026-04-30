@@ -1,7 +1,6 @@
 /* ══════════════════════════════════════════
    TABACOUDON — Style public
 ══════════════════════════════════════════ */
-@import url('product-card.css');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

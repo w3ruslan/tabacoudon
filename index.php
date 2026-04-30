@@ -18,6 +18,7 @@ $waNumber = getSetting('whatsapp_number', WHATSAPP_NUMBER);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= SHOP_NAME ?> — Catalogue E-Liquid</title>
+  <link rel="stylesheet" href="assets/product-card.css?v=<?= filemtime(__DIR__.'/assets/product-card.css') ?>">
   <link rel="stylesheet" href="assets/style.css?v=<?= filemtime(__DIR__.'/assets/style.css') ?>">
   <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
