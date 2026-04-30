@@ -825,9 +825,3 @@ body {
     padding-top: 20px;
   }
 }
-
-/* ── Print: remove shadows so photo doesn't get dark halo on paper ── */
-@media print {
-  .tc-img-box  { box-shadow: none !important; }
-  .tc-card     { box-shadow: none !important; }
-}

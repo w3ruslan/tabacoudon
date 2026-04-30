@@ -45,12 +45,7 @@ function imagePath(?string $image): string {
 
 function productNotes(array $product): array {
     $source = trim((string)($product['flavor'] ?? ''));
-    if ($source === '') {
-        $source = trim((string)($product['description'] ?? ''));
-    }
-    $source = preg_replace('/https?:\/\/\S+/i', '', $source);
-    $source = preg_replace('/\s+/', ' ', (string)$source);
-    $parts = preg_split('/[,;|\n]+/', (string)$source);
+    $parts = preg_split('/[,\/]+/', (string)$source);
     $parts = array_map('trim', $parts ?: []);
     $parts = array_values(array_filter($parts, fn($part) => $part !== ''));
     return array_slice($parts, 0, 3);
@@ -80,6 +75,7 @@ function categoryColor(?string $color): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Étiquettes produits — <?= e(SHOP_NAME) ?></title>
+  <link rel="stylesheet" href="../assets/product-card.css?v=<?= filemtime(__DIR__ . '/../assets/product-card.css') ?>">
   <link rel="stylesheet" href="assets/product-label.css?v=<?= filemtime(__DIR__ . '/assets/product-label.css') ?>">
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 </head>
@@ -104,8 +100,14 @@ function categoryColor(?string $color): string {
       $price = ($p['price'] ?? '') !== '' && $p['price'] !== null ? '€' . number_format((float)$p['price'], 2) : '';
       $image = imagePath($p['image_url'] ?? '');
       $notes = productNotes($p);
+      $specTitle = 'NOTES';
+      if (!$notes && $category !== '') {
+          $notes = [$category];
+          $specTitle = 'Catégorie';
+      }
       $theme = categoryTheme($category);
       $categoryColor = categoryColor($p['category_color'] ?? '');
+      $surCommande = !empty($p['sur_commande']);
     ?>
     <article class="tc-card product-print-label label-theme-<?= e($theme) ?> <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>">
       <div class="tc-card-top">
@@ -118,7 +120,7 @@ function categoryColor(?string $color): string {
             <?php endif; ?>
           </div>
           <?php if ($price): ?><div class="tc-photo-price"><?= e($price) ?></div><?php endif; ?>
-          <div class="tc-photo-cart"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></div>
+          <button class="tc-photo-cart tc-cart-btn" type="button" style="--cc: <?= e($categoryColor) ?>"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>
         </div>
       </div>
 
@@ -128,12 +130,13 @@ function categoryColor(?string $color): string {
           <?php if ($brand): ?><div class="tc-card-brand"><?= e($brand) ?></div><?php endif; ?>
           <div class="tc-bot-tags">
             <?php if ($size): ?><span class="tc-size-label"><?= e($size) ?></span><?php endif; ?>
+            <?php if ($surCommande): ?><span class="tc-sc-pill">📦 Sur cmd</span><?php endif; ?>
           </div>
         </div>
 
         <?php if ($notes): ?>
         <aside class="tc-bot-right">
-          <div class="tc-spec-title">NOTES</div>
+          <div class="tc-spec-title"><?= e($specTitle) ?></div>
           <div class="tc-spec-chips">
             <?php foreach ($notes as $note): ?>
               <span class="tc-spec-chip"><?= e($note) ?></span>

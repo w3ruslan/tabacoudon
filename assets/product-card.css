@@ -453,11 +453,3 @@
 @media (max-width: 420px) {
   .product-grid { gap: 8px; }
 }
-
-/* ─────────────────────────────────────────────────────
-   PRINT / PDF
-───────────────────────────────────────────────────── */
-@media print {
-  .product-grid { grid-template-columns: repeat(3, 1fr); }
-  .tc-card:hover { transform: none; }
-}
