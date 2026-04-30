@@ -41,10 +41,13 @@ function updateCartBadge() {
 function animateProductToCart(sourceButton) {
   var cartTarget = document.querySelector('.btn-cart') || document.getElementById('cartBadge');
   var card = sourceButton && sourceButton.closest ? sourceButton.closest('.tc-card') : null;
-  var img = card ? card.querySelector('.tc-product-visual img') : null;
-  if (!cartTarget || !img || img.offsetParent === null) return Promise.resolve();
+  var visual = card ? card.querySelector('.tc-product-visual') : null;
+  var img = visual ? visual.querySelector('img') : null;
+  if (!cartTarget || !visual || !img) return Promise.resolve();
 
   var from = img.getBoundingClientRect();
+  if (!from.width || !from.height) from = visual.getBoundingClientRect();
+  if (!from.width || !from.height) return Promise.resolve();
   var to = cartTarget.getBoundingClientRect();
   var startSize = Math.min(from.width, from.height, 82);
   var fly = img.cloneNode(false);
@@ -58,17 +61,17 @@ function animateProductToCart(sourceButton) {
 
   var endX = to.left + to.width / 2 - (from.left + from.width / 2);
   var endY = to.top + to.height / 2 - (from.top + from.height / 2);
-  var animation = fly.animate([
-    { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1 },
-    { transform: 'translate3d(' + (endX * .46) + 'px, ' + (endY - 42) + 'px, 0) scale(.72)', opacity: .92, offset: .58 },
-    { transform: 'translate3d(' + endX + 'px, ' + endY + 'px, 0) scale(.18)', opacity: 0 }
-  ], {
-    duration: 760,
-    easing: 'cubic-bezier(.2,.78,.18,1)'
-  });
+  fly.style.setProperty('--cart-fly-x', endX + 'px');
+  fly.style.setProperty('--cart-fly-y', endY + 'px');
 
-  return animation.finished.catch(function() {}).then(function() {
-    fly.remove();
+  return new Promise(function(resolve) {
+    requestAnimationFrame(function() {
+      fly.classList.add('is-flying');
+      setTimeout(function() {
+        fly.remove();
+        resolve();
+      }, 780);
+    });
   });
 }
 

@@ -468,9 +468,6 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
-  .tc-card { --card-border: 3.5px; --card-radius: 14px; }
-  .tc-horizontal-barcode-wrap { display: none; }
-  .tc-card-bot { padding-bottom: 5.5%; }
 }
 
 @media (max-width: 420px) {
