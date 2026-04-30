@@ -107,43 +107,43 @@ function categoryColor(?string $color): string {
       $theme = categoryTheme($category);
       $categoryColor = categoryColor($p['category_color'] ?? '');
     ?>
-    <article class="tc-card product-print-label label-theme-<?= e($theme) ?> <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>">
-      <div class="tc-card-top">
-        <div class="tc-img-box">
-          <div class="tc-product-visual">
-            <?php if ($image): ?>
-              <img src="<?= e($image) ?>" alt="<?= e($name) ?>">
-            <?php else: ?>
-              <span class="tc-no-img"><?= e($name) ?></span>
-            <?php endif; ?>
-          </div>
-          <?php if ($price): ?><div class="tc-photo-price"><?= e($price) ?></div><?php endif; ?>
-          <div class="tc-photo-cart"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></div>
+    <article class="product-card tc-card product-print-label label-theme-<?= e($theme) ?> <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>">
+      <div class="photo-section tc-card-top">
+        <div class="product-photo tc-product-visual">
+          <?php if ($image): ?>
+            <img src="<?= e($image) ?>" alt="<?= e($name) ?>">
+          <?php else: ?>
+            <span class="tc-no-img"><?= e($name) ?></span>
+          <?php endif; ?>
+        </div>
+        <div class="price-cart-area">
+          <?php if ($price): ?><div class="price-box tc-photo-price"><?= e($price) ?></div><?php endif; ?>
+          <div class="cart-box tc-photo-cart"><span class="cart-icon">🛒</span><strong>AJOUTER<br>AU PANIER</strong></div>
         </div>
       </div>
 
-      <section class="tc-card-bot">
-        <div class="tc-bot-left">
-          <div class="tc-card-name"><?= e($name) ?></div>
-          <?php if ($brand): ?><div class="tc-card-brand"><?= e($brand) ?></div><?php endif; ?>
+      <section class="info-section tc-card-bot">
+        <div class="info-left tc-bot-left">
+          <h2 class="product-name tc-card-name"><?= e($name) ?></h2>
+          <?php if ($brand): ?><p class="brand product-brand tc-card-brand"><?= e($brand) ?></p><?php endif; ?>
           <div class="tc-bot-tags">
-            <?php if ($size): ?><span class="tc-size-label"><?= e($size) ?></span><?php endif; ?>
+            <?php if ($size): ?><span class="size-badge tc-size-label"><?= e($size) ?></span><?php endif; ?>
           </div>
         </div>
 
         <?php if ($notes): ?>
-        <aside class="tc-bot-right">
-          <div class="tc-spec-title">NOTES</div>
-          <div class="tc-spec-chips">
+        <aside class="info-right tc-bot-right">
+          <div class="notes-title tc-spec-title">NOTES</div>
+          <ul class="notes-list tc-spec-chips">
             <?php foreach ($notes as $note): ?>
-              <span class="tc-spec-chip"><?= e($note) ?></span>
+              <li class="note-item tc-spec-chip"><?= e($note) ?></li>
             <?php endforeach; ?>
-          </div>
+          </ul>
         </aside>
         <?php endif; ?>
       </section>
 
-      <div class="tc-horizontal-barcode-wrap <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
+      <div class="barcode-section tc-horizontal-barcode-wrap <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
         <?php if ($barcode): ?><svg class="tc-horizontal-barcode-svg" data-barcode="<?= e($barcode) ?>"></svg><?php endif; ?>
       </div>
     </article>
