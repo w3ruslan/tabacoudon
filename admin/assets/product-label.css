@@ -114,6 +114,41 @@ body {
   display: none !important;
 }
 
+.product-print-label .tc-card-top,
+.product-print-label .tc-img-box,
+.product-print-label .tc-product-visual,
+.product-print-label .tc-product-visual img,
+.product-print-label .tc-photo,
+.product-print-label .tc-photo-inner,
+.product-print-label .tc-image-wrap,
+.product-print-label .tc-product-image,
+.product-print-label .tc-hero,
+.product-print-label .tc-hero-image,
+.product-print-label .product-image,
+.product-print-label .product-image-box {
+  background: #ffffff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.product-print-label .tc-card-top::before,
+.product-print-label .tc-card-top::after,
+.product-print-label .tc-img-box::before,
+.product-print-label .tc-img-box::after,
+.product-print-label .tc-product-visual::before,
+.product-print-label .tc-product-visual::after,
+.product-print-label .tc-photo::before,
+.product-print-label .tc-photo::after,
+.product-print-label .tc-image-wrap::before,
+.product-print-label .tc-image-wrap::after,
+.product-print-label .product-image::before,
+.product-print-label .product-image::after {
+  display: none !important;
+  content: none !important;
+}
+
 .product-print-label .tc-horizontal-barcode-wrap {
   display: flex !important;
   visibility: visible;

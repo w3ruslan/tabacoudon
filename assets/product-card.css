@@ -68,9 +68,11 @@
   padding: 0;
   overflow: hidden;
   border-radius: calc(var(--card-radius) * .80);
-  background:
-    linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(135deg, var(--cc), #0b3c5d) border-box;
+  background: #fff;
+  background-image: none;
+  box-shadow: none;
+  filter: none;
+  backdrop-filter: none;
 }
 
 /* Inner image box — 2-column grid: image | actions */
@@ -93,8 +95,11 @@
   padding: 4.9%;
   border: 2px solid color-mix(in srgb, var(--cc) 78%, #0b3c5d);
   border-radius: calc(var(--card-radius) * .64);
-  background:
-    linear-gradient(160deg, #fff 0%, #fbfcfd 100%);
+  background: #fff;
+  background-image: none;
+  box-shadow: none;
+  filter: none;
+  backdrop-filter: none;
 }
 
 /* ── Product image ── */
@@ -109,6 +114,10 @@
   justify-content: center;
   overflow: hidden;
   background: #fff;
+  background-image: none;
+  box-shadow: none;
+  filter: none;
+  backdrop-filter: none;
 }
 
 .tc-product-visual img {
@@ -119,7 +128,17 @@
   object-fit: contain;
   object-position: center center;
   display: block;
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .14));
+  filter: none;
+}
+
+.tc-card-top::before,
+.tc-card-top::after,
+.tc-img-box::before,
+.tc-img-box::after,
+.tc-product-visual::before,
+.tc-product-visual::after {
+  content: none !important;
+  display: none !important;
 }
 
 .tc-no-img {
