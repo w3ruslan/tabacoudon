@@ -558,6 +558,16 @@ body {
   border: 2px solid #fff;
 }
 
+.cart-badge-pulse {
+  animation: cartBadgePulse .62s ease;
+}
+
+@keyframes cartBadgePulse {
+  0% { transform: scale(1); }
+  38% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
+
 .btn-scan {
   background: var(--accent);
   color: #fff; border: none;

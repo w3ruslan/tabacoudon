@@ -47,17 +47,19 @@ function addToCart(id, name, price, size, event) {
     cart.push({ id: id, name: name, price: price, size: size, qty: 1 });
   }
   saveCart();
-  // Flash feedback on button
   var btn = document.querySelector('.tc-cart-btn[data-id="' + id + '"]');
   if (btn) {
-    var origBg   = btn.style.background;
-    var origHTML = btn.innerHTML;
-    btn.innerHTML = '✓';
-    btn.style.background = '#2ecc71';
-    setTimeout(function() {
-      btn.innerHTML = origHTML;
-      btn.style.background = origBg;
-    }, 900);
+    btn.classList.remove('is-added');
+    void btn.offsetWidth;
+    btn.classList.add('is-added');
+    setTimeout(function() { btn.classList.remove('is-added'); }, 700);
+  }
+  var badge = document.getElementById('cartBadge');
+  if (badge) {
+    badge.classList.remove('cart-badge-pulse');
+    void badge.offsetWidth;
+    badge.classList.add('cart-badge-pulse');
+    setTimeout(function() { badge.classList.remove('cart-badge-pulse'); }, 700);
   }
 }
 
