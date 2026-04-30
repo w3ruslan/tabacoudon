@@ -17,13 +17,12 @@
 ───────────────────────────────────────────────────── */
 .tc-card {
   --cc: var(--category-color, #22c55e);
-  --card-pad: 4.8%;
+  --card-pad: 5.3125%;
   --card-border: 4px;
   --card-radius: 16px;
   --card-shadow:
-    0 2px 6px rgba(0, 0, 0, .05),
-    0 8px 22px rgba(0, 0, 0, .09),
-    0 22px 44px rgba(0, 0, 0, .04);
+    0 3px 10px rgba(0, 0, 0, .04),
+    0 12px 34px rgba(0, 0, 0, .06);
 
   position: relative;
   width: 100%;
@@ -58,15 +57,15 @@
 }
 
 /* ─────────────────────────────────────────────────────
-   HERO SECTION  (≈ 42% of card height)
+   HERO SECTION  (338px / 910px reference ratio)
 ───────────────────────────────────────────────────── */
 .tc-card-top {
-  flex: 0 0 46%;
+  flex: 0 0 40.1%;
   min-height: 0;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
-  padding: 1.4%;
+  padding: 0;
   overflow: hidden;
   border-radius: calc(var(--card-radius) * .80);
   background:
@@ -81,20 +80,21 @@
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 68%) minmax(0, 32%);
+  grid-template-columns: minmax(0, 65%) minmax(0, 35%);
   grid-template-rows:
     minmax(0, 1fr)
-    minmax(0, 30%)
-    minmax(0, 8%)
-    minmax(0, 22%)
+    minmax(0, 28%)
+    minmax(0, 6.4%)
+    minmax(0, 25.7%)
     minmax(0, 1fr);
   align-items: center;
   justify-items: center;
   overflow: hidden;
-  padding: 3.5%;
-  border: 1px solid color-mix(in srgb, var(--cc) 72%, #0b3c5d);
-  border-radius: calc(var(--card-radius) * .80);
-  background: #fff;
+  padding: 4.9%;
+  border: 2px solid color-mix(in srgb, var(--cc) 78%, #0b3c5d);
+  border-radius: calc(var(--card-radius) * .64);
+  background:
+    linear-gradient(160deg, #fff 0%, #fbfcfd 100%);
 }
 
 /* ── Product image ── */
@@ -105,17 +105,17 @@
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   overflow: hidden;
   background: #fff;
 }
 
 .tc-product-visual img {
-  width: 100%;
-  height: 100%;
-  max-width: 108%;
-  max-height: 98%;
+  width: 118%;
+  height: 118%;
+  max-width: 118%;
+  max-height: 118%;
   object-fit: contain;
   object-position: center center;
   display: block;
@@ -132,25 +132,24 @@
   grid-column: 2;
   grid-row: 2;
   position: static;
-  width: 94%;
+  width: 87.5%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(212, 175, 55, .72);
+  border: 2px solid rgba(255, 215, 0, .38);
   border-radius: calc(var(--card-radius) * .66);
   background:
     linear-gradient(160deg, rgba(255, 255, 255, .16) 0%, rgba(0, 0, 0, .30) 100%),
     var(--cc);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, .28),
-    0 3px 14px rgba(0, 0, 0, .16),
-    0 0 20px rgba(0, 0, 0, .06);
+    0 8px 18px rgba(0, 0, 0, .16);
   color: #fff;
-  font-size: clamp(15px, 8.6cqw, 34px);
+  font-size: clamp(10px, 4.7cqw, 30px);
   font-weight: 900;
   line-height: 1;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.03em;
   text-shadow: 0 1px 4px rgba(0, 0, 0, .24);
   white-space: nowrap;
   z-index: 3;
@@ -161,7 +160,7 @@
   grid-column: 2;
   grid-row: 4;
   position: static;
-  width: 94%;
+  width: 98%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -170,12 +169,12 @@
   min-width: 0;
   padding: 0 6%;
   border: 1.5px solid var(--cc);
-  border-radius: calc(var(--card-radius) * .60);
+  border-radius: calc(var(--card-radius) * .64);
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
   color: var(--cc);
-  font-size: clamp(6px, 3.1cqw, 13px);
-  font-weight: 800;
+  font-size: clamp(6px, 2.35cqw, 15px);
+  font-weight: 700;
   line-height: 1.05;
   letter-spacing: .15px;
   text-align: left;
@@ -191,7 +190,7 @@
 
 .tc-photo-cart span {
   flex: 0 0 auto;
-  font-size: clamp(9px, 5cqw, 21px);
+  font-size: clamp(9px, 3.75cqw, 24px);
 }
 
 .tc-photo-cart strong {
@@ -208,10 +207,10 @@
   flex: 1;
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 55%) 1px minmax(0, 45%);
+  grid-template-columns: minmax(0, 46%) 2px minmax(0, 54%);
   gap: 0;
   overflow: hidden;
-  padding: 5% 0 17.5%;
+  padding: 6% 0 18.5%;
   background: #fff;
 }
 
@@ -220,8 +219,8 @@
   content: "";
   grid-column: 2;
   grid-row: 1;
-  width: 1px;
-  height: 86%;
+  width: 2px;
+  height: 72%;
   margin: auto 0;
   background: linear-gradient(
     to bottom,
@@ -249,19 +248,19 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   color: #080f1d;
-  font-size: clamp(11px, 8.3cqw, 35px);
+  font-size: clamp(12px, 10cqw, 64px);
   font-weight: 900;
-  line-height: 1.06;
-  letter-spacing: -0.15px;
+  line-height: .92;
+  letter-spacing: -0.045em;
   text-transform: uppercase;
 }
 
 .tc-card-brand {
-  margin-top: 4%;
+  margin-top: 8.8%;
   overflow: hidden;
   color: var(--cc);
-  font-size: clamp(8px, 4.5cqw, 19px);
-  font-weight: 600;
+  font-size: clamp(8px, 4.375cqw, 28px);
+  font-weight: 700;
   line-height: 1.2;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -272,20 +271,25 @@
   align-items: center;
   gap: 2.5%;
   flex-wrap: wrap;
-  margin-top: 6.5%;
+  margin-top: 11.2%;
 }
 
 .tc-size-label {
   flex-shrink: 0;
   max-width: 100%;
   overflow: hidden;
-  padding: 2% 5%;
-  border: 1.5px solid var(--cc);
+  min-width: 16.25%;
+  min-height: clamp(18px, 8.125cqw, 52px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2% 4.7%;
+  border: 2px solid var(--cc);
   border-radius: 999px;
   background: #fff;
   color: var(--cc);
-  font-size: clamp(7px, 3.5cqw, 15px);
-  font-weight: 600;
+  font-size: clamp(7px, 2.8125cqw, 18px);
+  font-weight: 800;
   line-height: 1.1;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -327,15 +331,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6% 0;
-  margin-bottom: 8%;
-  border-radius: calc(var(--card-radius) * .58);
+  height: clamp(22px, 8.4375cqw, 54px);
+  padding: 0;
+  margin-bottom: 9.4%;
+  border-radius: calc(var(--card-radius) * .56);
   background:
     linear-gradient(148deg, rgba(255, 255, 255, .13) 0%, rgba(0, 0, 0, .24) 100%),
     var(--cc);
   box-shadow: 0 2px 10px rgba(0, 0, 0, .12);
   color: #fff;
-  font-size: clamp(7px, 3.4cqw, 14px);
+  font-size: clamp(8px, 3.4375cqw, 22px);
   font-weight: 900;
   line-height: 1;
   letter-spacing: .9px;
@@ -355,27 +360,27 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: clamp(3px, 1.7cqw, 7px);
+  gap: clamp(4px, 2cqw, 13px);
   min-height: 0;
   overflow-wrap: anywhere;
-  padding: 7.5% 0;
+  padding: 4.7% 0;
   /* Override any JS inline styles */
   border: 0 !important;
   border-bottom: 1px solid #f0f4f8 !important;
   border-radius: 0;
   background: transparent !important;
   color: #0f172a !important;
-  font-size: clamp(7px, 3.5cqw, 15px);
+  font-size: clamp(7px, 3.125cqw, 20px);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
   text-align: left;
 }
 
 .tc-spec-chip::before {
   content: "";
-  width: clamp(4px, 1.8cqw, 8px);
-  height: clamp(4px, 1.8cqw, 8px);
-  flex: 0 0 clamp(4px, 1.8cqw, 8px);
+  width: clamp(4px, 1.72cqw, 11px);
+  height: clamp(4px, 1.72cqw, 11px);
+  flex: 0 0 clamp(4px, 1.72cqw, 11px);
   border-radius: 50%;
   background: var(--cc);
 }
@@ -391,8 +396,8 @@
   position: absolute;
   left: var(--card-pad);
   right: var(--card-pad);
-  bottom: 2.4%;
-  height: 13.5%;
+  bottom: 3.2%;
+  height: 14.2%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -406,8 +411,8 @@
   position: absolute;
   left: -4%;
   right: -4%;
-  top: -1px;
-  border-top: 1.5px dashed #e2e8f0;
+  top: -6%;
+  border-top: 2px dashed #e5e7eb;
 }
 
 .tc-horizontal-barcode-wrap.no-barcode {
