@@ -282,39 +282,41 @@ function renderCard(p) {
   var flavors = (p.flavor || '').split(/[,\/]+/).map(function(f){ return f.trim(); }).filter(Boolean);
   var specsHtml = '';
   if (flavors.length) {
-    specsHtml = '<div class="notes-title tc-spec-title">NOTES</div>'
-      + '<ul class="notes-list tc-spec-chips">'
+    specsHtml = '<div class="tc-spec-title">NOTES</div>'
+      + '<div class="tc-spec-chips">'
       + flavors.slice(0, 3).map(function(f){
-          return '<li class="note-item tc-spec-chip">' + escapeHtml(f) + '</li>';
+          return '<span class="tc-spec-chip" style="background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '35">' + escapeHtml(f) + '</span>';
         }).join('')
-      + '</ul>';
+      + '</div>';
   } else if (catLabel) {
-    specsHtml = '<div class="notes-title tc-spec-title">Catégorie</div>'
-      + '<ul class="notes-list tc-spec-chips"><li class="note-item tc-spec-chip">' + catLabel + '</li></ul>';
+    specsHtml = '<div class="tc-spec-title">Catégorie</div>'
+      + '<div class="tc-spec-chips"><span class="tc-spec-chip" style="background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '35">' + catLabel + '</span></div>';
   }
 
-  return '<div class="product-card tc-card ' + (specsHtml ? 'tc-has-specs' : 'tc-no-specs') + '" data-id="' + p.id + '" style="--cc:' + catColor + ';--category-color:' + catColor + '">'
-    + '<div class="photo-section tc-card-top">'
-    + '<div class="product-photo tc-product-visual">'
+  return '<div class="tc-card ' + (specsHtml ? 'tc-has-specs' : 'tc-no-specs') + '" data-id="' + p.id + '" style="--cc:' + catColor + '">'
+    // ── Top gradient + image (price and cart inside photo area) ──
+    + '<div class="tc-card-top">'
+    + '<div class="tc-img-box">'
+    + '<div class="tc-product-visual">'
     + imgHtml
     + '</div>'
-    + '<div class="price-cart-area">'
-    + (price ? '<div class="price-box tc-photo-price">' + price + '</div>' : '')
-    + '<button class="cart-box tc-photo-cart tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="--cc:' + catColor + ';--category-color:' + catColor + '"><span class="cart-icon">🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>'
+    + (price ? '<div class="tc-photo-price">' + price + '</div>' : '')
+    + '<button class="tc-photo-cart tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="--cc:' + catColor + '"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>'
     + '</div>'
     + '</div>'
-    + '<div class="info-section tc-card-bot">'
-    + '<div class="info-left tc-bot-left">'
-    + '<h2 class="product-name tc-card-name">' + name + '</h2>'
-    + (brand ? '<p class="brand product-brand tc-card-brand">' + brand + '</p>' : '')
+    // ── Bottom two columns ──
+    + '<div class="tc-card-bot">'
+    + '<div class="tc-bot-left">'
+    + '<div class="tc-card-name">' + name + '</div>'
+    + (brand ? '<div class="tc-card-brand">' + brand + '</div>' : '')
     + '<div class="tc-bot-tags">'
-    + (size ? '<span class="size-badge tc-size-label">' + size + '</span>' : '')
+    + (size ? '<span class="tc-size-label">' + size + '</span>' : '')
     + surCmde
     + '</div>'
     + '</div>'
-    + (specsHtml ? '<div class="info-right tc-bot-right">' + specsHtml + '</div>' : '')
+    + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
     + '</div>'
-    + '<div class="barcode-section tc-horizontal-barcode-wrap ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
+    + '<div class="tc-horizontal-barcode-wrap ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
     + (barcode ? '<svg class="tc-horizontal-barcode-svg" data-barcode="' + barcode + '"></svg>' : '')
     + '</div>'
     + '</div>';
