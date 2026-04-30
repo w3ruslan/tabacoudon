@@ -568,6 +568,18 @@ body {
   100% { transform: scale(1); }
 }
 
+.cart-fly-image {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .18);
+  will-change: transform, opacity;
+}
+
 .btn-scan {
   background: var(--accent);
   color: #fff; border: none;

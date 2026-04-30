@@ -207,27 +207,6 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, .10);
 }
 
-.tc-photo-cart.is-added {
-  animation: tcCartAdded .62s ease;
-}
-
-@keyframes tcCartAdded {
-  0% {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
-    transform: scale(1);
-  }
-  36% {
-    box-shadow:
-      0 0 0 3px color-mix(in srgb, var(--cc) 24%, transparent),
-      0 8px 18px rgba(0, 0, 0, .12);
-    transform: scale(1.035);
-  }
-  100% {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
-    transform: scale(1);
-  }
-}
-
 .tc-photo-cart span {
   flex: 0 0 auto;
   font-size: clamp(9px, 3.75cqw, 24px);
