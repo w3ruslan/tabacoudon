@@ -57,17 +57,20 @@
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 58%) minmax(0, 42%);
+  grid-template-columns: minmax(0, 66%) minmax(0, 34%);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 22%) minmax(0, 6%) minmax(0, 18%) minmax(0, 1fr);
   align-items: center;
+  justify-items: center;
   overflow: hidden;
-  padding: 7.06%;
+  padding: 4.8%;
   border: 1px solid color-mix(in srgb, var(--cc) 58%, #0b3c5d);
   border-radius: calc(var(--card-radius) * .82);
-  background: #f8f8f8;
+  background: #fff;
 }
 
 .tc-product-visual {
   grid-column: 1;
+  grid-row: 1 / -1;
   min-width: 0;
   width: 100%;
   height: 100%;
@@ -75,14 +78,14 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: #f8f8f8;
+  background: #fff;
 }
 
 .tc-product-visual img {
   width: 100%;
   height: 100%;
-  max-width: 96%;
-  max-height: 96%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   object-position: center center;
   display: block;
@@ -94,11 +97,11 @@
 }
 
 .tc-photo-price {
-  position: absolute;
-  right: 7.06%;
-  top: 21.18%;
-  width: 37.65%;
-  height: 16.47%;
+  grid-column: 2;
+  grid-row: 2;
+  position: static;
+  width: 86%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,8 +109,8 @@
   border-radius: calc(var(--card-radius) * .64);
   background: linear-gradient(135deg, #22c55e, #065f46);
   color: #fff;
-  font-size: clamp(13px, 6.7cqw, 33px);
-  font-weight: 800;
+  font-size: clamp(14px, 7.3cqw, 34px);
+  font-weight: 900;
   line-height: 1;
   letter-spacing: -0.2px;
   text-align: center;
@@ -117,22 +120,22 @@
 }
 
 .tc-photo-cart {
-  position: absolute;
-  right: 7.06%;
-  top: calc(21.18% + 16.47% + 5%);
-  width: 42.35%;
-  height: 16.47%;
+  grid-column: 2;
+  grid-row: 4;
+  position: static;
+  width: 86%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
   padding: 0 8px;
   border: 1.5px solid #22c55e;
   border-radius: calc(var(--card-radius) * .64);
   background: #fff;
   color: #15803d;
-  font-size: clamp(7px, 3.75cqw, 14px);
+  font-size: clamp(7px, 3.55cqw, 15px);
   font-weight: 800;
   line-height: 1.05;
   text-align: left;
@@ -142,7 +145,7 @@
 
 .tc-photo-cart span {
   flex: 0 0 auto;
-  font-size: clamp(9px, 3.6cqw, 12px);
+  font-size: clamp(10px, 5.1cqw, 22px);
 }
 
 .tc-photo-cart strong {
