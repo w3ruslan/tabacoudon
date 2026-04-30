@@ -107,52 +107,44 @@ function categoryColor(?string $color): string {
       $theme = categoryTheme($category);
       $categoryColor = categoryColor($p['category_color'] ?? '');
     ?>
-    <article class="product-print-label label-theme-<?= e($theme) ?>" style="--category-color: <?= e($categoryColor) ?>">
-      <div class="label-frame">
-        <header class="label-photo-panel">
-          <div class="label-photo-box">
-            <div class="label-image-box">
-              <?php if ($image): ?>
-                <img src="<?= e($image) ?>" alt="<?= e($name) ?>">
-              <?php else: ?>
-                <span class="label-photo-fallback"><?= e($name) ?></span>
-              <?php endif; ?>
-            </div>
-            <?php if ($price): ?><div class="label-photo-price"><?= e($price) ?></div><?php endif; ?>
-            <div class="label-photo-cart"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></div>
-          </div>
-          <?php if ($category): ?>
-            <div class="label-category"><?= e($category) ?></div>
-          <?php endif; ?>
-        </header>
-
-        <section class="label-info-grid <?= $notes ? 'label-has-notes' : 'label-no-notes' ?>">
-          <div class="label-detail-row">
-            <div class="label-left">
-              <div class="label-left-main">
-                <h2><?= e($name) ?></h2>
-                <?php if ($brand): ?><p class="label-brand"><?= e($brand) ?></p><?php endif; ?>
-                <?php if ($size): ?><span class="label-size"><?= e($size) ?></span><?php endif; ?>
-              </div>
-            </div>
-
-            <?php if ($notes): ?>
-            <aside class="label-notes">
-              <h3>NOTES</h3>
-              <div class="label-note-list">
-                <?php foreach ($notes as $note): ?>
-                  <span><?= e($note) ?></span>
-                <?php endforeach; ?>
-              </div>
-            </aside>
+    <article class="tc-card product-print-label label-theme-<?= e($theme) ?> <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>">
+      <div class="tc-card-top">
+        <div class="tc-img-box">
+          <div class="tc-product-visual">
+            <?php if ($image): ?>
+              <img src="<?= e($image) ?>" alt="<?= e($name) ?>">
+            <?php else: ?>
+              <span class="tc-no-img"><?= e($name) ?></span>
             <?php endif; ?>
           </div>
+          <?php if ($price): ?><div class="tc-photo-price"><?= e($price) ?></div><?php endif; ?>
+          <div class="tc-photo-cart"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></div>
+        </div>
+      </div>
 
-          <div class="label-barcode-area <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
-            <?php if ($barcode): ?><svg class="label-horizontal-barcode" data-barcode="<?= e($barcode) ?>"></svg><?php endif; ?>
+      <section class="tc-card-bot">
+        <div class="tc-bot-left">
+          <div class="tc-card-name"><?= e($name) ?></div>
+          <?php if ($brand): ?><div class="tc-card-brand"><?= e($brand) ?></div><?php endif; ?>
+          <div class="tc-bot-tags">
+            <?php if ($size): ?><span class="tc-size-label"><?= e($size) ?></span><?php endif; ?>
           </div>
+        </div>
 
-        </section>
+        <?php if ($notes): ?>
+        <aside class="tc-bot-right">
+          <div class="tc-spec-title">NOTES</div>
+          <div class="tc-spec-chips">
+            <?php foreach ($notes as $note): ?>
+              <span class="tc-spec-chip"><?= e($note) ?></span>
+            <?php endforeach; ?>
+          </div>
+        </aside>
+        <?php endif; ?>
+      </section>
+
+      <div class="tc-horizontal-barcode-wrap <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
+        <?php if ($barcode): ?><svg class="tc-horizontal-barcode-svg" data-barcode="<?= e($barcode) ?>"></svg><?php endif; ?>
       </div>
     </article>
     <?php endforeach; ?>
@@ -181,7 +173,7 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
     JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
   } catch (e) {
     try { JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' })); }
-    catch (e2) { svg.closest('.label-barcode-area').style.visibility = 'hidden'; }
+    catch (e2) { svg.closest('.tc-horizontal-barcode-wrap').style.visibility = 'hidden'; }
   }
 });
 console.log('Product label size: 63.333mm x 92.333mm; A4 grid: 3 columns x 3 rows; page padding: 6mm; gutter: 4mm.');
