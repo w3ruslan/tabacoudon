@@ -1,20 +1,20 @@
 /* Shared product card: public catalog, mobile, and PDF/print */
 .product-grid {
-  --card-width: 250px;
+  --card-width: 180px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, var(--card-width, 250px)));
-  gap: var(--grid-gap, 20px);
+  grid-template-columns: repeat(auto-fill, minmax(160px, var(--card-width, 180px)));
+  gap: var(--grid-gap, 14px);
   justify-content: start;
 }
 
 .tc-card {
   --cc: var(--category-color, #22c55e);
-  --card-width: 250px;
+  --card-width: 180px;
   --card-height: calc(var(--card-width) * 120 / 85);
   --card-scale: 1;
   --card-pad: 4.705%;
-  --card-border: 6px;
-  --card-radius: 17px;
+  --card-border: 4px;
+  --card-radius: 13px;
   --card-shadow: 0 5px 20px rgba(0, 0, 0, .11);
   width: 100%;
   aspect-ratio: 85 / 120;
