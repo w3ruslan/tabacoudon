@@ -60,7 +60,7 @@
    HERO SECTION  (338px / 910px reference ratio)
 ───────────────────────────────────────────────────── */
 .tc-card-top {
-  flex: 0 0 40.1%;
+  flex: 0 0 42%;
   min-height: 0;
   display: flex;
   align-items: stretch;
@@ -105,17 +105,17 @@
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   overflow: hidden;
   background: #fff;
 }
 
 .tc-product-visual img {
-  width: 118%;
-  height: 118%;
-  max-width: 118%;
-  max-height: 118%;
+  width: 95%;
+  height: 95%;
+  max-width: 95%;
+  max-height: 95%;
   object-fit: contain;
   object-position: center center;
   display: block;
@@ -210,7 +210,7 @@
   grid-template-columns: minmax(0, 46%) 2px minmax(0, 54%);
   gap: 0;
   overflow: hidden;
-  padding: 6% 0 18.5%;
+  padding: 6% 0 18%;
   background: #fff;
 }
 
@@ -397,7 +397,7 @@
   left: var(--card-pad);
   right: var(--card-pad);
   bottom: 3.2%;
-  height: 14.2%;
+  height: 18%;
   display: flex;
   align-items: center;
   justify-content: center;

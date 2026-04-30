@@ -119,6 +119,7 @@ function categoryColor(?string $color): string {
               <span class="tc-no-img"><?= e($name) ?></span>
             <?php endif; ?>
           </div>
+          <?php if ($price): ?><div class="tc-photo-price"><?= e($price) ?></div><?php endif; ?>
           <button class="tc-photo-cart tc-cart-btn" type="button" style="--cc: <?= e($categoryColor) ?>"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>
         </div>
       </div>
@@ -148,7 +149,6 @@ function categoryColor(?string $color): string {
       <div class="tc-horizontal-barcode-wrap <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
         <?php if ($barcode): ?><svg class="tc-horizontal-barcode-svg" data-barcode="<?= e($barcode) ?>"></svg><?php endif; ?>
       </div>
-      <?php if ($price): ?><div class="tc-print-price-bar"><?= e($price) ?></div><?php endif; ?>
     </article>
     <?php endforeach; ?>
   </section>
