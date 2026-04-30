@@ -66,8 +66,12 @@
   display: flex;
   align-items: stretch;
   justify-content: stretch;
+  padding: 1.4%;
   overflow: hidden;
   border-radius: calc(var(--card-radius) * .80);
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(135deg, var(--cc), #0b3c5d) border-box;
 }
 
 /* Inner image box — 2-column grid: image | actions */
@@ -88,9 +92,9 @@
   justify-items: center;
   overflow: hidden;
   padding: 3.5%;
-  border: 1px solid rgba(148, 163, 184, .22);
+  border: 1px solid color-mix(in srgb, var(--cc) 72%, #0b3c5d);
   border-radius: calc(var(--card-radius) * .80);
-  background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
+  background: #fff;
 }
 
 /* ── Product image ── */
@@ -111,6 +115,7 @@
   width: auto;
   height: 190%;
   max-width: 145%;
+  max-height: 190%;
   object-fit: contain;
   object-position: center center;
   display: block;
@@ -126,7 +131,8 @@
 .tc-photo-price {
   grid-column: 2;
   grid-row: 2;
-  width: 91%;
+  position: static;
+  width: 92%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -141,7 +147,7 @@
     0 3px 14px rgba(0, 0, 0, .16),
     0 0 20px rgba(0, 0, 0, .06);
   color: #fff;
-  font-size: clamp(14px, 7.6cqw, 32px);
+  font-size: clamp(15px, 8.1cqw, 34px);
   font-weight: 900;
   line-height: 1;
   letter-spacing: -0.4px;
@@ -154,7 +160,8 @@
 .tc-photo-cart {
   grid-column: 2;
   grid-row: 4;
-  width: 91%;
+  position: static;
+  width: 92%;
   height: 100%;
   display: flex;
   align-items: center;
