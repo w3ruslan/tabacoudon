@@ -1,9 +1,9 @@
 /* Shared product card: public catalog, mobile, and PDF/print */
 .product-grid {
-  --card-width: 180px;
+  --card-width: 210px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, var(--card-width, 180px)));
-  gap: var(--grid-gap, 14px);
+  grid-template-columns: repeat(auto-fill, minmax(180px, var(--card-width, 210px)));
+  gap: var(--grid-gap, 16px);
   justify-content: start;
 }
 
@@ -108,8 +108,8 @@
   border: 2px solid #d7b45a;
   border-radius: calc(var(--card-radius) * .68);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, 0) 36%),
-    linear-gradient(135deg, #22c55e, #065f46 62%, #05405a);
+    linear-gradient(135deg, rgba(255,255,255,.18) 0%, rgba(0,0,0,.32) 100%),
+    var(--cc);
   color: #fff;
   font-size: clamp(15px, 7.8cqw, 34px);
   font-weight: 900;
@@ -136,10 +136,10 @@
   gap: 7px;
   min-width: 0;
   padding: 0 8px;
-  border: 1.5px solid #22c55e;
+  border: 1.5px solid var(--cc);
   border-radius: calc(var(--card-radius) * .64);
   background: #fff;
-  color: #15803d;
+  color: var(--cc);
   font-size: clamp(7px, 3.75cqw, 15px);
   font-weight: 800;
   line-height: 1.05;
@@ -203,7 +203,7 @@
 .tc-card-brand {
   margin-top: 3%;
   overflow: hidden;
-  color: #22c55e;
+  color: var(--cc);
   font-size: clamp(9px, 4.7cqw, 22px);
   font-weight: 600;
   line-height: 1.15;
@@ -224,10 +224,10 @@
   max-width: 100%;
   overflow: hidden;
   padding: 1.76% 3.53%;
-  border: 1.5px solid #22c55e;
+  border: 1.5px solid var(--cc);
   border-radius: 999px;
   background: #fff;
-  color: #22c55e;
+  color: var(--cc);
   font-size: clamp(8px, 3.75cqw, 18px);
   font-weight: 600;
   line-height: 1.1;
@@ -276,7 +276,9 @@
   justify-content: center;
   margin-bottom: 9%;
   border-radius: calc(var(--card-radius) * .64);
-  background: linear-gradient(135deg, #22c55e, #065f46);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.12) 0%, rgba(0,0,0,.28) 100%),
+    var(--cc);
   color: #fff;
   font-size: clamp(8px, 3.75cqw, 18px);
   font-weight: 900;
@@ -364,8 +366,9 @@
 }
 
 @media (max-width: 768px) {
+  /* Let auto-fill decide columns based on screen width — no forced 2-column lock */
   .product-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
     gap: 10px;
     justify-content: stretch;
   }
@@ -374,12 +377,12 @@
     width: 100%;
     min-width: 0;
     overflow: hidden;
-    --card-border: 5px;
-    --card-radius: 16px;
+    --card-border: 4px;
+    --card-radius: 14px;
   }
 
   .tc-horizontal-barcode-wrap {
-    display: none;
+    display: none; /* hidden on small screens for cleaner look */
   }
 
   .tc-card-bot {
