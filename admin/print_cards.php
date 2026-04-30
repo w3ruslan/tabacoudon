@@ -119,7 +119,7 @@ function categoryColor(?string $color): string {
               <span class="tc-no-img"><?= e($name) ?></span>
             <?php endif; ?>
           </div>
-          <?php if ($price): ?><div class="tc-photo-price"><?= e($price) ?></div><?php endif; ?>
+          <?php if ($price): ?><div class="tc-photo-price tc-price"><?= e($price) ?></div><?php endif; ?>
           <button class="tc-photo-cart tc-cart-btn" type="button" style="--cc: <?= e($categoryColor) ?>"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>
         </div>
       </div>

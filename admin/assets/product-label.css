@@ -103,6 +103,35 @@ body {
   pointer-events: none;
 }
 
+.product-print-label .tc-photo-price {
+  text-shadow: none !important;
+  -webkit-text-stroke: 0 transparent;
+}
+
+.product-print-label .tc-photo-price::before,
+.product-print-label .tc-photo-price::after {
+  content: none !important;
+  display: none !important;
+}
+
+.product-print-label .tc-horizontal-barcode-wrap {
+  display: flex !important;
+  visibility: visible;
+}
+
+.product-print-label .tc-horizontal-barcode-wrap.no-barcode {
+  visibility: hidden;
+}
+
+.product-print-label .tc-horizontal-barcode-svg {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  rotate: 0deg !important;
+  image-rendering: auto;
+}
+
 .label-theme-firework {
   --green: #f97316;
   --green-bright: #f97316;
