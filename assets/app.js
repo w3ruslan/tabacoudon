@@ -294,13 +294,12 @@ function renderCard(p) {
   }
 
   return '<div class="tc-card ' + (specsHtml ? 'tc-has-specs' : 'tc-no-specs') + '" data-id="' + p.id + '" style="--cc:' + catColor + '">'
-    // ── Top gradient + image (price moved to bottom) ──
+    // ── Top gradient + image (price and cart inside photo area) ──
     + '<div class="tc-card-top">'
-    + '<div class="tc-img-box ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
+    + '<div class="tc-img-box">'
     + imgHtml
-    + '<div class="tc-vertical-barcode-wrap ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
-    + (barcode ? '<div class="tc-vertical-barcode-rotator"><svg class="tc-vertical-barcode-svg" data-barcode="' + barcode + '"></svg></div>' : '')
-    + '</div>'
+    + (price ? '<div class="tc-photo-price">' + price + '</div>' : '')
+    + '<button class="tc-photo-cart tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="--cc:' + catColor + '"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>'
     + '</div>'
     + '</div>'
     // ── Bottom two columns ──
@@ -315,29 +314,28 @@ function renderCard(p) {
     + '</div>'
     + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
     + '</div>'
-    // ── Absolute overlay: combined cart + price pill (bottom-left) ──
-    + '<button class="tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="background:' + catColor + '">🛒'
-    + (price ? '<span class="tc-pill-price">' + price + '</span>' : '')
-    + '</button>'
+    + '<div class="tc-horizontal-barcode-wrap ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
+    + (barcode ? '<svg class="tc-horizontal-barcode-svg" data-barcode="' + barcode + '"></svg>' : '')
+    + '</div>'
     + '</div>';
 }
 
 
 function initBarcodes() {
   if (typeof JsBarcode === 'undefined') return;
-  document.querySelectorAll('svg.tc-vertical-barcode-svg[data-barcode]').forEach(function(svg) {
+  document.querySelectorAll('svg.tc-horizontal-barcode-svg[data-barcode]').forEach(function(svg) {
     var code = svg.getAttribute('data-barcode');
     if (!code || svg.getAttribute('data-bc-done')) return;
     svg.setAttribute('data-bc-done', '1');
     var digits = code.replace(/\D/g, '');
     var format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
-    var opts = { width: 2.4, height: 52, displayValue: true, fontSize: 9, textMargin: 2, textPosition: 'bottom',
-                 margin: 6, background: '#ffffff', lineColor: '#111827' };
+    var opts = { width: 2.4, height: 38, displayValue: true, fontSize: 8, textMargin: 2, textPosition: 'bottom',
+                 margin: 8, background: '#ffffff', lineColor: '#111827' };
     try {
       JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
     } catch(e) {
       try { JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' })); }
-      catch(e2) { svg.closest('.tc-vertical-barcode-wrap').style.visibility = 'hidden'; }
+      catch(e2) { svg.closest('.tc-horizontal-barcode-wrap').style.visibility = 'hidden'; }
     }
   });
 }
