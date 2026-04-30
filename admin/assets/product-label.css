@@ -6,7 +6,7 @@
   --page-pad: 6mm;
   --label-gap: 4mm;
   --label-width: 63.333mm;
-  --label-height: 92.333mm;
+  --label-height: calc(var(--label-width) * 91 / 64);
   --green: #1e8e5a;
   --green-bright: #16a34a;
   --green-dark: #065f46;
@@ -86,24 +86,23 @@ body {
   grid-template-columns: repeat(3, var(--label-width));
   grid-template-rows: repeat(3, var(--label-height));
   gap: var(--label-gap);
+  align-content: space-between;
   overflow: hidden;
   background: white;
   box-shadow: 0 10px 34px rgba(15, 23, 42, .24);
 }
 
 .product-print-label {
-  --card-width: var(--label-width);
-  --card-height: var(--label-height);
-  --card-pad: 3mm;
-  --card-border: 1.45mm;
-  --card-radius: 4mm;
-  --card-shadow: 0 0.7mm 1.4mm rgba(0, 0, 0, .07);
   width: var(--label-width);
-  height: var(--label-height);
-  aspect-ratio: auto;
+  aspect-ratio: 64 / 91;
   cursor: default;
   break-inside: avoid;
   page-break-inside: avoid;
+}
+
+.product-print-label .tc-photo-cart {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .label-theme-firework {
@@ -158,7 +157,6 @@ body {
   }
 
   .product-print-label {
-    box-shadow: 0 0.3mm 0.6mm rgba(0, 0, 0, .04);
     page-break-inside: avoid;
     break-inside: avoid;
   }

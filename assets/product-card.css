@@ -459,14 +459,5 @@
 ───────────────────────────────────────────────────── */
 @media print {
   .product-grid { grid-template-columns: repeat(3, 1fr); }
-  .tc-card {
-    width: 64mm;
-    height: 91mm;
-    aspect-ratio: auto;
-    box-shadow: none;
-    transition: none;
-  }
-  .tc-card:hover { transform: none; box-shadow: none; }
-  .tc-horizontal-barcode-wrap { display: flex; }
-  .tc-product-visual img { filter: none; }
+  .tc-card:hover { transform: none; }
 }

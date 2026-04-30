@@ -176,7 +176,7 @@ document.querySelectorAll('svg[data-barcode]').forEach(function(svg) {
     catch (e2) { svg.closest('.tc-horizontal-barcode-wrap').style.visibility = 'hidden'; }
   }
 });
-console.log('Product label size: 63.333mm x 92.333mm; A4 grid: 3 columns x 3 rows; page padding: 6mm; gutter: 4mm.');
+console.log('Product label size: 63.333mm x 90.052mm (64:91); A4 grid: 3 columns x 3 rows; page padding: 6mm; gutter: 4mm; PDF hides only add-to-cart.');
 </script>
 </body>
 </html>
