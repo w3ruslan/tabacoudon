@@ -285,12 +285,12 @@ function renderCard(p) {
     specsHtml = '<div class="tc-spec-title">NOTES</div>'
       + '<div class="tc-spec-chips">'
       + flavors.slice(0, 3).map(function(f){
-          return '<span class="tc-spec-chip" style="background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '35">' + escapeHtml(f) + '</span>';
+          return '<span class="tc-spec-chip">' + escapeHtml(f) + '</span>';
         }).join('')
       + '</div>';
   } else if (catLabel) {
     specsHtml = '<div class="tc-spec-title">Catégorie</div>'
-      + '<div class="tc-spec-chips"><span class="tc-spec-chip" style="background:' + catColor + '18;color:' + catColor + ';border:1px solid ' + catColor + '35">' + catLabel + '</span></div>';
+      + '<div class="tc-spec-chips"><span class="tc-spec-chip">' + catLabel + '</span></div>';
   }
 
   return '<div class="tc-card ' + (specsHtml ? 'tc-has-specs' : 'tc-no-specs') + '" data-id="' + p.id + '" style="--cc:' + catColor + '">'
