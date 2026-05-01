@@ -4,10 +4,30 @@ session_start();
 if (!isset($_SESSION['admin'])) { header('Location: index.php'); exit; }
 
 $db         = getDB();
-$products   = $db->query('SELECT p.*, c.name AS cat_name FROM products p LEFT JOIN categories c ON p.category_id = c.id ORDER BY c.display_order, p.display_order, p.name')->fetchAll();
+$products   = $db->query('SELECT p.*, c.name AS cat_name, c.icon AS cat_icon, c.color AS cat_color FROM products p LEFT JOIN categories c ON p.category_id = c.id ORDER BY c.display_order, p.display_order, p.name')->fetchAll();
 $categories = $db->query('SELECT * FROM categories ORDER BY display_order')->fetchAll();
 $total      = count($products);
 $active     = count(array_filter($products, fn($p) => $p['active']));
+
+function h($value): string {
+    return htmlspecialchars((string)($value ?? ''), ENT_QUOTES, 'UTF-8');
+}
+
+function adminCategoryColor($value): string {
+    $color = trim((string)($value ?? ''));
+    return preg_match('/^#[0-9a-fA-F]{6}$/', $color) ? $color : '#22c55e';
+}
+
+function adminProductNotes(array $p): array {
+    $raw = trim((string)($p['flavor'] ?? ''));
+    if ($raw === '') {
+        $raw = trim((string)($p['cat_name'] ?? ''));
+    }
+    if ($raw === '') return [];
+    $parts = preg_split('/[,\/]+/', $raw) ?: [];
+    $notes = array_values(array_filter(array_map('trim', $parts)));
+    return array_slice($notes, 0, 3);
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -15,7 +35,9 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — <?= SHOP_NAME ?></title>
+  <link rel="stylesheet" href="../assets/product-card.css?v=<?= filemtime(__DIR__.'/../assets/product-card.css') ?>">
   <link rel="stylesheet" href="assets/admin.css?v=<?= filemtime(__DIR__.'/assets/admin.css') ?>">
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <style>
@@ -186,44 +208,86 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
     <?php
       $imgSrc = $p['image_url'] ?? '';
       if ($imgSrc && strpos($imgSrc, 'uploads/') === 0) $imgSrc = '../' . $imgSrc;
+      $categoryColor = adminCategoryColor($p['cat_color'] ?? '');
+      $notes = adminProductNotes($p);
+      $price = !empty($p['price']) ? '€' . number_format((float)$p['price'], 2) : '';
+      $name = trim((string)($p['name'] ?? '')) ?: 'Produit';
+      $brand = trim((string)($p['brand'] ?? ''));
+      $size = trim((string)($p['size'] ?? ''));
+      $barcode = trim((string)($p['barcode'] ?? ''));
     ?>
-    <div class="admin-card <?= $p['active'] ? '' : 'inactive' ?>" id="row-<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" data-cat="<?= (int)($p['category_id'] ?? 0) ?>" data-name="<?= strtolower(htmlspecialchars($p['name'].' '.($p['flavor']??'').' '.($p['brand']??''))) ?>">
-      <div class="ac-topbar">
-        <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
-        <input type="checkbox" class="row-check" value="<?= $p['id'] ?>" onchange="updateBulkBar()">
-      </div>
-      <div class="ac-img">
-        <?php if ($imgSrc): ?>
-          <img src="<?= htmlspecialchars($imgSrc) ?>" alt="">
-        <?php else: ?>
-          <span class="ac-no-img">🌬️</span>
-        <?php endif; ?>
-      </div>
-      <div class="ac-info">
-        <div class="ac-name"><?= htmlspecialchars($p['name']) ?></div>
-        <?php if ($p['flavor'] ?? ''): ?>
-          <div class="ac-flavor"><?= htmlspecialchars($p['flavor']) ?></div>
-        <?php endif; ?>
-        <div class="ac-meta">
-          <?php if ($p['cat_name'] ?? ''): ?>
-            <span class="cat-badge" style="font-size:10px;padding:2px 7px"><?= htmlspecialchars($p['cat_name']) ?></span>
-          <?php endif; ?>
-          <span class="ac-price"><?= $p['price'] ? '€'.number_format($p['price'],2) : '—' ?></span>
+    <div class="admin-card <?= $p['active'] ? '' : 'inactive' ?>" id="row-<?= (int)$p['id'] ?>" data-id="<?= (int)$p['id'] ?>" data-cat="<?= (int)($p['category_id'] ?? 0) ?>" data-name="<?= h(strtolower($name.' '.($p['flavor']??'').' '.$brand.' '.($p['cat_name']??''))) ?>">
+      <div class="admin-card-tools" aria-label="Actions admin">
+        <div class="admin-card-tool-left">
+          <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
+          <label class="admin-select-pill" title="Sélectionner">
+            <input type="checkbox" class="row-check" value="<?= (int)$p['id'] ?>" onchange="updateBulkBar()">
+          </label>
         </div>
-        <?php if (!empty($p['sur_commande'])): ?>
-          <span class="sc-badge">📦 Sur commande</span>
-        <?php endif; ?>
+        <div class="admin-card-tool-actions">
+          <button class="ac-eye-btn <?= $p['active'] ? '' : 'eye-off' ?>"
+            id="eye-<?= (int)$p['id'] ?>"
+            onclick="toggleSingleActive(<?= (int)$p['id'] ?>, <?= (int)$p['active'] ?>)"
+            title="<?= $p['active'] ? 'Masquer' : 'Afficher' ?>">
+            <?= $p['active'] ? '👁️' : '🙈' ?>
+          </button>
+          <button class="btn-edit" title="Modifier" onclick='editProduct(<?= json_encode($p, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>✏️</button>
+          <button class="btn-del" title="Supprimer" onclick='deleteProduct(<?= (int)$p['id'] ?>, <?= json_encode($name, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>)'>🗑️</button>
+        </div>
       </div>
-      <div class="ac-actions">
-        <button class="ac-eye-btn <?= $p['active'] ? '' : 'eye-off' ?>"
-          id="eye-<?= $p['id'] ?>"
-          onclick="toggleSingleActive(<?= $p['id'] ?>, <?= $p['active'] ?>)"
-          title="<?= $p['active'] ? 'Masquer' : 'Afficher' ?>">
-          <?= $p['active'] ? '👁️' : '🙈' ?>
-        </button>
-        <button class="btn-edit" onclick='editProduct(<?= json_encode($p, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>✏️</button>
-        <button class="btn-del"  onclick='deleteProduct(<?= (int)$p['id'] ?>, <?= json_encode($p['name'], JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>)'>🗑️</button>
-      </div>
+
+      <article class="tc-card admin-storefront-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= h($categoryColor) ?>; --category-color: <?= h($categoryColor) ?>">
+        <div class="tc-card-top">
+          <div class="tc-img-box">
+            <div class="tc-product-visual">
+              <?php if ($imgSrc): ?>
+                <img src="<?= h($imgSrc) ?>" alt="<?= h($name) ?>" loading="lazy" onerror="this.style.display='none'">
+              <?php else: ?>
+                <span class="tc-no-img">🌬️</span>
+              <?php endif; ?>
+            </div>
+            <?php if ($price): ?>
+              <div class="tc-photo-price"><?= h($price) ?></div>
+            <?php endif; ?>
+            <button class="tc-photo-cart tc-cart-btn admin-visual-cart" type="button" onclick="event.stopPropagation()" aria-label="Ajouter au panier aperçu">
+              <span>🛒</span><strong>AJOUTER<br>AU PANIER</strong>
+            </button>
+          </div>
+        </div>
+
+        <div class="tc-card-bot">
+          <div class="tc-bot-left">
+            <div class="tc-card-name"><?= h($name) ?></div>
+            <?php if ($brand): ?>
+              <div class="tc-card-brand"><?= h($brand) ?></div>
+            <?php endif; ?>
+            <div class="tc-bot-tags">
+              <?php if ($size): ?>
+                <span class="tc-size-label"><?= h($size) ?></span>
+              <?php endif; ?>
+              <?php if (!empty($p['sur_commande'])): ?>
+                <span class="tc-sc-pill">📦 Sur cmd</span>
+              <?php endif; ?>
+            </div>
+          </div>
+          <?php if ($notes): ?>
+            <div class="tc-bot-right">
+              <div class="tc-spec-title">NOTES</div>
+              <div class="tc-spec-chips">
+                <?php foreach ($notes as $note): ?>
+                  <span class="tc-spec-chip"><?= h($note) ?></span>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          <?php endif; ?>
+        </div>
+
+        <div class="tc-horizontal-barcode-wrap <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
+          <?php if ($barcode): ?>
+            <svg class="tc-horizontal-barcode-svg" data-barcode="<?= h($barcode) ?>"></svg>
+          <?php endif; ?>
+        </div>
+      </article>
     </div>
     <?php endforeach; ?>
     <?php if (!$products): ?>
@@ -405,6 +469,8 @@ function filterAdminCards() {
 
 // ─── Drag-and-drop sort ───────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
+  initAdminBarcodes();
+
   Sortable.create(document.getElementById('productTableBody'), {
     handle: '.drag-handle',
     animation: 150,
@@ -420,6 +486,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+function initAdminBarcodes() {
+  if (typeof JsBarcode === 'undefined') return;
+  document.querySelectorAll('svg.tc-horizontal-barcode-svg[data-barcode]').forEach(function(svg) {
+    const code = svg.getAttribute('data-barcode');
+    if (!code || svg.getAttribute('data-bc-done')) return;
+    svg.setAttribute('data-bc-done', '1');
+    const digits = code.replace(/\D/g, '');
+    const format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
+    const opts = {
+      width: 2,
+      height: 45,
+      displayValue: true,
+      fontSize: 9,
+      textMargin: 2,
+      textPosition: 'bottom',
+      margin: 8,
+      background: '#ffffff',
+      lineColor: '#111827'
+    };
+    try {
+      JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
+    } catch (e) {
+      try {
+        JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' }));
+      } catch (e2) {
+        const wrap = svg.closest('.tc-horizontal-barcode-wrap');
+        if (wrap) wrap.style.visibility = 'hidden';
+      }
+    }
+  });
+}
 
 // ─── Toggle single product visibility ────────────
 async function toggleSingleActive(id, currentActive) {

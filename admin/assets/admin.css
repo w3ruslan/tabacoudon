@@ -137,24 +137,99 @@ body {
 /* ── Admin product card grid ───────────── */
 .prod-grid {
   display: grid !important;
-  grid-template-columns: repeat(6, 1fr) !important;
-  gap: 10px !important;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 240px)) !important;
+  justify-content: start;
+  align-items: start;
+  gap: 18px !important;
 }
 
 .admin-card {
-  background: var(--card);
-  border-radius: 10px;
-  box-shadow: 0 1px 5px rgba(0,0,0,.09);
-  overflow: hidden;
+  position: relative;
+  background: transparent;
+  border-radius: 16px;
+  box-shadow: none;
+  overflow: visible;
   display: flex;
   flex-direction: column;
-  border: 2px solid transparent;
-  transition: border-color .2s, opacity .2s;
+  border: 0;
+  transition: opacity .2s, transform .2s;
   width: 100% !important;
+  min-width: 0;
   box-sizing: border-box;
 }
-.admin-card.inactive { opacity: .4; }
-.admin-card.selected { border-color: var(--accent); }
+.admin-card.inactive .tc-card { opacity: .42; filter: grayscale(.12); }
+.admin-card.selected .tc-card {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.admin-card .tc-card {
+  width: 100%;
+  cursor: default;
+}
+.admin-card .tc-card:hover {
+  transform: none;
+}
+
+.admin-card-tools {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 8px;
+  z-index: 20;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.admin-card-tool-left,
+.admin-card-tool-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  pointer-events: auto;
+}
+.admin-card-tools .drag-handle,
+.admin-select-pill,
+.admin-card-tools button {
+  min-width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(15, 23, 42, .12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .88);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, .10);
+  backdrop-filter: blur(8px);
+}
+.admin-card-tools .drag-handle {
+  color: #111827;
+  font-size: 16px;
+  cursor: grab;
+  user-select: none;
+}
+.admin-select-pill input[type=checkbox] {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  cursor: pointer;
+}
+.admin-card-tools button {
+  padding: 0 7px;
+  border: 1px solid rgba(15, 23, 42, .12);
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+}
+.admin-card-tools button:hover,
+.admin-card-tools .drag-handle:hover,
+.admin-select-pill:hover {
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, .18);
+}
+.admin-card-tools .btn-del:hover { background: #fff0f0; }
+.admin-card-tools .btn-edit:hover { background: #f0f7ff; }
 
 /* top bar */
 .ac-topbar {
@@ -529,21 +604,33 @@ input:focus, select:focus { border-color: var(--accent); }
 
 /* ── Responsive ────────────────────────── */
 @media (max-width: 1100px) {
-  .prod-grid { grid-template-columns: repeat(5, 1fr) !important; }
+  .prod-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 220px)) !important; }
 }
 @media (max-width: 900px) {
-  .prod-grid { grid-template-columns: repeat(4, 1fr) !important; }
+  .prod-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important; }
 }
 @media (max-width: 700px) {
   .sidebar { display: none; }
   .main    { margin-left: 0; padding: 12px; }
-  .prod-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+  .prod-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
   .stats { gap: 8px; }
   .stat-card { padding: 12px 14px; }
   .stat-num  { font-size: 22px; }
   .topbar h1 { font-size: 16px; }
   .btn-primary { padding: 9px 16px; font-size: 13px; }
+  .admin-card-tools {
+    left: 6px;
+    right: 6px;
+    top: 6px;
+  }
+  .admin-card-tools .drag-handle,
+  .admin-select-pill,
+  .admin-card-tools button {
+    min-width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
 }
 @media (max-width: 420px) {
-  .prod-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; }
+  .prod-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; }
 }
