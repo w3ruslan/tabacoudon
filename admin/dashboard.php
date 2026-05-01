@@ -400,6 +400,7 @@ function filterAdminCards() {
   });
   var cnt = document.getElementById('adminVisibleCount');
   if (cnt) cnt.textContent = shown + ' produit(s)';
+  updateBulkBar();
 }
 
 // ─── Drag-and-drop sort ───────────────────────────
@@ -824,23 +825,36 @@ async function deleteProduct(id, name) {
 }
 
 // ─── Bulk actions ────────────────────────────────
+function getVisibleCards() {
+  return [...document.querySelectorAll('#productTableBody .admin-card')]
+    .filter(card => card.style.display !== 'none');
+}
+
+function getVisibleChecks() {
+  return getVisibleCards()
+    .map(card => card.querySelector('.row-check'))
+    .filter(Boolean);
+}
+
 function getSelectedIds() {
   return [...document.querySelectorAll('.row-check:checked')].map(c => c.value);
 }
 
 function updateBulkBar() {
   const ids = getSelectedIds();
+  const visibleChecks = getVisibleChecks();
+  const visibleChecked = visibleChecks.filter(c => c.checked);
   const bar = document.getElementById('bulkBar');
   bar.style.display = ids.length ? 'flex' : 'none';
   document.getElementById('bulkCount').textContent = ids.length + ' sélectionné(s)';
   document.getElementById('checkAll').indeterminate =
-    ids.length > 0 && ids.length < document.querySelectorAll('.row-check').length;
+    visibleChecked.length > 0 && visibleChecked.length < visibleChecks.length;
   document.getElementById('checkAll').checked =
-    ids.length === document.querySelectorAll('.row-check').length;
+    visibleChecks.length > 0 && visibleChecked.length === visibleChecks.length;
 }
 
 function toggleAll(cb) {
-  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+  getVisibleChecks().forEach(c => c.checked = cb.checked);
   updateBulkBar();
 }
 
