@@ -219,7 +219,6 @@ function adminProductNotes(array $p): array {
     <div class="admin-card <?= $p['active'] ? '' : 'inactive' ?>" id="row-<?= (int)$p['id'] ?>" data-id="<?= (int)$p['id'] ?>" data-cat="<?= (int)($p['category_id'] ?? 0) ?>" data-name="<?= h(strtolower($name.' '.($p['flavor']??'').' '.$brand.' '.($p['cat_name']??''))) ?>">
       <div class="admin-card-tools" aria-label="Actions admin">
         <div class="admin-card-tool-left">
-          <span class="drag-handle" title="Glisser pour réordonner">⠿</span>
           <label class="admin-select-pill" title="Sélectionner">
             <input type="checkbox" class="row-check" value="<?= (int)$p['id'] ?>" onchange="updateBulkBar()">
           </label>
@@ -472,7 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initAdminBarcodes();
 
   Sortable.create(document.getElementById('productTableBody'), {
-    handle: '.drag-handle',
+    handle: '.admin-storefront-card',
     animation: 150,
     ghostClass: 'sortable-ghost',
     onEnd: async function() {

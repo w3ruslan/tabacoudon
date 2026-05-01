@@ -165,10 +165,13 @@ body {
 
 .admin-card .tc-card {
   width: 100%;
-  cursor: default;
+  cursor: grab;
 }
 .admin-card .tc-card:hover {
   transform: none;
+}
+.admin-card .tc-card:active {
+  cursor: grabbing;
 }
 
 .admin-card-tools {
@@ -190,7 +193,6 @@ body {
   gap: 5px;
   pointer-events: auto;
 }
-.admin-card-tools .drag-handle,
 .admin-select-pill,
 .admin-card-tools button {
   min-width: 28px;
@@ -203,12 +205,6 @@ body {
   background: rgba(255, 255, 255, .88);
   box-shadow: 0 4px 14px rgba(15, 23, 42, .10);
   backdrop-filter: blur(8px);
-}
-.admin-card-tools .drag-handle {
-  color: #111827;
-  font-size: 16px;
-  cursor: grab;
-  user-select: none;
 }
 .admin-select-pill input[type=checkbox] {
   width: 15px;
@@ -224,7 +220,6 @@ body {
   line-height: 1;
 }
 .admin-card-tools button:hover,
-.admin-card-tools .drag-handle:hover,
 .admin-select-pill:hover {
   background: #fff;
   box-shadow: 0 6px 18px rgba(15, 23, 42, .18);
@@ -352,15 +347,7 @@ body {
 .bulk-del   { background: #e74c3c; color: #fff; }
 .bulk-clear { background: rgba(255,255,255,.15); color: #fff; }
 
-.drag-handle {
-  cursor: grab;
-  color: #ccc;
-  font-size: 18px;
-  text-align: center;
-  user-select: none;
-}
-.drag-handle:active { cursor: grabbing; }
-.sortable-ghost { opacity: .4; background: #f0f4ff !important; }
+.sortable-ghost { opacity: .4; background: transparent !important; }
 .sortable-ghost td { background: #f0f4ff !important; }
 
 .table-wrap {
@@ -624,7 +611,6 @@ input:focus, select:focus { border-color: var(--accent); }
     margin-bottom: 6px;
     padding: 0;
   }
-  .admin-card-tools .drag-handle,
   .admin-select-pill,
   .admin-card-tools button {
     min-width: 24px;
