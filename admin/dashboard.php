@@ -286,6 +286,7 @@ $active     = count(array_filter($products, fn($p) => $p['active']));
 
         <div class="form-group" style="margin-bottom:14px">
           <label>Barkod</label>
+          <div id="barcodeDuplicateWarning" style="display:none;margin:0 0 8px;padding:10px 12px;border:1px solid #f59e0b;border-radius:10px;background:#fffbeb;color:#92400e;font-size:12px;font-weight:700;line-height:1.35"></div>
           <div style="display:flex;gap:8px">
             <input type="text" id="fBarcode" placeholder="ex: 3760246640108" style="flex:1">
             <button type="button" onclick="openAdminScanner()" style="padding:11px 14px;background:#1a1a2e;color:white;border:none;border-radius:9px;cursor:pointer;font-size:18px;" title="Scanner">📷</button>
@@ -446,6 +447,52 @@ async function toggleSingleActive(id, currentActive) {
 let selectedImgUrl = '';
 let isEditing      = false;
 let aiData         = null;
+let barcodeCheckTimer = null;
+let barcodeDuplicateProduct = null;
+
+function setBarcodeWarning(product) {
+  barcodeDuplicateProduct = product || null;
+  const box = document.getElementById('barcodeDuplicateWarning');
+  if (!box) return;
+  if (!product) {
+    box.style.display = 'none';
+    box.innerHTML = '';
+    return;
+  }
+  const bits = [
+    product.name || 'Produit sans nom',
+    product.brand ? 'Marque: ' + product.brand : '',
+    product.size ? 'Format: ' + product.size : '',
+    product.price ? 'Prix: €' + parseFloat(product.price).toFixed(2) : ''
+  ].filter(Boolean);
+  box.innerHTML = '⚠️ Ce code-barres est déjà enregistré sur un autre produit.<br>' + escapeHtml(bits.join(' · '));
+  box.style.display = 'block';
+}
+
+async function checkBarcodeDuplicateNow() {
+  const input = document.getElementById('fBarcode');
+  if (!input) return null;
+  const barcode = input.value.trim();
+  const currentId = document.getElementById('editId').value || '';
+  if (!barcode) {
+    setBarcodeWarning(null);
+    return null;
+  }
+  try {
+    const res = await adminFetch('../api/products.php?action=check_barcode&barcode=' + encodeURIComponent(barcode) + '&exclude_id=' + encodeURIComponent(currentId));
+    const product = await res.json();
+    const duplicate = product && !product.error ? product : null;
+    setBarcodeWarning(duplicate);
+    return duplicate;
+  } catch (e) {
+    return null;
+  }
+}
+
+function scheduleBarcodeDuplicateCheck() {
+  clearTimeout(barcodeCheckTimer);
+  barcodeCheckTimer = setTimeout(checkBarcodeDuplicateNow, 280);
+}
 
 // ─── Modal open/close ────────────────────────────
 function openAddModal() {
@@ -684,6 +731,8 @@ function editProduct(p) {
   const barcodeEl = document.getElementById('fBarcode');
   if (descEl)    descEl.value    = p.description || '';
   if (barcodeEl) barcodeEl.value = p.barcode     || '';
+  setBarcodeWarning(null);
+  if (barcodeEl && barcodeEl.value) scheduleBarcodeDuplicateCheck();
   var scEl = document.getElementById('fSurCommande');
   if (scEl) { scEl.checked = parseInt(p.sur_commande || 0) === 1; updateScSlider(); }
 
@@ -736,6 +785,14 @@ async function saveProduct() {
     active:       parseInt(document.getElementById('fActive').value),
     sur_commande: document.getElementById('fSurCommande').checked ? 1 : 0,
   };
+
+  const duplicate = await checkBarcodeDuplicateNow();
+  if (duplicate) {
+    alert('⚠️ Ce code-barres existe déjà sur : ' + (duplicate.name || 'Produit'));
+    btn.disabled    = false;
+    btn.textContent = '💾 Enregistrer';
+    return;
+  }
 
   try {
     const res  = await adminFetch(`../api/products.php?action=${action}`, {
@@ -862,6 +919,7 @@ function openAdminScanner() {
     { fps: 10, qrbox: { width: 280, height: 140 } },
     (decodedText) => {
       document.getElementById('fBarcode').value = decodedText;
+      checkBarcodeDuplicateNow();
       closeAdminScanner();
     },
     () => {}
@@ -895,6 +953,7 @@ function updateScSlider() {
 
 function clearForm() {
   ['fName','fBrand','fFlavor','fSize','fBarcode','fPrice'].forEach(id => document.getElementById(id).value = '');
+  setBarcodeWarning(null);
   document.getElementById('fDesc').value     = '';
   document.getElementById('fCategory').value = '';
   document.getElementById('fActive').value   = '1';
@@ -909,6 +968,13 @@ function clearForm() {
   const urlStatus = document.getElementById('imgUrlStatus');
   if (urlStatus) urlStatus.textContent = '';
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  const barcodeInput = document.getElementById('fBarcode');
+  if (!barcodeInput) return;
+  barcodeInput.addEventListener('input', scheduleBarcodeDuplicateCheck);
+  barcodeInput.addEventListener('blur', checkBarcodeDuplicateNow);
+});
 
 function previewImageUrl(val) {
   const imgEl = document.getElementById('selectedImg');

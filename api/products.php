@@ -67,10 +67,44 @@ if (!isset($_SESSION['admin'])) {
 }
 verifyCsrf();
 
+function findDuplicateBarcode(PDO $db, string $barcode, int $excludeId = 0): ?array {
+    $barcode = trim($barcode);
+    if ($barcode === '') {
+        return null;
+    }
+    $stripped = ltrim($barcode, '0') ?: $barcode;
+    $sql = 'SELECT p.id, p.name, p.brand, p.size, p.price, p.barcode, p.active,
+                   c.name AS category_name, c.icon AS category_icon
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.id
+            WHERE p.barcode <> "" AND p.id <> ?
+              AND (p.barcode = ? OR p.barcode = ? OR TRIM(LEADING \'0\' FROM p.barcode) = ?)
+            LIMIT 1';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([$excludeId, $barcode, $stripped, $stripped]);
+    $product = $stmt->fetch();
+    return $product ?: null;
+}
+
+// ── GET — admin duplicate barcode check ───────────
+if ($method === 'GET' && $action === 'check_barcode') {
+    $db = getDB();
+    $barcode = trim($_GET['barcode'] ?? '');
+    $excludeId = (int)($_GET['exclude_id'] ?? 0);
+    echo json_encode(findDuplicateBarcode($db, $barcode, $excludeId));
+    exit;
+}
+
 // ── POST — ajouter produit ────────────────────────
 if ($method === 'POST' && $action === 'add') {
     $data = json_decode(file_get_contents('php://input'), true);
     $db   = getDB();
+    $duplicate = findDuplicateBarcode($db, (string)($data['barcode'] ?? ''));
+    if ($duplicate) {
+        http_response_code(409);
+        echo json_encode(['error' => 'Ce code-barres existe déjà.', 'duplicate' => $duplicate]);
+        exit;
+    }
     $stmt = $db->prepare('INSERT INTO products
         (name, brand, flavor, size, barcode, category_id, price, image_url, description, sur_commande)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
@@ -94,6 +128,12 @@ if ($method === 'POST' && $action === 'add') {
 if ($method === 'PUT' && $action === 'edit') {
     $data = json_decode(file_get_contents('php://input'), true);
     $db   = getDB();
+    $duplicate = findDuplicateBarcode($db, (string)($data['barcode'] ?? ''), (int)($data['id'] ?? 0));
+    if ($duplicate) {
+        http_response_code(409);
+        echo json_encode(['error' => 'Ce code-barres existe déjà.', 'duplicate' => $duplicate]);
+        exit;
+    }
     $stmt = $db->prepare('UPDATE products
         SET name=?, brand=?, flavor=?, size=?, barcode=?, category_id=?, price=?, image_url=?, active=?, description=?, sur_commande=?
         WHERE id=?');
