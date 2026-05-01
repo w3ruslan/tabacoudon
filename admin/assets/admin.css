@@ -172,14 +172,15 @@ body {
 }
 
 .admin-card-tools {
-  position: absolute;
-  left: 8px;
-  right: 8px;
-  top: 8px;
-  z-index: 20;
+  position: relative;
+  z-index: 2;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
+  width: 100%;
+  min-height: 30px;
+  margin-bottom: 8px;
+  padding: 0 2px;
   pointer-events: none;
 }
 .admin-card-tool-left,
@@ -619,9 +620,9 @@ input:focus, select:focus { border-color: var(--accent); }
   .topbar h1 { font-size: 16px; }
   .btn-primary { padding: 9px 16px; font-size: 13px; }
   .admin-card-tools {
-    left: 6px;
-    right: 6px;
-    top: 6px;
+    min-height: 26px;
+    margin-bottom: 6px;
+    padding: 0;
   }
   .admin-card-tools .drag-handle,
   .admin-select-pill,
