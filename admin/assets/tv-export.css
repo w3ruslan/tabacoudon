@@ -5,11 +5,12 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  background: #eef2f7;
+  background: #f3f4f6;
   color: #0f172a;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .tv-toolbar {
@@ -70,32 +71,30 @@ body {
 }
 
 .tv-preview-shell {
-  width: 960px;
-  max-width: calc(100vw - 68px);
-  aspect-ratio: 16 / 9;
+  width: 3840px;
+  height: 2160px;
+  max-width: none;
   overflow: hidden;
-  border-radius: 22px;
+  border-radius: 28px;
   background: #fff;
   box-shadow: 0 20px 60px rgba(15, 23, 42, .16);
 }
 
 .tv-preview-shell .tv-screen {
-  transform: scale(.25);
+  transform: none;
   transform-origin: top left;
 }
 
 .tv-screen {
   width: 3840px;
   height: 2160px;
-  padding: 80px;
+  padding: 44px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 60px 50px;
+  gap: 38px 34px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, .96), rgba(255, 255, 255, 0) 38%),
-    linear-gradient(145deg, #ffffff 0%, #f8fafc 45%, #eef2f7 100%);
+  background: #f3f4f6;
 }
 
 .tv-cell {
@@ -107,39 +106,32 @@ body {
 }
 
 .tv-screen .tc-card {
-  width: 660px;
+  width: auto;
+  height: 980px;
   max-width: 100%;
   cursor: default;
-  --card-border: 6px;
-  --card-radius: 24px;
+  --card-border: 7px;
+  --card-radius: 26px;
   --card-shadow:
-    0 7px 18px rgba(15, 23, 42, .05),
-    0 28px 70px rgba(15, 23, 42, .10);
+    0 10px 22px rgba(15, 23, 42, .06),
+    0 34px 88px rgba(15, 23, 42, .12);
 }
 
 .tv-screen .tc-card:hover {
   transform: none;
 }
 
-.tv-screen .tc-photo-cart {
+.tv-screen .tc-photo-cart,
+.tv-screen .tc-horizontal-barcode-wrap {
   display: none !important;
 }
 
+.tv-screen .tc-card-top {
+  flex-basis: 54%;
+}
+
 .tv-screen .tc-card-bot {
-  padding-bottom: 18%;
-}
-
-.tv-screen .tc-horizontal-barcode-wrap {
-  display: flex !important;
-  height: 16%;
-  background: #fff;
-}
-
-.tv-screen .tc-horizontal-barcode-svg {
-  width: 100% !important;
-  height: 100% !important;
-  transform: none !important;
-  image-rendering: auto;
+  padding: 6.5% 0 5.5%;
 }
 
 .tv-screen .tc-img-box,
@@ -153,7 +145,70 @@ body {
 }
 
 .tv-screen .tc-product-visual img {
-  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.tv-screen .tc-photo-price {
+  width: 92%;
+  border-width: 3px;
+  border-radius: 18px;
+  color: #fff;
+  font-size: 46px;
+  font-weight: 950;
+  letter-spacing: -1px;
+  text-shadow: none;
+}
+
+.tv-screen .tc-card-name {
+  color: #06101f;
+  font-size: 54px;
+  font-weight: 950;
+  line-height: .96;
+  letter-spacing: -1.4px;
+}
+
+.tv-screen .tc-card-brand {
+  margin-top: 24px;
+  font-size: 31px;
+  font-weight: 850;
+  line-height: 1.1;
+}
+
+.tv-screen .tc-bot-tags {
+  margin-top: 30px;
+}
+
+.tv-screen .tc-size-label {
+  min-height: 50px;
+  padding: 8px 22px;
+  border-width: 3px;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.tv-screen .tc-spec-title {
+  height: 58px;
+  margin-bottom: 28px;
+  border-radius: 16px;
+  font-size: 25px;
+  font-weight: 950;
+  letter-spacing: 1.2px;
+}
+
+.tv-screen .tc-spec-chip {
+  gap: 17px;
+  padding: 18px 0;
+  border-bottom-width: 2px !important;
+  color: #06101f !important;
+  font-size: 28px;
+  font-weight: 850;
+  line-height: 1.14;
+}
+
+.tv-screen .tc-spec-chip::before {
+  width: 13px;
+  height: 13px;
+  flex-basis: 13px;
 }
 
 .tv-capture-root {
@@ -181,6 +236,7 @@ body {
 }
 
 @media (max-width: 1050px) {
-  .tv-preview-shell .tv-screen { transform: scale(.18); }
-  .tv-preview-shell { width: 691px; }
+  .tv-preview-list {
+    overflow-x: auto;
+  }
 }
