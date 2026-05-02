@@ -17,6 +17,49 @@ function tvNativeNotes(array $product): array {
     return array_slice($parts, 0, 2);
 }
 
+function browserFallback(string $idsJson, string $message, string $log = ''): void {
+    header('Content-Type: text/html; charset=utf-8');
+    $safeIds = htmlspecialchars($idsJson, ENT_QUOTES, 'UTF-8');
+    $safeMessage = htmlspecialchars($message, ENT_QUOTES, 'UTF-8');
+    $safeLog = htmlspecialchars($log, ENT_QUOTES, 'UTF-8');
+    $messageJson = json_encode($message, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+    $logJson = json_encode($log, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT);
+    echo <<<HTML
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TV Export</title>
+  <style>
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f3f4f6;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#0f172a}
+    .box{width:min(680px,calc(100vw - 32px));background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:26px;box-shadow:0 18px 48px rgba(15,23,42,.12)}
+    h1{margin:0 0 10px;font-size:22px}
+    p{margin:0 0 14px;color:#475569;line-height:1.45}
+    small{display:block;white-space:pre-wrap;max-height:180px;overflow:auto;background:#f8fafc;border-radius:12px;padding:12px;color:#64748b}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>TV Export hazırlanıyor...</h1>
+    <p>Native Puppeteer export canlı sunucuda çalışmadı, 500 vermemek için otomatik browser export moduna geçiyorum.</p>
+    <p><strong>Sebep:</strong> {$safeMessage}</p>
+    <small>{$safeLog}</small>
+  </div>
+  <form id="fallbackForm" action="tv_export.php" method="POST">
+    <input type="hidden" name="ids" value="{$safeIds}">
+  </form>
+  <script>
+    console.warn('TV native export fallback:', {$messageJson});
+    console.warn('TV native export log:', {$logJson});
+    setTimeout(function(){ document.getElementById('fallbackForm').submit(); }, 900);
+  </script>
+</body>
+</html>
+HTML;
+    exit;
+}
+
 function failNative(string $message, string $log = ''): void {
     http_response_code(500);
     header('Content-Type: text/plain; charset=utf-8');
@@ -66,6 +109,24 @@ if (!$products) {
     failNative('Aucun produit trouvé.');
 }
 
+if (!function_exists('shell_exec')) {
+    browserFallback($raw, 'shell_exec PHP tarafında kapalı.', '');
+}
+
+if (!class_exists('ZipArchive')) {
+    browserFallback($raw, 'PHP ZipArchive extension canlı sunucuda yüklü değil.', '');
+}
+
+$repoRoot = realpath(__DIR__ . '/..');
+$script = $repoRoot . '/scripts/tv-export-native.mjs';
+if (!is_file($script)) {
+    browserFallback($raw, 'Native export script bulunamadı.', '');
+}
+
+if (!is_dir($repoRoot . '/node_modules/puppeteer')) {
+    browserFallback($raw, 'Puppeteer kurulu değil. Sunucuda proje klasöründe npm install çalıştırılmalı.', '');
+}
+
 $workRoot = sys_get_temp_dir() . '/tabacoudon-tv-' . bin2hex(random_bytes(6));
 $outDir = $workRoot . '/out';
 if (!mkdir($outDir, 0777, true) && !is_dir($outDir)) {
@@ -76,8 +137,6 @@ $dataPath = $workRoot . '/data.json';
 $payload = ['screens' => array_chunk($products, 6)];
 file_put_contents($dataPath, json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 
-$repoRoot = realpath(__DIR__ . '/..');
-$script = $repoRoot . '/scripts/tv-export-native.mjs';
 $node = getenv('NODE_BINARY') ?: 'node';
 $cmd = escapeshellcmd($node)
     . ' ' . escapeshellarg($script)
@@ -90,11 +149,7 @@ $log = shell_exec($cmd);
 file_put_contents($outDir . '/tv-export-console.log', (string)$log);
 
 if (!is_string($log) || !preg_match('/actual image width:\s*3840/', $log) || !preg_match('/actual image height:\s*2160/', $log)) {
-    failNative("TV export natif échoué. Vérifiez que Node.js et Puppeteer sont installés avec `npm install`.", (string)$log);
-}
-
-if (!class_exists('ZipArchive')) {
-    failNative('Extension PHP ZipArchive manquante.', (string)$log);
+    browserFallback($raw, "TV export natif échoué. Vérifiez que Node.js et Puppeteer sont installés avec `npm install`.", (string)$log);
 }
 
 $zipPath = $workRoot . '/tabacoudon-tv-export.zip';
