@@ -271,11 +271,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   color: #080f1d;
-  font-size: clamp(12px, 3.75cqw, 24px);
+  font-size: clamp(11px, 3.35cqw, 22px);
   font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.5px;
+  line-height: 1.02;
+  letter-spacing: -0.35px;
   text-transform: uppercase;
+  max-height: 2.04em;
+  word-break: normal;
+  overflow-wrap: anywhere;
 }
 
 .tc-card-brand {
