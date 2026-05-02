@@ -71,6 +71,7 @@ $screens = array_chunk($products, 6);
   <title>Samsung Business TV Export — <?= e(SHOP_NAME) ?></title>
   <link rel="stylesheet" href="../assets/product-card.css?v=<?= filemtime(__DIR__ . '/../assets/product-card.css') ?>">
   <link rel="stylesheet" href="assets/tv-export.css?v=<?= filemtime(__DIR__ . '/assets/tv-export.css') ?>">
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
@@ -97,6 +98,7 @@ $screens = array_chunk($products, 6);
               $name = trim((string)($p['name'] ?? '')) ?: 'Produit';
               $brand = trim((string)($p['brand'] ?? ''));
               $size = trim((string)($p['size'] ?? ''));
+              $barcode = trim((string)($p['barcode'] ?? ''));
               $price = ($p['price'] ?? '') !== '' && $p['price'] !== null ? '€' . number_format((float)$p['price'], 2) : '';
               $image = tvImagePath($p['image_url'] ?? '');
               $notes = tvProductNotes($p);
@@ -141,7 +143,9 @@ $screens = array_chunk($products, 6);
                     <?php endif; ?>
                   </section>
 
-                  <div class="tc-horizontal-barcode-wrap no-barcode"></div>
+                  <div class="tc-horizontal-barcode-wrap <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
+                    <?php if ($barcode): ?><svg class="tc-horizontal-barcode-svg" data-barcode="<?= e($barcode) ?>"></svg><?php endif; ?>
+                  </div>
                 </article>
               </div>
             <?php endforeach; ?>
@@ -171,6 +175,38 @@ function waitForImages(root) {
       img.addEventListener('error', resolve, { once: true });
     });
   }));
+}
+
+function initTvBarcodes(root) {
+  if (typeof JsBarcode === 'undefined') return;
+  (root || document).querySelectorAll('svg.tc-horizontal-barcode-svg[data-barcode]').forEach(function(svg) {
+    const code = svg.getAttribute('data-barcode');
+    if (!code || svg.getAttribute('data-bc-done')) return;
+    svg.setAttribute('data-bc-done', '1');
+    const digits = code.replace(/\D/g, '');
+    const format = /^\d{13}$/.test(digits) ? 'EAN13' : 'CODE128';
+    const opts = {
+      width: 2,
+      height: 45,
+      displayValue: true,
+      fontSize: 9,
+      textMargin: 2,
+      textPosition: 'bottom',
+      margin: 8,
+      background: '#ffffff',
+      lineColor: '#111827'
+    };
+    try {
+      JsBarcode(svg, format === 'EAN13' ? digits : code, Object.assign({}, opts, { format: format }));
+    } catch (e) {
+      try {
+        JsBarcode(svg, code, Object.assign({}, opts, { format: 'CODE128' }));
+      } catch (e2) {
+        const wrap = svg.closest('.tc-horizontal-barcode-wrap');
+        if (wrap) wrap.style.visibility = 'hidden';
+      }
+    }
+  });
 }
 
 async function captureScreen(screen) {
@@ -233,6 +269,7 @@ async function exportTvScreens() {
 }
 
 window.addEventListener('load', function() {
+  initTvBarcodes(document);
   waitForImages(document).then(function() {
     setStatus('Prêt · export automatique...');
     setTimeout(exportTvScreens, 300);

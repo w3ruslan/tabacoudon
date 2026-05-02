@@ -121,13 +121,25 @@ body {
   transform: none;
 }
 
-.tv-screen .tc-photo-cart,
-.tv-screen .tc-horizontal-barcode-wrap {
+.tv-screen .tc-photo-cart {
   display: none !important;
 }
 
 .tv-screen .tc-card-bot {
-  padding-bottom: 6%;
+  padding-bottom: 18%;
+}
+
+.tv-screen .tc-horizontal-barcode-wrap {
+  display: flex !important;
+  height: 16%;
+  background: #fff;
+}
+
+.tv-screen .tc-horizontal-barcode-svg {
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  image-rendering: auto;
 }
 
 .tv-screen .tc-img-box,
