@@ -200,6 +200,23 @@ body {
   object-position: center center;
 }
 
+.storefront-page .tc-card-name,
+.storefront-page .tc-title,
+.storefront-page .product-title,
+.storefront-page .tc-product-name {
+  font-size: clamp(10px, 2.95cqw, 19px) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.25px !important;
+  max-height: 2.08em !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
 /* ── Loading ───────────────────────────────── */
 .loading-state {
   text-align: center;
