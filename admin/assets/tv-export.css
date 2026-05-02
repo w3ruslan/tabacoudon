@@ -88,13 +88,15 @@ body {
 .tv-screen {
   width: 3840px;
   height: 2160px;
-  padding: 44px;
+  padding: 30px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 38px 34px;
+  gap: 24px 24px;
   overflow: hidden;
-  background: #f3f4f6;
+  background:
+    radial-gradient(circle at 50% -8%, rgba(255, 255, 255, .98) 0%, rgba(255, 255, 255, 0) 36%),
+    linear-gradient(180deg, #f4f5f7 0%, #eceef2 100%);
 }
 
 .tv-cell {
@@ -107,14 +109,14 @@ body {
 
 .tv-screen .tc-card {
   width: auto;
-  height: 980px;
+  height: 1030px;
   max-width: 100%;
   cursor: default;
   --card-border: 7px;
-  --card-radius: 26px;
+  --card-radius: 28px;
   --card-shadow:
-    0 10px 22px rgba(15, 23, 42, .06),
-    0 34px 88px rgba(15, 23, 42, .12);
+    0 8px 18px rgba(15, 23, 42, .045),
+    0 24px 54px rgba(15, 23, 42, .10);
 }
 
 .tv-screen .tc-card:hover {
@@ -127,11 +129,28 @@ body {
 }
 
 .tv-screen .tc-card-top {
-  flex-basis: 54%;
+  flex-basis: 65%;
 }
 
 .tv-screen .tc-card-bot {
-  padding: 6.5% 0 5.5%;
+  grid-template-columns: minmax(0, 61%) 2px minmax(0, 39%);
+  padding: 4.6% 0 5.2%;
+}
+
+.tv-screen .tc-card-bot::before {
+  height: 76%;
+  opacity: .75;
+}
+
+.tv-screen .tc-img-box {
+  grid-template-columns: minmax(0, 73%) minmax(0, 27%);
+  grid-template-rows:
+    minmax(0, 1fr)
+    minmax(0, 23%)
+    minmax(0, 5%)
+    minmax(0, 1fr);
+  padding: 3.2%;
+  border-width: 3px;
 }
 
 .tv-screen .tc-img-box,
@@ -145,70 +164,84 @@ body {
 }
 
 .tv-screen .tc-product-visual img {
+  width: 112%;
+  height: 112%;
+  max-width: 112%;
+  max-height: 112%;
   image-rendering: -webkit-optimize-contrast;
 }
 
 .tv-screen .tc-photo-price {
-  width: 92%;
+  grid-row: 2;
+  width: 96%;
   border-width: 3px;
-  border-radius: 18px;
+  border-radius: 20px;
   color: #fff;
-  font-size: 46px;
+  font-size: 52px;
   font-weight: 950;
   letter-spacing: -1px;
   text-shadow: none;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, .34),
+    0 12px 28px rgba(0, 0, 0, .22),
+    0 0 0 1px rgba(255, 215, 0, .20);
 }
 
 .tv-screen .tc-card-name {
   color: #06101f;
-  font-size: 54px;
+  font-size: 66px;
   font-weight: 950;
-  line-height: .96;
-  letter-spacing: -1.4px;
+  line-height: .88;
+  letter-spacing: -2.2px;
 }
 
 .tv-screen .tc-card-brand {
-  margin-top: 24px;
-  font-size: 31px;
-  font-weight: 850;
+  margin-top: 22px;
+  font-size: 28px;
+  font-weight: 760;
   line-height: 1.1;
+  letter-spacing: .7px;
 }
 
 .tv-screen .tc-bot-tags {
-  margin-top: 30px;
+  margin-top: 24px;
 }
 
 .tv-screen .tc-size-label {
-  min-height: 50px;
-  padding: 8px 22px;
+  min-height: 48px;
+  padding: 7px 20px;
   border-width: 3px;
-  font-size: 24px;
+  font-size: 23px;
   font-weight: 900;
 }
 
+.tv-screen .tc-bot-right {
+  padding-left: 7%;
+}
+
 .tv-screen .tc-spec-title {
-  height: 58px;
-  margin-bottom: 28px;
+  height: 48px;
+  margin-bottom: 18px;
   border-radius: 16px;
-  font-size: 25px;
+  font-size: 21px;
   font-weight: 950;
   letter-spacing: 1.2px;
 }
 
 .tv-screen .tc-spec-chip {
-  gap: 17px;
-  padding: 18px 0;
-  border-bottom-width: 2px !important;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom-width: 1px !important;
   color: #06101f !important;
-  font-size: 28px;
-  font-weight: 850;
-  line-height: 1.14;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.12;
 }
 
 .tv-screen .tc-spec-chip::before {
-  width: 13px;
-  height: 13px;
-  flex-basis: 13px;
+  width: 10px;
+  height: 10px;
+  flex-basis: 10px;
 }
 
 .tv-capture-root {
