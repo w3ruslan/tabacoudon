@@ -189,6 +189,17 @@ body {
   padding: 0 24px;
 }
 
+/* Public storefront only: make product photos slightly more dominant without
+   changing admin, PDF, or TV export card geometry. */
+.storefront-page .tc-product-visual img {
+  width: 106%;
+  height: 106%;
+  max-width: 106%;
+  max-height: 106%;
+  object-fit: contain;
+  object-position: center center;
+}
+
 /* ── Loading ───────────────────────────────── */
 .loading-state {
   text-align: center;

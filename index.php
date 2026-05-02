@@ -23,7 +23,7 @@ $waNumber = getSetting('whatsapp_number', WHATSAPP_NUMBER);
   <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 </head>
-<body>
+<body class="storefront-page">
 
 <!-- ══ AGE GATE ══ -->
 <div id="ageGate" class="age-gate-overlay">
