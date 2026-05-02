@@ -143,7 +143,9 @@ async function main() {
     for (let index = 0; index < screens.length; index += 1) {
       const page = await browser.newPage();
       const screenIds = screens[index].map((product) => product.id).filter(Boolean).join(',');
+      const screenNames = screens[index].map((product) => `${product.id || '?'}:${product.name || 'Produit'}`).join(' | ');
       console.log(`tv-screen-${String(index + 1).padStart(2, '0')} product ids: ${screenIds}`);
+      console.log(`tv-screen-${String(index + 1).padStart(2, '0')} products: ${screenNames}`);
       await page.setViewport({
         width: TV_WIDTH,
         height: TV_HEIGHT,

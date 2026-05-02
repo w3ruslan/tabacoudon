@@ -40,6 +40,24 @@ function tvProductNotes(array $product): array {
     return array_slice($parts, 0, 2);
 }
 
+function tvLower(string $value): string {
+    return function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value);
+}
+
+function tvProductKey(array $product): string {
+    $barcode = preg_replace('/\D+/', '', (string)($product['barcode'] ?? ''));
+    if ($barcode !== '') {
+        return 'barcode:' . $barcode;
+    }
+    $parts = [
+        trim((string)($product['name'] ?? '')),
+        trim((string)($product['brand'] ?? '')),
+        trim((string)($product['size'] ?? '')),
+        trim((string)($product['image_url'] ?? '')),
+    ];
+    return 'product:' . tvLower(implode('|', $parts));
+}
+
 if (!$ids) {
     echo '<!doctype html><meta charset="utf-8"><div style="font-family:system-ui;padding:40px;color:#64748b">Aucun produit sélectionné.</div>';
     exit;
@@ -57,9 +75,15 @@ $stmt->execute(array_values($ids));
 $fetched = $stmt->fetchAll();
 
 $products = [];
+$seenProducts = [];
 foreach ($ids as $id) {
     foreach ($fetched as $p) {
         if ((int)$p['id'] === (int)$id) {
+            $productKey = tvProductKey($p);
+            if (isset($seenProducts[$productKey])) {
+                break;
+            }
+            $seenProducts[$productKey] = true;
             $products[] = $p;
             break;
         }

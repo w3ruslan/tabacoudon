@@ -17,6 +17,24 @@ function tvNativeNotes(array $product): array {
     return array_slice($parts, 0, 2);
 }
 
+function tvNativeLower(string $value): string {
+    return function_exists('mb_strtolower') ? mb_strtolower($value, 'UTF-8') : strtolower($value);
+}
+
+function tvNativeProductKey(array $product): string {
+    $barcode = preg_replace('/\D+/', '', (string)($product['barcode'] ?? ''));
+    if ($barcode !== '') {
+        return 'barcode:' . $barcode;
+    }
+    $parts = [
+        trim((string)($product['name'] ?? '')),
+        trim((string)($product['brand'] ?? '')),
+        trim((string)($product['size'] ?? '')),
+        trim((string)($product['image_url'] ?? '')),
+    ];
+    return 'product:' . tvNativeLower(implode('|', $parts));
+}
+
 function browserFallback(string $idsJson, string $message, string $log = ''): void {
     header('Content-Type: text/html; charset=utf-8');
     $safeIds = htmlspecialchars($idsJson, ENT_QUOTES, 'UTF-8');
@@ -92,9 +110,15 @@ $stmt->execute(array_values($ids));
 $fetched = $stmt->fetchAll();
 
 $products = [];
+$seenProducts = [];
 foreach ($ids as $id) {
     foreach ($fetched as $p) {
         if ((int)$p['id'] === (int)$id) {
+            $productKey = tvNativeProductKey($p);
+            if (isset($seenProducts[$productKey])) {
+                break;
+            }
+            $seenProducts[$productKey] = true;
             $products[] = [
                 'id' => (int)$p['id'],
                 'name' => trim((string)($p['name'] ?? '')) ?: 'Produit',
