@@ -171,12 +171,16 @@ function adminProductNotes(array $p): array {
     <button class="bulk-btn bulk-price" onclick="bulkPricePrompt()">💶 Changer prix</button>
     <button class="bulk-btn bulk-del"   onclick="bulkDelete()">🗑️ Supprimer</button>
     <button class="bulk-btn" style="background:#1a1a2e;color:#fff;border-color:#1a1a2e" onclick="bulkExportPDF()">PDF</button>
+    <button class="bulk-btn" style="background:#0f766e;color:#fff;border-color:#0f766e" onclick="bulkExportTV()">TV Export</button>
     <button class="bulk-btn bulk-clear" onclick="clearSelection()">✕ Désélectionner</button>
   </div>
 
   <!-- Hidden form for product label print page (opens new tab) -->
   <form id="pdfForm" action="print_cards.php" method="POST" target="_blank" style="display:none">
     <input type="hidden" id="pdfIds" name="ids">
+  </form>
+  <form id="tvForm" action="tv_export.php" method="POST" target="_blank" style="display:none">
+    <input type="hidden" id="tvIds" name="ids">
   </form>
 
   <!-- Search + category filter -->
@@ -991,6 +995,13 @@ function bulkExportPDF() {
   if (!ids.length) { alert('Aucun produit sélectionné.'); return; }
   document.getElementById('pdfIds').value = JSON.stringify(ids);
   document.getElementById('pdfForm').submit();
+}
+
+function bulkExportTV() {
+  var ids = getSelectedIds();
+  if (!ids.length) { alert('Aucun produit sélectionné.'); return; }
+  document.getElementById('tvIds').value = JSON.stringify(ids);
+  document.getElementById('tvForm').submit();
 }
 
 function bulkPricePrompt() {

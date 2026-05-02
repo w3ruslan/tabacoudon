@@ -1,0 +1,174 @@
+/* Samsung Business TV 4K export */
+*, *::before, *::after { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #eef2f7;
+  color: #0f172a;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.tv-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: rgba(255, 255, 255, .92);
+  border-bottom: 1px solid rgba(148, 163, 184, .35);
+  box-shadow: 0 8px 26px rgba(15, 23, 42, .08);
+  backdrop-filter: blur(14px);
+}
+
+.tv-toolbar h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.tv-toolbar span {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tv-toolbar button {
+  margin-left: auto;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: #0f766e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.tv-toolbar button + button {
+  margin-left: 0;
+  background: #111827;
+}
+
+.tv-status {
+  margin-left: 0;
+  color: #0f766e;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.tv-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  padding: 34px;
+}
+
+.tv-preview-shell {
+  width: 960px;
+  max-width: calc(100vw - 68px);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, .16);
+}
+
+.tv-preview-shell .tv-screen {
+  transform: scale(.25);
+  transform-origin: top left;
+}
+
+.tv-screen {
+  width: 3840px;
+  height: 2160px;
+  padding: 80px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 60px 50px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, .96), rgba(255, 255, 255, 0) 38%),
+    linear-gradient(145deg, #ffffff 0%, #f8fafc 45%, #eef2f7 100%);
+}
+
+.tv-cell {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tv-screen .tc-card {
+  width: 660px;
+  max-width: 100%;
+  cursor: default;
+  --card-border: 6px;
+  --card-radius: 24px;
+  --card-shadow:
+    0 7px 18px rgba(15, 23, 42, .05),
+    0 28px 70px rgba(15, 23, 42, .10);
+}
+
+.tv-screen .tc-card:hover {
+  transform: none;
+}
+
+.tv-screen .tc-photo-cart,
+.tv-screen .tc-horizontal-barcode-wrap {
+  display: none !important;
+}
+
+.tv-screen .tc-card-bot {
+  padding-bottom: 6%;
+}
+
+.tv-screen .tc-img-box,
+.tv-screen .tc-card-top,
+.tv-screen .tc-product-visual {
+  background: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.tv-screen .tc-product-visual img {
+  image-rendering: auto;
+}
+
+.tv-capture-root {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  z-index: -1;
+  width: 3840px;
+  height: 2160px;
+  pointer-events: none;
+}
+
+.tv-capture-root .tv-screen {
+  transform: none !important;
+}
+
+.tv-empty {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+@media (max-width: 1050px) {
+  .tv-preview-shell .tv-screen { transform: scale(.18); }
+  .tv-preview-shell { width: 691px; }
+}
