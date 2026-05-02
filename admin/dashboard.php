@@ -235,6 +235,7 @@ function adminProductNotes(array $p): array {
             <?= $p['active'] ? '👁️' : '🙈' ?>
           </button>
           <button class="btn-edit" title="Modifier" onclick='editProduct(<?= json_encode($p, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>✏️</button>
+          <button class="btn-copy" title="Copier comme nouveau produit" onclick='copyProduct(<?= json_encode($p, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>📋</button>
           <button class="btn-del" title="Supprimer" onclick='deleteProduct(<?= (int)$p['id'] ?>, <?= json_encode($name, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>)'>🗑️</button>
         </div>
       </div>
@@ -822,6 +823,19 @@ function editProduct(p) {
   aiData    = null;
   document.getElementById('modalTitle').textContent = 'Modifier le produit';
   document.getElementById('editId').value   = p.id;
+  fillProductForm(p, true);
+}
+
+function copyProduct(p) {
+  isEditing = false;
+  aiData    = null;
+  document.getElementById('modalTitle').textContent = 'Copier le produit';
+  document.getElementById('editId').value = '';
+  fillProductForm(p, false);
+  setTimeout(() => document.getElementById('fName').focus(), 100);
+}
+
+function fillProductForm(p, keepBarcode) {
   document.getElementById('fName').value    = p.name    || '';
   document.getElementById('fBrand').value   = p.brand   || '';
   document.getElementById('fFlavor').value  = p.flavor  || '';
@@ -832,7 +846,7 @@ function editProduct(p) {
   const descEl    = document.getElementById('fDesc');
   const barcodeEl = document.getElementById('fBarcode');
   if (descEl)    descEl.value    = p.description || '';
-  if (barcodeEl) barcodeEl.value = p.barcode     || '';
+  if (barcodeEl) barcodeEl.value = keepBarcode ? (p.barcode || '') : '';
   setBarcodeWarning(null);
   if (barcodeEl && barcodeEl.value) scheduleBarcodeDuplicateCheck();
   var scEl = document.getElementById('fSurCommande');

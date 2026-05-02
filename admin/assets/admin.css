@@ -243,6 +243,7 @@ body {
 }
 .admin-card-tools .btn-del:hover { background: #fff0f0; }
 .admin-card-tools .btn-edit:hover { background: #f0f7ff; }
+.admin-card-tools .btn-copy:hover { background: #f0fff7; }
 
 /* top bar */
 .ac-topbar {
@@ -333,6 +334,7 @@ body {
 .ac-eye-btn:hover { background: #f0f0f0; }
 .ac-eye-btn.eye-off { opacity: .3; }
 .ac-actions .btn-edit,
+.ac-actions .btn-copy,
 .ac-actions .btn-del {
   padding: 2px 5px; font-size: 11px; border-radius: 5px;
 }
@@ -410,12 +412,14 @@ body {
 .badge-on  { background: #e8f8f3; color: #00a87e; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
 .badge-off { background: #fff0f0; color: #e53935; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
 
-.btn-edit, .btn-del {
+.btn-edit, .btn-copy, .btn-del {
   padding: 6px 10px; border: none; border-radius: 8px;
   cursor: pointer; font-size: 16px; transition: background .2s;
 }
 .btn-edit { background: #f0f4ff; }
 .btn-edit:hover { background: #dde8ff; }
+.btn-copy { background: #effdf5; }
+.btn-copy:hover { background: #dcfce7; }
 .btn-del  { background: #fff0f0; margin-left: 4px; }
 .btn-del:hover  { background: #ffe0e0; }
 
