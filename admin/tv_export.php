@@ -215,19 +215,31 @@ function blobToDataUrl(blob) {
 
 async function inlineScreenImages(screen) {
   const images = Array.from(screen.querySelectorAll('img'));
-  await Promise.all(images.map(async function(img) {
-    const original = img.getAttribute('data-original-src') || img.currentSrc || img.src;
-    if (!original || original.startsWith('data:')) return;
+  // Sequential (not parallel) to prevent race conditions that cause wrong
+  // image being assigned to wrong product card.
+  for (let i = 0; i < images.length; i++) {
+    const img = images[i];
+    if (img.getAttribute('data-export-inlined') === '1') continue;
+    const original = img.getAttribute('data-original-src') || img.src;
+    if (!original || original.startsWith('data:')) continue;
+    // Unique nonce per image prevents browser/server cache collision
+    // between different products that may share similar image URLs.
+    const nonce = Date.now() + '_' + i + '_' + Math.random().toString(36).slice(2, 9);
+    const sep = original.indexOf('?') === -1 ? '?' : '&';
+    const urlWithNonce = original + sep + '_nc=' + nonce;
     try {
-      const response = await fetch(original, { cache: 'reload', credentials: 'same-origin' });
-      if (!response.ok) throw new Error('Image fetch failed: ' + response.status);
+      const response = await fetch(urlWithNonce, {
+        cache: 'no-store',
+        credentials: 'same-origin'
+      });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
       const dataUrl = await blobToDataUrl(await response.blob());
       img.src = dataUrl;
       img.setAttribute('data-export-inlined', '1');
     } catch (error) {
       console.warn('TV image inline failed:', original, error);
     }
-  }));
+  }
   await waitForImages(screen);
 }
 
@@ -237,18 +249,27 @@ async function captureScreen(screen) {
   await waitForImages(screen);
   await inlineScreenImages(screen);
   if (document.fonts && document.fonts.ready) await document.fonts.ready;
-  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  // Wait 3 animation frames + 200ms so text, gradients and layout are
+  // fully composited before html-to-image captures the canvas.
+  await new Promise(resolve => requestAnimationFrame(() =>
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => setTimeout(resolve, 200))
+    )
+  ));
   const previousTransform = screen.style.transform;
   screen.style.transform = 'none';
   try {
+    // pixelRatio: 2 renders at 7680×4320 internally, then html-to-image
+    // scales down to canvasWidth/canvasHeight (3840×2160).
+    // Result: sharper text and edges via supersampling.
     return await htmlToImage.toBlob(screen, {
       width: TV_WIDTH,
       height: TV_HEIGHT,
       canvasWidth: TV_WIDTH,
       canvasHeight: TV_HEIGHT,
-      pixelRatio: 1,
+      pixelRatio: 2,
       backgroundColor: '#f8fafc',
-      cacheBust: true,
+      cacheBust: false,
       imagePlaceholder: ''
     });
   } finally {
