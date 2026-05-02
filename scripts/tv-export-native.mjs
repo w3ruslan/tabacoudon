@@ -57,7 +57,7 @@ function cardHtml(product, root) {
   const classes = notes.length ? 'tc-has-specs' : 'tc-no-specs';
   return `
     <div class="tv-cell">
-      <article class="tc-card ${classes}" style="--cc:${e(product.category_color || '#22c55e')};--category-color:${e(product.category_color || '#22c55e')}">
+      <article class="tc-card ${classes}" data-product-id="${e(product.id || '')}" style="--cc:${e(product.category_color || '#22c55e')};--category-color:${e(product.category_color || '#22c55e')}">
         <div class="tc-card-top">
           <div class="tc-img-box">
             <div class="tc-product-visual">
@@ -142,6 +142,8 @@ async function main() {
   try {
     for (let index = 0; index < screens.length; index += 1) {
       const page = await browser.newPage();
+      const screenIds = screens[index].map((product) => product.id).filter(Boolean).join(',');
+      console.log(`tv-screen-${String(index + 1).padStart(2, '0')} product ids: ${screenIds}`);
       await page.setViewport({
         width: TV_WIDTH,
         height: TV_HEIGHT,
@@ -161,6 +163,8 @@ async function main() {
           });
         }));
         const screen = document.querySelector('.tv-screen').getBoundingClientRect();
+        const ids = Array.from(document.querySelectorAll('.tc-card[data-product-id]')).map((card) => card.dataset.productId);
+        console.log(`rendered product ids: ${ids.join(',')}`);
         console.log(`rendered screen rect: ${Math.round(screen.width)}x${Math.round(screen.height)}`);
         document.querySelectorAll('.tc-card').forEach((card, i) => {
           const rect = card.getBoundingClientRect();

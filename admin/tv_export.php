@@ -4,7 +4,12 @@ session_start();
 if (!isset($_SESSION['admin'])) { header('Location: index.php'); exit; }
 
 $raw = $_POST['ids'] ?? '';
-$ids = array_filter(array_map('intval', json_decode($raw, true) ?: []));
+$ids = [];
+foreach (array_map('intval', json_decode($raw, true) ?: []) as $id) {
+    if ($id > 0 && !in_array($id, $ids, true)) {
+        $ids[] = $id;
+    }
+}
 
 function e($value): string {
     return htmlspecialchars((string)($value ?? ''), ENT_QUOTES, 'UTF-8');
@@ -104,7 +109,7 @@ $screens = array_chunk($products, 6);
               $surCommande = !empty($p['sur_commande']);
             ?>
               <div class="tv-cell">
-                <article class="tc-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>">
+                <article class="tc-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" data-product-id="<?= (int)$p['id'] ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>">
                   <div class="tc-card-top">
                     <div class="tc-img-box">
                       <div class="tc-product-visual">
@@ -234,6 +239,10 @@ async function exportTvScreens() {
 
 window.addEventListener('load', function() {
   waitForImages(document).then(function() {
+    document.querySelectorAll('.tv-screen').forEach(function(screen, index) {
+      const ids = Array.from(screen.querySelectorAll('.tc-card[data-product-id]')).map(card => card.dataset.productId);
+      console.log('tv-screen-' + String(index + 1).padStart(2, '0') + ' product ids:', ids.join(','));
+    });
     setStatus('Prêt · export automatique...');
     setTimeout(exportTvScreens, 300);
   });

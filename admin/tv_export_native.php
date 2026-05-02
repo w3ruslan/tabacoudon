@@ -69,10 +69,16 @@ function failNative(string $message, string $log = ''): void {
 }
 
 $raw = $_POST['ids'] ?? '';
-$ids = array_filter(array_map('intval', json_decode($raw, true) ?: []));
+$ids = [];
+foreach (array_map('intval', json_decode($raw, true) ?: []) as $id) {
+    if ($id > 0 && !in_array($id, $ids, true)) {
+        $ids[] = $id;
+    }
+}
 if (!$ids) {
     failNative('Aucun produit sélectionné.');
 }
+$idsJson = json_encode($ids);
 
 $db = getDB();
 $placeholders = implode(',', array_fill(0, count($ids), '?'));
@@ -110,21 +116,21 @@ if (!$products) {
 }
 
 if (!function_exists('shell_exec')) {
-    browserFallback($raw, 'shell_exec PHP tarafında kapalı.', '');
+    browserFallback($idsJson, 'shell_exec PHP tarafında kapalı.', '');
 }
 
 if (!class_exists('ZipArchive')) {
-    browserFallback($raw, 'PHP ZipArchive extension canlı sunucuda yüklü değil.', '');
+    browserFallback($idsJson, 'PHP ZipArchive extension canlı sunucuda yüklü değil.', '');
 }
 
 $repoRoot = realpath(__DIR__ . '/..');
 $script = $repoRoot . '/scripts/tv-export-native.mjs';
 if (!is_file($script)) {
-    browserFallback($raw, 'Native export script bulunamadı.', '');
+    browserFallback($idsJson, 'Native export script bulunamadı.', '');
 }
 
 if (!is_dir($repoRoot . '/node_modules/puppeteer')) {
-    browserFallback($raw, 'Puppeteer kurulu değil. Sunucuda proje klasöründe npm install çalıştırılmalı.', '');
+    browserFallback($idsJson, 'Puppeteer kurulu değil. Sunucuda proje klasöründe npm install çalıştırılmalı.', '');
 }
 
 $workRoot = sys_get_temp_dir() . '/tabacoudon-tv-' . bin2hex(random_bytes(6));
@@ -149,7 +155,7 @@ $log = shell_exec($cmd);
 file_put_contents($outDir . '/tv-export-console.log', (string)$log);
 
 if (!is_string($log) || !preg_match('/actual image width:\s*3840/', $log) || !preg_match('/actual image height:\s*2160/', $log)) {
-    browserFallback($raw, "TV export natif échoué. Vérifiez que Node.js et Puppeteer sont installés avec `npm install`.", (string)$log);
+    browserFallback($idsJson, "TV export natif échoué. Vérifiez que Node.js et Puppeteer sont installés avec `npm install`.", (string)$log);
 }
 
 $zipPath = $workRoot . '/tabacoudon-tv-export.zip';

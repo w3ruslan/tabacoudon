@@ -952,7 +952,7 @@ function getVisibleChecks() {
 }
 
 function getSelectedIds() {
-  return [...document.querySelectorAll('.row-check:checked')].map(c => c.value);
+  return [...new Set([...document.querySelectorAll('.row-check:checked')].map(c => c.value))];
 }
 
 function updateBulkBar() {
