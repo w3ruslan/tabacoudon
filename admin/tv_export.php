@@ -179,27 +179,27 @@ function waitForImages(root) {
 }
 
 async function captureScreen(screen) {
-  const captureRoot = document.createElement('div');
-  captureRoot.className = 'tv-capture-root';
-  const clone = screen.cloneNode(true);
-  clone.style.transform = 'none';
-  captureRoot.appendChild(clone);
-  document.body.appendChild(captureRoot);
-  await waitForImages(clone);
+  const ids = Array.from(screen.querySelectorAll('.tc-card[data-product-id]')).map(card => card.dataset.productId);
+  console.log('capturing screen product ids:', ids.join(','));
+  await waitForImages(screen);
   if (document.fonts && document.fonts.ready) await document.fonts.ready;
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-  const blob = await htmlToImage.toBlob(clone, {
-    width: TV_WIDTH,
-    height: TV_HEIGHT,
-    canvasWidth: TV_WIDTH,
-    canvasHeight: TV_HEIGHT,
-    pixelRatio: 1,
-    backgroundColor: '#f8fafc',
-    cacheBust: true,
-    imagePlaceholder: ''
-  });
-  captureRoot.remove();
-  return blob;
+  const previousTransform = screen.style.transform;
+  screen.style.transform = 'none';
+  try {
+    return await htmlToImage.toBlob(screen, {
+      width: TV_WIDTH,
+      height: TV_HEIGHT,
+      canvasWidth: TV_WIDTH,
+      canvasHeight: TV_HEIGHT,
+      pixelRatio: 1,
+      backgroundColor: '#f8fafc',
+      cacheBust: true,
+      imagePlaceholder: ''
+    });
+  } finally {
+    screen.style.transform = previousTransform;
+  }
 }
 
 async function exportTvScreens() {
