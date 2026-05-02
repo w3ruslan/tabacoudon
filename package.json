@@ -1,0 +1,11 @@
+{
+  "name": "tabacoudon",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "tv:export": "node scripts/tv-export-native.mjs"
+  },
+  "dependencies": {
+    "puppeteer": "^23.11.1"
+  }
+}

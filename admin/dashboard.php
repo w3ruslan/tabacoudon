@@ -179,7 +179,7 @@ function adminProductNotes(array $p): array {
   <form id="pdfForm" action="print_cards.php" method="POST" target="_blank" style="display:none">
     <input type="hidden" id="pdfIds" name="ids">
   </form>
-  <form id="tvForm" action="tv_export.php" method="POST" target="_blank" style="display:none">
+  <form id="tvForm" action="tv_export_native.php" method="POST" target="_blank" style="display:none">
     <input type="hidden" id="tvIds" name="ids">
   </form>
 
