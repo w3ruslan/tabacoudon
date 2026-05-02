@@ -30,12 +30,16 @@ function cssFile(root, relPath) {
   return pathToFileURL(path.join(root, relPath)).href;
 }
 
-function imageSrc(root, image) {
+function imageSrc(root, image, productId = '') {
   const src = String(image || '').trim();
   if (!src) return '';
-  if (/^https?:\/\//i.test(src)) return src;
+  const cacheKey = encodeURIComponent(String(productId || src));
+  if (/^https?:\/\//i.test(src)) {
+    const separator = src.includes('?') ? '&' : '?';
+    return `${src}${separator}tvpid=${cacheKey}`;
+  }
   if (src.startsWith('uploads/')) {
-    return pathToFileURL(path.join(root, src)).href;
+    return `${pathToFileURL(path.join(root, src)).href}?tvpid=${cacheKey}`;
   }
   return src;
 }
@@ -52,7 +56,7 @@ function pngSize(bytes) {
 
 function cardHtml(product, root) {
   const notes = (product.notes || []).slice(0, 2);
-  const image = imageSrc(root, product.image_url);
+  const image = imageSrc(root, product.image_url, product.id);
   const price = product.price_text || '';
   const classes = notes.length ? 'tc-has-specs' : 'tc-no-specs';
   return `

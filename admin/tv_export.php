@@ -20,13 +20,15 @@ function tvCategoryColor($value): string {
     return preg_match('/^#[0-9a-fA-F]{6}$/', $color) ? $color : '#22c55e';
 }
 
-function tvImagePath($image): string {
+function tvImagePath($image, int $productId = 0): string {
     $image = trim((string)$image);
     if ($image === '') return '';
+    $stamp = $productId > 0 ? (string)$productId : md5($image);
     if (strpos($image, 'uploads/') === 0 || preg_match('#^https?://#i', $image)) {
-        return 'tv_image.php?src=' . rawurlencode($image);
+        return 'tv_image.php?src=' . rawurlencode($image) . '&pid=' . rawurlencode($stamp);
     }
-    return $image;
+    $separator = strpos($image, '?') === false ? '?' : '&';
+    return $image . $separator . 'pid=' . rawurlencode($stamp);
 }
 
 function tvProductNotes(array $product): array {
@@ -127,7 +129,7 @@ $screens = array_chunk($products, 6);
               $brand = trim((string)($p['brand'] ?? ''));
               $size = trim((string)($p['size'] ?? ''));
               $price = ($p['price'] ?? '') !== '' && $p['price'] !== null ? '€' . number_format((float)$p['price'], 2) : '';
-              $image = tvImagePath($p['image_url'] ?? '');
+              $image = tvImagePath($p['image_url'] ?? '', (int)$p['id']);
               $notes = tvProductNotes($p);
               $categoryColor = tvCategoryColor($p['category_color'] ?? '');
               $surCommande = !empty($p['sur_commande']);
@@ -138,7 +140,7 @@ $screens = array_chunk($products, 6);
                     <div class="tc-img-box">
                       <div class="tc-product-visual">
                         <?php if ($image): ?>
-                          <img src="<?= e($image) ?>" alt="<?= e($name) ?>" crossorigin="anonymous">
+                          <img src="<?= e($image) ?>" alt="<?= e($name) ?>" crossorigin="anonymous" data-original-src="<?= e($image) ?>">
                         <?php else: ?>
                           <span class="tc-no-img">🌬️</span>
                         <?php endif; ?>
@@ -202,10 +204,38 @@ function waitForImages(root) {
   }));
 }
 
+function blobToDataUrl(blob) {
+  return new Promise(function(resolve, reject) {
+    const reader = new FileReader();
+    reader.onload = function() { resolve(reader.result); };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function inlineScreenImages(screen) {
+  const images = Array.from(screen.querySelectorAll('img'));
+  await Promise.all(images.map(async function(img) {
+    const original = img.getAttribute('data-original-src') || img.currentSrc || img.src;
+    if (!original || original.startsWith('data:')) return;
+    try {
+      const response = await fetch(original, { cache: 'reload', credentials: 'same-origin' });
+      if (!response.ok) throw new Error('Image fetch failed: ' + response.status);
+      const dataUrl = await blobToDataUrl(await response.blob());
+      img.src = dataUrl;
+      img.setAttribute('data-export-inlined', '1');
+    } catch (error) {
+      console.warn('TV image inline failed:', original, error);
+    }
+  }));
+  await waitForImages(screen);
+}
+
 async function captureScreen(screen) {
   const ids = Array.from(screen.querySelectorAll('.tc-card[data-product-id]')).map(card => card.dataset.productId);
   console.log('capturing screen product ids:', ids.join(','));
   await waitForImages(screen);
+  await inlineScreenImages(screen);
   if (document.fonts && document.fonts.ready) await document.fonts.ready;
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   const previousTransform = screen.style.transform;
