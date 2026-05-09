@@ -154,10 +154,19 @@ body {
   content: none !important;
 }
 
-/* Replace color-mix() border on img-box with a simple solid border — avoids
-   PDF-renderer inconsistencies with CSS color-mix() */
+/* In print labels the card's own border already frames the card —
+   remove the inner img-box border to eliminate the double-border /
+   "shadow above price" visual artifact */
 .product-print-label .tc-img-box {
-  border-color: var(--cc) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Simplify price badge: the dark gradient overlay (rgba 0,0,0,.30) creates
+   a shadow-like dark edge below the badge — replace with solid color */
+.product-print-label .tc-photo-price {
+  background: var(--cc) !important;
+  box-shadow: none !important;
 }
 
 /* Remove spec-title box-shadow */
@@ -229,7 +238,7 @@ body {
     break-after: page;
   }
 
-  /* Guarantee all shadows are removed in print */
+  /* Guarantee all shadows are removed and borders simplified in print */
   .product-print-label,
   .product-print-label .tc-photo-price,
   .product-print-label .tc-spec-title,
@@ -241,6 +250,14 @@ body {
     filter: none !important;
     backdrop-filter: none !important;
     text-shadow: none !important;
+  }
+
+  .product-print-label .tc-img-box {
+    border: none !important;
+  }
+
+  .product-print-label .tc-photo-price {
+    background: var(--cc) !important;
   }
 
   .label-page:last-child {
