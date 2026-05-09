@@ -269,21 +269,6 @@ body {
     background: var(--cc) !important;
   }
 
-  /* ── Explicit pt-based font sizes for PDF export ──────────────────────────
-     Chrome's PDF renderer may compute cqw (container-query width units)
-     differently than the live preview. Using pt bypasses that entirely and
-     guarantees the saved PDF matches what you see in Chrome's print preview.
-     Label card = 63.333 mm wide → sizes below are tuned for that exact width. */
-  .product-print-label .tc-photo-price  { font-size: 15pt !important; letter-spacing: -0.04em !important; }
-  .product-print-label .tc-card-name    { font-size:  6pt !important; }
-  .product-print-label .tc-card-brand   { font-size:  7pt !important; }
-  .product-print-label .tc-spec-title   { font-size:  6pt !important; }
-  .product-print-label .tc-spec-chip    { font-size:  5.5pt !important; }
-  .product-print-label .tc-size-label   { font-size:  5pt !important; }
-  .product-print-label .tc-sc-pill      { font-size:  5pt !important; }
-
-  /* Disable container-type in print so pt/mm units are the sole sizing source */
-  .product-print-label { container-type: normal !important; }
 
   .label-page:last-child {
     page-break-after: avoid;
