@@ -174,7 +174,7 @@ body {
 .product-print-label .tc-photo-price {
   background: var(--cc) !important;
   box-shadow: none !important;
-  font-size: clamp(13px, 6.5cqw, 36px) !important;
+  font-size: clamp(15px, 8.5cqw, 44px) !important;
   letter-spacing: -0.04em !important;
 }
 
