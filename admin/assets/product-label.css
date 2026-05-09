@@ -96,6 +96,10 @@ body {
   cursor: default;
   break-inside: avoid;
   page-break-inside: avoid;
+  /* Remove card-level shadow and replace gradient border with solid category-color border */
+  box-shadow: none !important;
+  border-color: var(--cc) !important;
+  background: #fff !important;
 }
 
 .product-print-label .tc-photo-cart {
@@ -106,6 +110,7 @@ body {
 .product-print-label .tc-photo-price {
   text-shadow: none !important;
   -webkit-text-stroke: 0 transparent;
+  box-shadow: none !important;
 }
 
 .product-print-label .tc-photo-price::before,
@@ -147,6 +152,17 @@ body {
 .product-print-label .product-image::after {
   display: none !important;
   content: none !important;
+}
+
+/* Replace color-mix() border on img-box with a simple solid border — avoids
+   PDF-renderer inconsistencies with CSS color-mix() */
+.product-print-label .tc-img-box {
+  border-color: var(--cc) !important;
+}
+
+/* Remove spec-title box-shadow */
+.product-print-label .tc-spec-title {
+  box-shadow: none !important;
 }
 
 .product-print-label .tc-horizontal-barcode-wrap {
@@ -211,6 +227,20 @@ body {
     box-shadow: none;
     page-break-after: always;
     break-after: page;
+  }
+
+  /* Guarantee all shadows are removed in print */
+  .product-print-label,
+  .product-print-label .tc-photo-price,
+  .product-print-label .tc-spec-title,
+  .product-print-label .tc-card-top,
+  .product-print-label .tc-img-box,
+  .product-print-label .tc-product-visual,
+  .product-print-label .tc-product-visual img {
+    box-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    text-shadow: none !important;
   }
 
   .label-page:last-child {
