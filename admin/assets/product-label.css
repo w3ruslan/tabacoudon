@@ -156,17 +156,26 @@ body {
 
 /* In print labels the card's own border already frames the card —
    remove the inner img-box border to eliminate the double-border /
-   "shadow above price" visual artifact */
+   "shadow above price" visual artifact.
+   Also increase row 2 (price badge) from 28% → 44% so it renders bigger. */
 .product-print-label .tc-img-box {
   border: none !important;
   box-shadow: none !important;
+  grid-template-rows:
+    minmax(0, 1fr)
+    minmax(0, 44%)
+    minmax(0, 5%)
+    minmax(0, 26%)
+    minmax(0, 1fr) !important;
 }
 
-/* Simplify price badge: the dark gradient overlay (rgba 0,0,0,.30) creates
-   a shadow-like dark edge below the badge — replace with solid color */
+/* Simplify price badge: solid color (no dark gradient), no shadow,
+   and larger font so the price is clearly readable on the label */
 .product-print-label .tc-photo-price {
   background: var(--cc) !important;
   box-shadow: none !important;
+  font-size: clamp(13px, 6.5cqw, 36px) !important;
+  letter-spacing: -0.04em !important;
 }
 
 /* Remove spec-title box-shadow */
