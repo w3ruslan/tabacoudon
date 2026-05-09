@@ -178,9 +178,20 @@ body {
   letter-spacing: -0.04em !important;
 }
 
-/* Remove spec-title box-shadow */
+/* Remove spec-title box-shadow AND gradient overlay (the rgba(0,0,0,.24)
+   dark overlay at the gradient end renders as a shadow-like artifact
+   above the NOTES button in Chrome's PDF engine) */
 .product-print-label .tc-spec-title {
   box-shadow: none !important;
+  background: var(--cc) !important;
+  text-shadow: none !important;
+}
+
+/* Remove border-radius from the image container — Chrome's PDF renderer
+   can leave anti-aliasing artifacts at rounded corners that appear as
+   a faint shadow just below the image area / above the NOTES button */
+.product-print-label .tc-card-top {
+  border-radius: 0 !important;
 }
 
 .product-print-label .tc-horizontal-barcode-wrap {
