@@ -23,12 +23,16 @@ function tvCategoryColor($value): string {
 function tvImagePath($image, int $productId = 0): string {
     $image = trim((string)$image);
     if ($image === '') return '';
-    $stamp = $productId > 0 ? (string)$productId : md5($image);
-    if (strpos($image, 'uploads/') === 0 || preg_match('#^https?://#i', $image)) {
-        return 'tv_image.php?src=' . rawurlencode($image) . '&pid=' . rawurlencode($stamp);
+    // Strip leading slash so relative paths resolve correctly from admin/
+    if (strpos($image, '/uploads/') === 0) {
+        $image = ltrim($image, '/');
     }
-    $separator = strpos($image, '?') === false ? '?' : '&';
-    return $image . $separator . 'pid=' . rawurlencode($stamp);
+    // For relative uploads paths, go up one level from admin/
+    if (strpos($image, 'uploads/') === 0) {
+        return '../' . $image;
+    }
+    // Full URLs — use directly
+    return $image;
 }
 
 function tvProductNotes(array $product): array {
