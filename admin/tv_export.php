@@ -140,7 +140,7 @@ $screens = array_chunk($products, 6);
                     <div class="tc-img-box">
                       <div class="tc-product-visual">
                         <?php if ($image): ?>
-                          <img src="<?= e($image) ?>" alt="<?= e($name) ?>" crossorigin="anonymous" data-original-src="<?= e($image) ?>">
+                          <img src="<?= e($image) ?>" alt="<?= e($name) ?>" data-original-src="<?= e($image) ?>">
                         <?php else: ?>
                           <span class="tc-no-img">🌬️</span>
                         <?php endif; ?>

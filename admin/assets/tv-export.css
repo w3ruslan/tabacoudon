@@ -144,12 +144,6 @@ body {
 }
 
 .tv-screen .tc-img-box {
-  grid-template-columns: minmax(0, 73%) minmax(0, 27%);
-  grid-template-rows:
-    24px
-    minmax(0, 25%)
-    minmax(0, 4%)
-    minmax(0, 1fr);
   padding: 2%;
   border-width: 3px;
 }
@@ -172,17 +166,15 @@ body {
   image-rendering: -webkit-optimize-contrast;
 }
 
+.tv-screen .tc-bottom-bar {
+  padding: 2% 0 2.5%;
+  gap: 4%;
+}
+
 .tv-screen .tc-photo-price {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  width: 248px;
   height: 92px;
-  min-width: 248px;
-  max-width: calc(100% - 48px);
   border-width: 3px;
   border-radius: 22px;
-  color: #fff;
   font-size: 52px;
   font-weight: 950;
   letter-spacing: -1.2px;
@@ -194,6 +186,7 @@ body {
     0 24px 46px rgba(6, 95, 70, .18),
     0 0 0 1px rgba(255, 215, 0, .24);
 }
+
 
 .tv-screen .tc-card-name {
   color: #06101f;
