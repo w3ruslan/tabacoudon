@@ -328,17 +328,15 @@ function renderCard(p) {
   }
 
   return '<div class="tc-card ' + (specsHtml ? 'tc-has-specs' : 'tc-no-specs') + '" data-id="' + p.id + '" style="--cc:' + catColor + '">'
-    // ── Top gradient + image (price and cart inside photo area) ──
+    // ── Top: full-width image only ──
     + '<div class="tc-card-top">'
     + '<div class="tc-img-box">'
     + '<div class="tc-product-visual">'
     + imgHtml
     + '</div>'
-    + (price ? '<div class="tc-photo-price">' + price + '</div>' : '')
-    + '<button class="tc-photo-cart tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="--cc:' + catColor + '"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>'
     + '</div>'
     + '</div>'
-    // ── Bottom two columns ──
+    // ── Middle: two columns (name/brand/size | notes) ──
     + '<div class="tc-card-bot">'
     + '<div class="tc-bot-left">'
     + '<div class="tc-card-name">' + name + '</div>'
@@ -350,8 +348,10 @@ function renderCard(p) {
     + '</div>'
     + (specsHtml ? '<div class="tc-bot-right">' + specsHtml + '</div>' : '')
     + '</div>'
-    + '<div class="tc-horizontal-barcode-wrap ' + (barcode ? 'has-barcode' : 'no-barcode') + '">'
-    + (barcode ? '<svg class="tc-horizontal-barcode-svg" data-barcode="' + barcode + '"></svg>' : '')
+    // ── Bottom bar: price + add to cart ──
+    + '<div class="tc-bottom-bar">'
+    + (price ? '<div class="tc-photo-price">' + price + '</div>' : '')
+    + '<button class="tc-photo-cart tc-cart-btn" data-id="' + escapeHtml(p.id) + '" data-name="' + escapeHtml(p.name || '') + '" data-price="' + (parseFloat(p.price)||0) + '" data-size="' + escapeHtml(p.size || '') + '" style="--cc:' + catColor + '"><span>🛒</span><strong>AJOUTER AU PANIER</strong></button>'
     + '</div>'
     + '</div>';
 }

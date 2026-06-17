@@ -158,15 +158,45 @@ body {
    remove the inner img-box border to eliminate the double-border /
    "shadow above price" visual artifact.
    Also increase row 2 (price badge) from 28% → 44% so it renders bigger. */
+/* Restore 2-column grid for print (storefront uses single-column flex) */
+.product-print-label .tc-card-top {
+  flex: 0 0 42% !important;
+}
+
+.product-print-label .tc-card-bot {
+  padding-bottom: 18% !important;
+}
+
 .product-print-label .tc-img-box {
-  border: none !important;
-  box-shadow: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 65%) minmax(0, 35%) !important;
   grid-template-rows:
     minmax(0, 1fr)
     minmax(0, 44%)
     minmax(0, 5%)
     minmax(0, 26%)
     minmax(0, 1fr) !important;
+  align-items: center !important;
+  justify-items: center !important;
+  padding: 4.9% !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.product-print-label .tc-product-visual {
+  grid-column: 1 !important;
+  grid-row: 1 / -1 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.product-print-label .tc-photo-price {
+  flex: none !important;
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  position: static !important;
+  width: 87.5% !important;
+  height: 100% !important;
 }
 
 /* Simplify price badge: solid color (no dark gradient), no shadow,
@@ -197,6 +227,16 @@ body {
 .product-print-label .tc-horizontal-barcode-wrap {
   display: flex !important;
   visibility: visible;
+  position: absolute !important;
+  left: var(--card-pad) !important;
+  right: var(--card-pad) !important;
+  bottom: 3.2% !important;
+  height: 18% !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  z-index: 4 !important;
 }
 
 .product-print-label .tc-horizontal-barcode-wrap.no-barcode {
