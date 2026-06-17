@@ -135,7 +135,7 @@ $screens = array_chunk($products, 6);
               $surCommande = !empty($p['sur_commande']);
             ?>
               <div class="tv-cell">
-                <article class="tc-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" data-product-id="<?= (int)$p['id'] ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>">
+                <article class="tc-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" data-product-id="<?= (int)$p['id'] ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>; --img-zoom: <?= e(number_format((float)($p['image_zoom'] ?? 1), 3)) ?>">
                   <div class="tc-card-top">
                     <div class="tc-img-box">
                       <div class="tc-product-visual">
@@ -145,8 +145,6 @@ $screens = array_chunk($products, 6);
                           <span class="tc-no-img">🌬️</span>
                         <?php endif; ?>
                       </div>
-                      <?php if ($price): ?><div class="tc-photo-price"><?= e($price) ?></div><?php endif; ?>
-                      <button class="tc-photo-cart tc-cart-btn" type="button"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>
                     </div>
                   </div>
 
@@ -172,7 +170,10 @@ $screens = array_chunk($products, 6);
                     <?php endif; ?>
                   </section>
 
-                  <div class="tc-horizontal-barcode-wrap no-barcode"></div>
+                  <div class="tc-bottom-bar">
+                    <?php if ($price): ?><div class="tc-photo-price"><?= e($price) ?></div><?php endif; ?>
+                    <button class="tc-photo-cart tc-cart-btn" type="button"><span>🛒</span><strong>AJOUTER AU PANIER</strong></button>
+                  </div>
                 </article>
               </div>
             <?php endforeach; ?>

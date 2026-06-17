@@ -109,7 +109,7 @@ function categoryColor(?string $color): string {
       $categoryColor = categoryColor($p['category_color'] ?? '');
       $surCommande = !empty($p['sur_commande']);
     ?>
-    <article class="tc-card product-print-label label-theme-<?= e($theme) ?> <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>">
+    <article class="tc-card product-print-label label-theme-<?= e($theme) ?> <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>; --img-zoom: <?= number_format((float)($p['image_zoom'] ?? 1), 3) ?>">
       <div class="tc-card-top">
         <div class="tc-img-box">
           <div class="tc-product-visual">
@@ -119,8 +119,6 @@ function categoryColor(?string $color): string {
               <span class="tc-no-img"><?= e($name) ?></span>
             <?php endif; ?>
           </div>
-          <?php if ($price): ?><div class="tc-photo-price tc-price"><?= e($price) ?></div><?php endif; ?>
-          <button class="tc-photo-cart tc-cart-btn" type="button" style="--cc: <?= e($categoryColor) ?>"><span>🛒</span><strong>AJOUTER<br>AU PANIER</strong></button>
         </div>
       </div>
 
@@ -146,8 +144,8 @@ function categoryColor(?string $color): string {
         <?php endif; ?>
       </section>
 
-      <div class="tc-horizontal-barcode-wrap <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
-        <?php if ($barcode): ?><svg class="tc-horizontal-barcode-svg" data-barcode="<?= e($barcode) ?>"></svg><?php endif; ?>
+      <div class="tc-bottom-bar">
+        <?php if ($price): ?><div class="tc-photo-price tc-price"><?= e($price) ?></div><?php endif; ?>
       </div>
     </article>
     <?php endforeach; ?>
