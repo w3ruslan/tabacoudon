@@ -95,6 +95,51 @@ function adminProductNotes(array $p): array {
     textarea#fDesc:focus { border-color:var(--accent); }
     #zoomVal::-webkit-outer-spin-button,
     #zoomVal::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+
+    /* Card zoom bar */
+    .ac-zoom-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      background: #f8fafc;
+      border-top: 1px solid #e8edf2;
+      border-radius: 0 0 4px 4px;
+    }
+    .ac-zoom-btn {
+      width: 28px; height: 28px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 50%;
+      background: #fff;
+      font-size: 16px; font-weight: 700; line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #374151;
+      transition: background .15s, border-color .15s;
+      flex-shrink: 0;
+    }
+    .ac-zoom-btn:hover { background: #e0e7ff; border-color: #6366f1; color: #4f46e5; }
+    .ac-zoom-btn:active { transform: scale(.92); }
+    .ac-zoom-center {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      font-size: 12px; color: #64748b; font-weight: 600;
+    }
+    .ac-zoom-input {
+      width: 54px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 3px 5px;
+      font-size: 13px; font-weight: 700;
+      text-align: center;
+      color: #1e293b;
+      background: #fff;
+      outline: none;
+      -moz-appearance: textfield;
+    }
+    .ac-zoom-input::-webkit-outer-spin-button,
+    .ac-zoom-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .ac-zoom-input:focus { border-color: #6366f1; }
   </style>
   <style>
     .scanner-overlay {
@@ -240,6 +285,19 @@ function adminProductNotes(array $p): array {
           <button class="btn-copy" title="Copier comme nouveau produit" onclick='copyProduct(<?= json_encode($p, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP) ?>)'>📋</button>
           <button class="btn-del" title="Supprimer" onclick='deleteProduct(<?= (int)$p['id'] ?>, <?= json_encode($name, JSON_HEX_APOS | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_QUOT) ?>)'>🗑️</button>
         </div>
+      </div>
+      <div class="ac-zoom-bar">
+        <button type="button" class="ac-zoom-btn" onclick="cardZoom(<?= (int)$p['id'] ?>, -0.005)" title="Réduire">−</button>
+        <div class="ac-zoom-center">
+          🔍
+          <input type="number" class="ac-zoom-input" id="czoom-<?= (int)$p['id'] ?>"
+            value="<?= round(max(1.0, (float)($p['image_zoom'] ?? 1)) * 100, 1) ?>"
+            min="100" max="250" step="0.5"
+            oninput="cardZoomLive(<?= (int)$p['id'] ?>, this.value)"
+            onblur="cardZoomBlur(<?= (int)$p['id'] ?>, this)">
+          <span>%</span>
+        </div>
+        <button type="button" class="ac-zoom-btn" onclick="cardZoom(<?= (int)$p['id'] ?>, 0.005)" title="Agrandir">+</button>
       </div>
 
       <article class="tc-card admin-storefront-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= h($categoryColor) ?>; --category-color: <?= h($categoryColor) ?>; --img-zoom: <?= number_format(max(1.0, (float)($p['image_zoom'] ?? 1)), 3) ?>">
@@ -1142,6 +1200,45 @@ function updateZoomDisplay(val) {
   var pct = Math.round(parseFloat(val) * 1000) / 10;
   var el = document.getElementById('zoomVal');
   if (el) el.value = pct.toFixed(1);
+}
+
+/* ── Card-level inline zoom controls ───────────────────────────── */
+var _cardZoomTimers = {};
+
+function _cardApplyZoom(productId, pct) {
+  pct = Math.max(100, Math.min(250, pct));
+  var zoom = Math.round(pct * 10) / 1000;
+  var card = document.querySelector('[data-id="' + productId + '"] .tc-card');
+  if (card) card.style.setProperty('--img-zoom', zoom.toFixed(3));
+  var inp = document.getElementById('czoom-' + productId);
+  if (inp) inp.value = pct.toFixed(1);
+  clearTimeout(_cardZoomTimers[productId]);
+  _cardZoomTimers[productId] = setTimeout(function () {
+    adminFetch('save_zoom.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: productId, image_zoom: zoom })
+    }).catch(function (e) { console.warn('zoom save failed', e); });
+  }, 400);
+}
+
+function cardZoom(productId, delta) {
+  var inp = document.getElementById('czoom-' + productId);
+  var pct = parseFloat(inp ? inp.value : 100) || 100;
+  _cardApplyZoom(productId, Math.round((pct + delta * 100) * 10) / 10);
+}
+
+function cardZoomLive(productId, value) {
+  var pct = parseFloat(value);
+  if (isNaN(pct)) return;
+  var zoom = Math.max(1.0, Math.min(2.5, pct / 100));
+  var card = document.querySelector('[data-id="' + productId + '"] .tc-card');
+  if (card) card.style.setProperty('--img-zoom', zoom.toFixed(3));
+}
+
+function cardZoomBlur(productId, inputEl) {
+  var pct = parseFloat(inputEl.value) || 100;
+  _cardApplyZoom(productId, pct);
 }
 
 function clearForm() {
