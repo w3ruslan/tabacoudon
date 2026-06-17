@@ -240,7 +240,7 @@ function adminProductNotes(array $p): array {
         </div>
       </div>
 
-      <article class="tc-card admin-storefront-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= h($categoryColor) ?>; --category-color: <?= h($categoryColor) ?>">
+      <article class="tc-card admin-storefront-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= h($categoryColor) ?>; --category-color: <?= h($categoryColor) ?>; --img-zoom: <?= number_format((float)($p['image_zoom'] ?? 1), 3) ?>">
         <div class="tc-card-top">
           <div class="tc-img-box">
             <div class="tc-product-visual">
@@ -250,12 +250,6 @@ function adminProductNotes(array $p): array {
                 <span class="tc-no-img">🌬️</span>
               <?php endif; ?>
             </div>
-            <?php if ($price): ?>
-              <div class="tc-photo-price"><?= h($price) ?></div>
-            <?php endif; ?>
-            <button class="tc-photo-cart tc-cart-btn admin-visual-cart" type="button" onclick="event.stopPropagation()" aria-label="Ajouter au panier aperçu">
-              <span>🛒</span><strong>AJOUTER<br>AU PANIER</strong>
-            </button>
           </div>
         </div>
 
@@ -286,10 +280,13 @@ function adminProductNotes(array $p): array {
           <?php endif; ?>
         </div>
 
-        <div class="tc-horizontal-barcode-wrap <?= $barcode ? 'has-barcode' : 'no-barcode' ?>">
-          <?php if ($barcode): ?>
-            <svg class="tc-horizontal-barcode-svg" data-barcode="<?= h($barcode) ?>"></svg>
+        <div class="tc-bottom-bar">
+          <?php if ($price): ?>
+            <div class="tc-photo-price"><?= h($price) ?></div>
           <?php endif; ?>
+          <button class="tc-photo-cart tc-cart-btn admin-visual-cart" type="button" onclick="event.stopPropagation()">
+            <span>🛒</span><strong>AJOUTER AU PANIER</strong>
+          </button>
         </div>
       </article>
     </div>
@@ -418,15 +415,19 @@ function adminProductNotes(array $p): array {
 
         <div class="form-group" style="margin-bottom:20px">
           <label>🔍 Zoom photo</label>
-          <div style="display:flex;align-items:center;gap:14px;margin-top:6px">
-            <span style="font-size:13px;color:#888;flex-shrink:0">1×</span>
-            <input type="range" id="fZoom" min="1" max="2.5" step="0.05" value="1"
-                   oninput="updateZoomDisplay(this.value)"
-                   style="flex:1;height:6px;accent-color:#16a34a;cursor:pointer">
-            <span style="font-size:13px;color:#888;flex-shrink:0">2.5×</span>
-            <span id="zoomVal" style="font-size:15px;font-weight:900;color:#16a34a;min-width:44px;text-align:right">1.0×</span>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+            <button type="button" onclick="changeZoom(-0.005)"
+              style="flex:0 0 40px;height:40px;border:2px solid #e2e8f0;border-radius:50%;background:#fff;font-size:22px;font-weight:700;color:#0f172a;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:border-color .15s,background .15s"
+              onmouseenter="this.style.borderColor='#16a34a';this.style.background='#f0fdf4'"
+              onmouseleave="this.style.borderColor='#e2e8f0';this.style.background='#fff'">−</button>
+            <span id="zoomVal" style="flex:1;text-align:center;font-size:18px;font-weight:900;color:#16a34a;letter-spacing:-0.03em">100.0%</span>
+            <button type="button" onclick="changeZoom(0.005)"
+              style="flex:0 0 40px;height:40px;border:2px solid #e2e8f0;border-radius:50%;background:#fff;font-size:22px;font-weight:700;color:#0f172a;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:border-color .15s,background .15s"
+              onmouseenter="this.style.borderColor='#16a34a';this.style.background='#f0fdf4'"
+              onmouseleave="this.style.borderColor='#e2e8f0';this.style.background='#fff'">+</button>
           </div>
-          <div style="font-size:11px;color:#aaa;margin-top:4px">Grossit la photo sur la carte produit</div>
+          <input type="hidden" id="fZoom" value="1">
+          <div style="font-size:11px;color:#aaa;margin-top:5px;text-align:center">Her tıklama 0.5% • min 100% • max 250%</div>
         </div>
 
         <div class="modal-actions">
@@ -1104,10 +1105,18 @@ function updateScSlider() {
   if (knob)   knob.style.left         = checked ? '25px'    : '3px';
 }
 
+function changeZoom(delta) {
+  var el = document.getElementById('fZoom');
+  var v = Math.round((parseFloat(el.value) + delta) * 1000) / 1000;
+  v = Math.max(1.0, Math.min(2.5, v));
+  el.value = v;
+  updateZoomDisplay(v);
+}
+
 function updateZoomDisplay(val) {
-  var v = parseFloat(val);
+  var pct = Math.round(parseFloat(val) * 1000) / 10;
   var el = document.getElementById('zoomVal');
-  if (el) el.textContent = v.toFixed(2) + '×';
+  if (el) el.textContent = pct.toFixed(1) + '%';
 }
 
 function clearForm() {
