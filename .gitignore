@@ -2,3 +2,5 @@ config.keys.php
 config.local.php
 .DS_Store
 node_modules/
+uploads/*
+!uploads/.gitkeep
