@@ -93,6 +93,8 @@ function adminProductNotes(array $p): array {
       background:white; resize:vertical; min-height:72px; font-family:inherit;
     }
     textarea#fDesc:focus { border-color:var(--accent); }
+    #zoomVal::-webkit-outer-spin-button,
+    #zoomVal::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
   </style>
   <style>
     .scanner-overlay {
@@ -420,14 +422,22 @@ function adminProductNotes(array $p): array {
               style="flex:0 0 40px;height:40px;border:2px solid #e2e8f0;border-radius:50%;background:#fff;font-size:22px;font-weight:700;color:#0f172a;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:border-color .15s,background .15s"
               onmouseenter="this.style.borderColor='#16a34a';this.style.background='#f0fdf4'"
               onmouseleave="this.style.borderColor='#e2e8f0';this.style.background='#fff'">−</button>
-            <span id="zoomVal" style="flex:1;text-align:center;font-size:18px;font-weight:900;color:#16a34a;letter-spacing:-0.03em">100.0%</span>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:3px">
+              <input type="number" id="zoomVal" value="100" min="100" max="250" step="0.5"
+                oninput="applyZoomInput(this.value)"
+                onblur="normalizeZoomInput(this)"
+                style="width:72px;text-align:center;font-size:20px;font-weight:900;color:#16a34a;border:2px solid #e2e8f0;border-radius:10px;padding:5px 4px;outline:none;-moz-appearance:textfield;appearance:textfield"
+                onfocus="this.style.borderColor='#16a34a'"
+                onblur="this.style.borderColor='#e2e8f0';normalizeZoomInput(this)">
+              <span style="font-size:18px;font-weight:900;color:#16a34a">%</span>
+            </div>
             <button type="button" onclick="changeZoom(0.005)"
               style="flex:0 0 40px;height:40px;border:2px solid #e2e8f0;border-radius:50%;background:#fff;font-size:22px;font-weight:700;color:#0f172a;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;transition:border-color .15s,background .15s"
               onmouseenter="this.style.borderColor='#16a34a';this.style.background='#f0fdf4'"
               onmouseleave="this.style.borderColor='#e2e8f0';this.style.background='#fff'">+</button>
           </div>
           <input type="hidden" id="fZoom" value="1">
-          <div style="font-size:11px;color:#aaa;margin-top:5px;text-align:center">Her tıklama 0.5% • min 100% • max 250%</div>
+          <div style="font-size:11px;color:#aaa;margin-top:5px;text-align:center">Rakam yaz veya − + kullan • min 100% • max 250%</div>
         </div>
 
         <div class="modal-actions">
@@ -1113,10 +1123,25 @@ function changeZoom(delta) {
   updateZoomDisplay(v);
 }
 
+function applyZoomInput(pctStr) {
+  var pct = parseFloat(pctStr);
+  if (isNaN(pct)) return;
+  pct = Math.max(100, Math.min(250, pct));
+  document.getElementById('fZoom').value = (Math.round(pct * 10) / 1000).toFixed(3);
+}
+
+function normalizeZoomInput(inputEl) {
+  var pct = parseFloat(inputEl.value);
+  if (isNaN(pct)) pct = 100;
+  pct = Math.max(100, Math.min(250, pct));
+  inputEl.value = pct.toFixed(1);
+  document.getElementById('fZoom').value = (pct / 100).toFixed(3);
+}
+
 function updateZoomDisplay(val) {
   var pct = Math.round(parseFloat(val) * 1000) / 10;
   var el = document.getElementById('zoomVal');
-  if (el) el.textContent = pct.toFixed(1) + '%';
+  if (el) el.value = pct.toFixed(1);
 }
 
 function clearForm() {
