@@ -377,7 +377,11 @@ function adminProductNotes(array $p): array {
             <label>URL de l'image</label>
             <div style="display:flex;gap:8px">
               <input type="text" id="imgUrlInput" placeholder="Coller l'URL de l'image ici..." oninput="previewImageUrl(this.value)">
-              <button type="button" class="btn-load-img" onclick="loadImageFromUrl()" title="Charger">⬇️</button>
+              <button type="button" class="btn-load-img" onclick="loadImageFromUrl()" title="Charger depuis URL">⬇️</button>
+              <label class="btn-load-img btn-upload-local" title="Yükle bilgisayardan" style="cursor:pointer;background:#16a34a">
+                📁
+                <input type="file" id="localImageInput" accept="image/*" style="display:none" onchange="uploadLocalImage(this)">
+              </label>
             </div>
             <div id="imgUrlStatus" style="font-size:11px;margin-top:4px;color:#888"></div>
           </div>
@@ -1285,6 +1289,40 @@ function previewImageUrl(val) {
     imgEl.style.display = 'none';
     ph.style.display    = '';
   }
+}
+
+async function uploadLocalImage(input) {
+  const file   = input.files[0];
+  const status = document.getElementById('imgUrlStatus');
+  if (!file) return;
+  status.textContent = '⏳ Yükleniyor...';
+  status.style.color = '#888';
+
+  const fd = new FormData();
+  fd.append('image', file);
+
+  try {
+    const res  = await adminFetch('../api/upload_image.php', { method: 'POST', body: fd });
+    const json = await res.json();
+    if (json.path) {
+      const imgEl = document.getElementById('selectedImg');
+      const ph    = document.getElementById('imgPlaceholder');
+      selectedImgUrl      = json.path;
+      imgEl.src           = '../' + json.path;
+      imgEl.style.display = 'block';
+      ph.style.display    = 'none';
+      document.getElementById('imgUrlInput').value = json.path;
+      status.textContent = '✅ Fotoğraf yüklendi.';
+      status.style.color = '#16a34a';
+    } else {
+      status.textContent = '❌ ' + (json.error || 'Hata');
+      status.style.color = '#e94560';
+    }
+  } catch (e) {
+    status.textContent = '❌ Bağlantı hatası';
+    status.style.color = '#e94560';
+  }
+  input.value = '';
 }
 
 async function loadImageFromUrl() {
