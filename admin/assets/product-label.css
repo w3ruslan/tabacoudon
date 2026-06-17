@@ -96,71 +96,21 @@ body {
   cursor: default;
   break-inside: avoid;
   page-break-inside: avoid;
+  /* Remove card-level shadow and replace gradient border with solid category-color border */
   box-shadow: none !important;
-  border: 2px solid var(--cc) !important;
+  border-color: var(--cc) !important;
   background: #fff !important;
-  border-radius: 12px !important;
-}
-
-/* Remove the neon radial glow pseudo-element */
-.product-print-label::before {
-  display: none !important;
-  content: none !important;
 }
 
 .product-print-label .tc-photo-cart {
-  display: none !important;
+  display: none;
   pointer-events: none;
 }
 
-/* ── Restore white backgrounds throughout ── */
-.product-print-label .tc-card-top {
-  background: #fff !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-}
-
-.product-print-label .tc-card-bot {
-  background: #fff !important;
-}
-
-.product-print-label .tc-img-box,
-.product-print-label .tc-product-visual {
-  background: #ffffff !important;
-  background-image: none !important;
-  box-shadow: none !important;
-  filter: none !important;
-  backdrop-filter: none !important;
-  border: none !important;
-}
-
-.product-print-label .tc-product-visual img {
-  filter: none !important;
-}
-
-.product-print-label .tc-card-top::before,
-.product-print-label .tc-card-top::after,
-.product-print-label .tc-img-box::before,
-.product-print-label .tc-img-box::after,
-.product-print-label .tc-product-visual::before,
-.product-print-label .tc-product-visual::after {
-  display: none !important;
-  content: none !important;
-}
-
-/* ── Price badge: solid color, no blur ── */
 .product-print-label .tc-photo-price {
-  background: var(--cc) !important;
-  color: #fff !important;
   text-shadow: none !important;
+  -webkit-text-stroke: 0 transparent;
   box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: none !important;
-  font-size: clamp(15px, 8.5cqw, 44px) !important;
-  letter-spacing: -0.04em !important;
 }
 
 .product-print-label .tc-photo-price::before,
@@ -169,90 +119,79 @@ body {
   display: none !important;
 }
 
-/* ── Restore dark text for label readability ── */
-.product-print-label .tc-card-name,
-.product-print-label .tc-title,
-.product-print-label .tc-product-name {
-  color: #0f172a !important;
-}
-
-.product-print-label .tc-card-brand {
-  color: var(--cc) !important;
-  opacity: 1 !important;
-}
-
-/* ── Restore two-section layout: left col then right col ── */
-.product-print-label .tc-bot-left {
-  display: flex !important;
-  flex-direction: column !important;
-  order: 1 !important;
-}
-
-.product-print-label .tc-bot-right {
-  display: flex !important;
-  flex-direction: column !important;
-  order: 2 !important;
-}
-
-/* ── Size / sur-commande tags ── */
-.product-print-label .tc-size-label {
-  background: transparent !important;
-  color: var(--cc) !important;
-  border-color: var(--cc) !important;
-}
-
-.product-print-label .tc-sc-pill {
-  background: #fff8e1 !important;
-  color: #d97706 !important;
-  border-color: #fde68a !important;
-}
-
-/* ── Restore NOTES title ── */
-.product-print-label .tc-spec-title {
-  display: flex !important;
-  background: var(--cc) !important;
-  color: #fff !important;
+.product-print-label .tc-card-top,
+.product-print-label .tc-img-box,
+.product-print-label .tc-product-visual,
+.product-print-label .tc-product-visual img,
+.product-print-label .tc-photo,
+.product-print-label .tc-photo-inner,
+.product-print-label .tc-image-wrap,
+.product-print-label .tc-product-image,
+.product-print-label .tc-hero,
+.product-print-label .tc-hero-image,
+.product-print-label .product-image,
+.product-print-label .product-image-box {
+  background: #ffffff !important;
+  background-image: none !important;
   box-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.product-print-label .tc-card-top::before,
+.product-print-label .tc-card-top::after,
+.product-print-label .tc-img-box::before,
+.product-print-label .tc-img-box::after,
+.product-print-label .tc-product-visual::before,
+.product-print-label .tc-product-visual::after,
+.product-print-label .tc-photo::before,
+.product-print-label .tc-photo::after,
+.product-print-label .tc-image-wrap::before,
+.product-print-label .tc-image-wrap::after,
+.product-print-label .product-image::before,
+.product-print-label .product-image::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* In print labels the card's own border already frames the card —
+   remove the inner img-box border to eliminate the double-border /
+   "shadow above price" visual artifact.
+   Also increase row 2 (price badge) from 28% → 44% so it renders bigger. */
+.product-print-label .tc-img-box {
+  border: none !important;
+  box-shadow: none !important;
+  grid-template-rows:
+    minmax(0, 1fr)
+    minmax(0, 44%)
+    minmax(0, 5%)
+    minmax(0, 26%)
+    minmax(0, 1fr) !important;
+}
+
+/* Simplify price badge: solid color (no dark gradient), no shadow,
+   and larger font so the price is clearly readable on the label */
+.product-print-label .tc-photo-price {
+  background: var(--cc) !important;
+  box-shadow: none !important;
+  font-size: clamp(15px, 8.5cqw, 44px) !important;
+  letter-spacing: -0.04em !important;
+}
+
+/* Remove spec-title box-shadow AND gradient overlay (the rgba(0,0,0,.24)
+   dark overlay at the gradient end renders as a shadow-like artifact
+   above the NOTES button in Chrome's PDF engine) */
+.product-print-label .tc-spec-title {
+  box-shadow: none !important;
+  background: var(--cc) !important;
   text-shadow: none !important;
 }
 
-/* ── Restore spec chips as a vertical list ── */
-.product-print-label .tc-spec-chips {
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-.product-print-label .tc-spec-chip {
-  display: flex !important;
-  align-items: center !important;
-  gap: clamp(4px, 2cqw, 13px) !important;
-  color: #0f172a !important;
-  font-size: clamp(7px, 3.125cqw, 20px) !important;
-  font-weight: 700 !important;
-  padding: 4.7% 0 !important;
-  border: 0 !important;
-  border-bottom: 1px solid #f0f4f8 !important;
-  background: transparent !important;
+/* Remove border-radius from the image container — Chrome's PDF renderer
+   can leave anti-aliasing artifacts at rounded corners that appear as
+   a faint shadow just below the image area / above the NOTES button */
+.product-print-label .tc-card-top {
   border-radius: 0 !important;
-}
-
-.product-print-label .tc-spec-chip::before {
-  content: "" !important;
-  display: block !important;
-  width: clamp(4px, 1.72cqw, 11px) !important;
-  height: clamp(4px, 1.72cqw, 11px) !important;
-  flex: 0 0 clamp(4px, 1.72cqw, 11px) !important;
-  border-radius: 50% !important;
-  background: var(--cc) !important;
-}
-
-/* Override the neon inline · separator on subsequent chips */
-.product-print-label .tc-spec-chip + .tc-spec-chip::before {
-  content: "" !important;
-}
-
-.product-print-label .tc-spec-chip:last-child {
-  border-bottom: 0 !important;
 }
 
 .product-print-label .tc-horizontal-barcode-wrap {
