@@ -85,7 +85,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 4.9%;
+  padding: 0;
   border: 2px solid color-mix(in srgb, var(--cc) 78%, #0b3c5d);
   border-radius: calc(var(--card-radius) * .64);
   background: #fff;
@@ -112,10 +112,10 @@
 }
 
 .tc-product-visual img {
-  width: 95%;
-  height: 95%;
-  max-width: 95%;
-  max-height: 95%;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   object-position: center center;
   display: block;
