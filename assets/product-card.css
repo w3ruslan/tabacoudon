@@ -93,6 +93,7 @@
   box-shadow: none;
   filter: none;
   backdrop-filter: none;
+  clip-path: inset(0 round calc(var(--card-radius) * .64));
 }
 
 /* ── Product image ── */
