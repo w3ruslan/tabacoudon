@@ -311,6 +311,7 @@ function renderCard(p) {
 
   var price   = p.price ? '€' + parseFloat(p.price).toFixed(2) : '';
   var surCmde = p.sur_commande ? '<span class="tc-sc-pill">📦 Sur cmd</span>' : '';
+  var zoom    = parseFloat(p.image_zoom) || 1;
 
   // Right column: flavor specs
   var flavors = (p.flavor || '').split(/[,\/]+/).map(function(f){ return f.trim(); }).filter(Boolean);
@@ -327,7 +328,7 @@ function renderCard(p) {
       + '<div class="tc-spec-chips"><span class="tc-spec-chip">' + catLabel + '</span></div>';
   }
 
-  return '<div class="tc-card ' + (specsHtml ? 'tc-has-specs' : 'tc-no-specs') + '" data-id="' + p.id + '" style="--cc:' + catColor + '">'
+  return '<div class="tc-card ' + (specsHtml ? 'tc-has-specs' : 'tc-no-specs') + '" data-id="' + p.id + '" style="--cc:' + catColor + ';--img-zoom:' + zoom + '">'
     // ── Top: full-width image only ──
     + '<div class="tc-card-top">'
     + '<div class="tc-img-box">'

@@ -106,8 +106,8 @@ if ($method === 'POST' && $action === 'add') {
         exit;
     }
     $stmt = $db->prepare('INSERT INTO products
-        (name, brand, flavor, size, barcode, category_id, price, image_url, description, sur_commande)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        (name, brand, flavor, size, barcode, category_id, price, image_url, description, sur_commande, image_zoom)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     $stmt->execute([
         $data['name']         ?? '',
         $data['brand']        ?? '',
@@ -119,6 +119,7 @@ if ($method === 'POST' && $action === 'add') {
         $data['image_url']    ?? '',
         $data['description']  ?? '',
         $data['sur_commande'] ?? 0,
+        $data['image_zoom']   ?? 1.00,
     ]);
     echo json_encode(['id' => $db->lastInsertId(), 'ok' => true]);
     exit;
@@ -135,7 +136,7 @@ if ($method === 'PUT' && $action === 'edit') {
         exit;
     }
     $stmt = $db->prepare('UPDATE products
-        SET name=?, brand=?, flavor=?, size=?, barcode=?, category_id=?, price=?, image_url=?, active=?, description=?, sur_commande=?
+        SET name=?, brand=?, flavor=?, size=?, barcode=?, category_id=?, price=?, image_url=?, active=?, description=?, sur_commande=?, image_zoom=?
         WHERE id=?');
     $stmt->execute([
         $data['name']         ?? '',
@@ -149,6 +150,7 @@ if ($method === 'PUT' && $action === 'edit') {
         $data['active']       ?? 1,
         $data['description']  ?? '',
         $data['sur_commande'] ?? 0,
+        $data['image_zoom']   ?? 1.00,
         $data['id'],
     ]);
     echo json_encode(['ok' => true]);

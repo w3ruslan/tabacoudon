@@ -416,6 +416,19 @@ function adminProductNotes(array $p): array {
           </div>
         </div>
 
+        <div class="form-group" style="margin-bottom:20px">
+          <label>🔍 Zoom photo</label>
+          <div style="display:flex;align-items:center;gap:14px;margin-top:6px">
+            <span style="font-size:13px;color:#888;flex-shrink:0">1×</span>
+            <input type="range" id="fZoom" min="1" max="2.5" step="0.05" value="1"
+                   oninput="updateZoomDisplay(this.value)"
+                   style="flex:1;height:6px;accent-color:#16a34a;cursor:pointer">
+            <span style="font-size:13px;color:#888;flex-shrink:0">2.5×</span>
+            <span id="zoomVal" style="font-size:15px;font-weight:900;color:#16a34a;min-width:44px;text-align:right">1.0×</span>
+          </div>
+          <div style="font-size:11px;color:#aaa;margin-top:4px">Grossit la photo sur la carte produit</div>
+        </div>
+
         <div class="modal-actions">
           <button class="btn-cancel" onclick="closeModal()">Annuler</button>
           <button class="btn-save"   onclick="saveProduct()" id="saveBtn">💾 Enregistrer</button>
@@ -852,6 +865,9 @@ function fillProductForm(p, keepBarcode) {
   var scEl = document.getElementById('fSurCommande');
   if (scEl) { scEl.checked = parseInt(p.sur_commande || 0) === 1; updateScSlider(); }
 
+  var zoomEl = document.getElementById('fZoom');
+  if (zoomEl) { var zv = parseFloat(p.image_zoom) || 1; zoomEl.value = zv; updateZoomDisplay(zv); }
+
   selectedImgUrl = p.image_url || '';
   const imgEl = document.getElementById('selectedImg');
   const ph    = document.getElementById('imgPlaceholder');
@@ -900,6 +916,7 @@ async function saveProduct() {
     image_url:    selectedImgUrl,
     active:       parseInt(document.getElementById('fActive').value),
     sur_commande: document.getElementById('fSurCommande').checked ? 1 : 0,
+    image_zoom:   parseFloat(document.getElementById('fZoom').value) || 1,
   };
 
   const duplicate = await checkBarcodeDuplicateNow();
@@ -1087,6 +1104,12 @@ function updateScSlider() {
   if (knob)   knob.style.left         = checked ? '25px'    : '3px';
 }
 
+function updateZoomDisplay(val) {
+  var v = parseFloat(val);
+  var el = document.getElementById('zoomVal');
+  if (el) el.textContent = v.toFixed(2) + '×';
+}
+
 function clearForm() {
   ['fName','fBrand','fFlavor','fSize','fBarcode','fPrice'].forEach(id => document.getElementById(id).value = '');
   setBarcodeWarning(null);
@@ -1095,6 +1118,8 @@ function clearForm() {
   document.getElementById('fActive').value   = '1';
   var scEl = document.getElementById('fSurCommande');
   if (scEl) { scEl.checked = false; updateScSlider(); }
+  var zoomEl = document.getElementById('fZoom');
+  if (zoomEl) { zoomEl.value = 1; updateZoomDisplay(1); }
   const imgEl = document.getElementById('selectedImg');
   imgEl.src = '';
   imgEl.style.display = 'none';
