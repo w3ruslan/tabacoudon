@@ -1175,19 +1175,35 @@ function previewImageUrl(val) {
   const imgEl = document.getElementById('selectedImg');
   const ph    = document.getElementById('imgPlaceholder');
   if (val && val.startsWith('http')) {
-    imgEl.src          = val;
+    imgEl.src           = val;
     imgEl.style.display = 'block';
-    ph.style.display   = 'none';
+    ph.style.display    = 'none';
+  } else if (val && val.startsWith('uploads/')) {
+    imgEl.src           = '../' + val;
+    imgEl.style.display = 'block';
+    ph.style.display    = 'none';
+    selectedImgUrl      = val;
   } else {
-    imgEl.src          = '';
+    imgEl.src           = '';
     imgEl.style.display = 'none';
-    ph.style.display   = '';
+    ph.style.display    = '';
   }
 }
 
 async function loadImageFromUrl() {
   const url    = document.getElementById('imgUrlInput').value.trim();
   const status = document.getElementById('imgUrlStatus');
+  if (url && url.startsWith('uploads/')) {
+    const imgEl = document.getElementById('selectedImg');
+    const ph    = document.getElementById('imgPlaceholder');
+    imgEl.src           = '../' + url;
+    imgEl.style.display = 'block';
+    ph.style.display    = 'none';
+    selectedImgUrl      = url;
+    status.textContent  = '✅ Image locale.';
+    status.style.color  = '#16a34a';
+    return;
+  }
   if (!url || !url.startsWith('http')) {
     status.textContent = 'Veuillez saisir une URL valide.';
     status.style.color = '#e94560';
