@@ -242,7 +242,7 @@ function adminProductNotes(array $p): array {
         </div>
       </div>
 
-      <article class="tc-card admin-storefront-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= h($categoryColor) ?>; --category-color: <?= h($categoryColor) ?>; --img-zoom: <?= number_format((float)($p['image_zoom'] ?? 1), 3) ?>">
+      <article class="tc-card admin-storefront-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" style="--cc: <?= h($categoryColor) ?>; --category-color: <?= h($categoryColor) ?>; --img-zoom: <?= number_format(max(1.0, (float)($p['image_zoom'] ?? 1)), 3) ?>">
         <div class="tc-card-top">
           <div class="tc-img-box">
             <div class="tc-product-visual">

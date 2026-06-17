@@ -139,7 +139,7 @@ $screens = array_chunk($products, 6);
               $surCommande = !empty($p['sur_commande']);
             ?>
               <div class="tv-cell">
-                <article class="tc-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" data-product-id="<?= (int)$p['id'] ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>; --img-zoom: <?= e(number_format((float)($p['image_zoom'] ?? 1), 3)) ?>">
+                <article class="tc-card <?= $notes ? 'tc-has-specs' : 'tc-no-specs' ?>" data-product-id="<?= (int)$p['id'] ?>" style="--cc: <?= e($categoryColor) ?>; --category-color: <?= e($categoryColor) ?>; --img-zoom: <?= e(number_format(max(1.0, (float)($p['image_zoom'] ?? 1)), 3)) ?>">
                   <div class="tc-card-top">
                     <div class="tc-img-box">
                       <div class="tc-product-visual">
