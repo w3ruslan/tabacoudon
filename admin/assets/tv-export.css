@@ -144,7 +144,8 @@ body {
 }
 
 .tv-screen .tc-img-box {
-  border-width: 3px;
+  border: 3px solid var(--cc) !important;
+  border-radius: calc(var(--card-radius) * .64) !important;
 }
 
 .tv-screen .tc-img-box,
@@ -155,6 +156,11 @@ body {
   box-shadow: none !important;
   filter: none !important;
   backdrop-filter: none !important;
+}
+
+/* Stretch visual to fill img-box so percentage heights resolve correctly */
+.tv-screen .tc-product-visual {
+  align-self: stretch !important;
 }
 
 .tv-screen .tc-product-visual img {
