@@ -454,6 +454,12 @@
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    grid-auto-rows: calc((50vw - 5px) * 17 / 8);
+  }
+
+  .tc-card {
+    height: 100%;
+    aspect-ratio: unset;
   }
 
   .tc-card-bot {
