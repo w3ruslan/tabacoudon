@@ -413,8 +413,9 @@ function showDetail(id, sourceCard) {
   }
 
   var detailImg = safeImageUrl(p.image_url);
+  var detailZoom = parseFloat(p.image_zoom) || 1;
   var imgHtml = detailImg
-    ? '<img class="dt-img" src="' + detailImg + '" alt="' + escapeHtml(p.name || '') + '">'
+    ? '<div class="dt-img-wrap" style="--dt-zoom:' + detailZoom + '"><img class="dt-img" src="' + detailImg + '" alt="' + escapeHtml(p.name || '') + '"></div>'
     : '<div class="dt-no-img">🌬️</div>';
 
   // If there's a YouTube video, hide the product image and show the embed instead
