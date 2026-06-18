@@ -33,7 +33,7 @@ if (!$host || !$ip || !filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_R
 }
 
 // Create uploads dir
-$uploadDir = __DIR__ . '/../uploads/';
+$uploadDir = dirname($_SERVER['DOCUMENT_ROOT']) . '/tabacoudon_uploads/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }

@@ -1,4 +1,9 @@
 Options -Indexes
+
+# uploads/ URL'lerini public_html dışındaki kalıcı dizinden servis et
+RewriteEngine On
+RewriteRule ^uploads/([a-zA-Z0-9._-]+\.(?:jpe?g|png|gif|webp))$ /img.php?f=$1 [L,NC,QSA]
+
 # Config PHP gizle
 <Files "config.php">
     Deny from all

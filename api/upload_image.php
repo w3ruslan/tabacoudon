@@ -45,7 +45,7 @@ if (!isset($allowed[$mime])) {
     exit;
 }
 
-$uploadDir = __DIR__ . '/../uploads/';
+$uploadDir = dirname($_SERVER['DOCUMENT_ROOT']) . '/tabacoudon_uploads/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
