@@ -455,6 +455,16 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
+
+  /* Kart daha uzun — fotoğraf aynı kalır, yazı alanı büyür */
+  .tc-card {
+    aspect-ratio: 3 / 5;
+  }
+
+  /* Notes sütununu tek satır yap — daha okunabilir */
+  .tc-card-bot {
+    grid-template-columns: minmax(0, 52%) 2px minmax(0, 48%);
+  }
 }
 
 @media (max-width: 420px) {
