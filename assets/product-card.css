@@ -466,48 +466,14 @@
    tc-card zaten container-type:inline-size taşıyor.
 ───────────────────────────────────────────────────── */
 
-/* Dar kart (≤ 210px): cart buton metnini gizle, sadece ikon göster */
-@container (max-width: 210px) {
+/* Dar kart (≤ 220px): cart buton metnini gizle, sadece 🛒 ikonu */
+@container (max-width: 220px) {
   .tc-photo-cart strong {
     display: none;
   }
   .tc-photo-cart {
     flex: 0 0 auto;
-    min-width: clamp(26px, 11cqw, 52px);
+    width: clamp(26px, 11cqw, 48px);
     padding: 0;
   }
-
-  /* Size etiketi uzunsa kırp */
-  .tc-size-label {
-    max-width: 90%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Spec chips 2 satırla sınırla */
-  .tc-spec-chips {
-    max-height: 3.4em;
-    overflow: hidden;
-  }
-
-  /* Bot bölümü sütunlarını biraz sıkıştır */
-  .tc-card-bot {
-    grid-template-columns: minmax(0, 55%) 2px minmax(0, 45%);
-    padding: 3% 0 3.5%;
-  }
-
-  /* Marka adı taşmasın */
-  .tc-card-brand {
-    font-size: clamp(7px, 3.8cqw, 20px);
-  }
-}
-
-/* Çok dar kart (≤ 170px): notlar sütununu gizle, tek sütun */
-@container (max-width: 170px) {
-  .tc-card-bot {
-    grid-template-columns: 1fr;
-  }
-  .tc-card-bot::before { display: none; }
-  .tc-bot-right { display: none; }
 }
