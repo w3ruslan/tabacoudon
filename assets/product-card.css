@@ -470,19 +470,3 @@
   .product-grid { gap: 8px; }
 }
 
-/* ─────────────────────────────────────────────────────
-   CONTAINER QUERIES — dar kart uyarlaması
-   tc-card zaten container-type:inline-size taşıyor.
-───────────────────────────────────────────────────── */
-
-/* Dar kart (≤ 220px): cart buton metnini gizle, sadece 🛒 ikonu */
-@container (max-width: 220px) {
-  .tc-photo-cart strong {
-    display: none;
-  }
-  .tc-photo-cart {
-    flex: 0 0 auto;
-    width: clamp(26px, 11cqw, 48px);
-    padding: 0;
-  }
-}
