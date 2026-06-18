@@ -456,9 +456,8 @@
     gap: 10px;
   }
 
-  /* Kart daha uzun — fotoğraf aynı kalır, yazı alanı büyür */
   .tc-card {
-    aspect-ratio: 3 / 5;
+    aspect-ratio: 1 / 2;
   }
 
   /* Notes sütununu tek satır yap — daha okunabilir */
