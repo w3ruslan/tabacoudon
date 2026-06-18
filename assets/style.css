@@ -484,16 +484,17 @@ body {
   cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
 .dt-img-wrap {
-  width: 130px; height: 130px;
+  width: min(220px, 72vw);
+  height: min(220px, 72vw);
   background: #fff;
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0,0,0,.2), inset 0 0 0 1px rgba(0,0,0,.05);
   animation: dtFloat 3s ease-in-out infinite;
   margin-bottom: 10px;
   overflow: hidden;
-  clip-path: inset(0 round 16px);
+  clip-path: inset(0 round 20px);
   display: flex; align-items: center; justify-content: center;
-  padding: 10px;
+  padding: 12px;
   box-sizing: border-box;
 }
 .dt-img {
