@@ -225,7 +225,24 @@ function adminProductNotes(array $p): array {
   <!-- Hidden form for product label print page (opens new tab) -->
   <form id="pdfForm" action="print_cards.php" method="POST" target="_blank" style="display:none">
     <input type="hidden" id="pdfIds" name="ids">
+    <input type="hidden" id="pdfPerPage" name="per_page" value="9">
   </form>
+
+  <!-- Per-page picker popup -->
+  <div id="pdfPicker" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;background:rgba(0,0,0,.5)">
+    <div style="background:#fff;border-radius:16px;padding:28px 32px;box-shadow:0 20px 60px rgba(0,0,0,.3);min-width:280px;text-align:center">
+      <div style="font-size:17px;font-weight:800;color:#0f172a;margin-bottom:6px">Produits par page</div>
+      <div style="font-size:13px;color:#6b7280;margin-bottom:20px">Choisissez la densité d'impression</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
+        <button onclick="submitPdf(9)"  style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">9<br><span style="font-size:10px;font-weight:500;color:#6b7280">3×3</span></button>
+        <button onclick="submitPdf(12)" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">12<br><span style="font-size:10px;font-weight:500;color:#6b7280">4×3</span></button>
+        <button onclick="submitPdf(16)" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">16<br><span style="font-size:10px;font-weight:500;color:#6b7280">4×4</span></button>
+        <button onclick="submitPdf(24)" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">24<br><span style="font-size:10px;font-weight:500;color:#6b7280">6×4</span></button>
+        <button onclick="submitPdf(32)" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">32<br><span style="font-size:10px;font-weight:500;color:#6b7280">8×4</span></button>
+        <button onclick="document.getElementById('pdfPicker').style.display='none'" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#fff;font-size:13px;font-weight:700;color:#6b7280;cursor:pointer">Annuler</button>
+      </div>
+    </div>
+  </div>
   <form id="tvForm" action="tv_export_native.php" method="POST" target="_blank" style="display:none">
     <input type="hidden" id="tvIds" name="ids">
   </form>
@@ -1098,6 +1115,12 @@ function bulkExportPDF() {
   var ids = getSelectedIds();
   if (!ids.length) { alert('Aucun produit sélectionné.'); return; }
   document.getElementById('pdfIds').value = JSON.stringify(ids);
+  document.getElementById('pdfPicker').style.display = 'flex';
+}
+
+function submitPdf(perPage) {
+  document.getElementById('pdfPicker').style.display = 'none';
+  document.getElementById('pdfPerPage').value = perPage;
   document.getElementById('pdfForm').submit();
 }
 

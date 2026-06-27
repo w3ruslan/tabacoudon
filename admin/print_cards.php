@@ -29,7 +29,22 @@ foreach ($ids as $id) {
     }
 }
 
-$pages = array_chunk($products, 9);
+$per_page = in_array((int)($_POST['per_page'] ?? 9), [9, 12, 16, 24, 32])
+    ? (int)$_POST['per_page'] : 9;
+
+$grid = [
+    9  => ['cols' => 3, 'rows' => 3],
+    12 => ['cols' => 4, 'rows' => 3],
+    16 => ['cols' => 4, 'rows' => 4],
+    24 => ['cols' => 6, 'rows' => 4],
+    32 => ['cols' => 8, 'rows' => 4],
+];
+$cols        = $grid[$per_page]['cols'];
+$rows        = $grid[$per_page]['rows'];
+$label_w_mm  = round((198 - ($cols - 1) * 4) / $cols, 4);
+$label_h_mm  = round($label_w_mm * 91 / 64, 4);
+
+$pages = array_chunk($products, $per_page);
 
 function e(?string $value): string {
     return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
@@ -78,12 +93,22 @@ function categoryColor(?string $color): string {
   <link rel="stylesheet" href="../assets/product-card.css?v=<?= filemtime(__DIR__ . '/../assets/product-card.css') ?>">
   <link rel="stylesheet" href="assets/product-label.css?v=<?= filemtime(__DIR__ . '/assets/product-label.css') ?>">
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <style>
+    :root {
+      --label-width:  <?= $label_w_mm ?>mm;
+      --label-height: <?= $label_h_mm ?>mm;
+    }
+    .label-page {
+      grid-template-columns: repeat(<?= $cols ?>, var(--label-width));
+      grid-template-rows:    repeat(<?= $rows ?>, var(--label-height));
+    }
+  </style>
 </head>
 <body>
 
 <div class="label-toolbar">
   <h1>Aperçu des étiquettes</h1>
-  <span><?= count($products) ?> produit(s) · <?= count($pages) ?> page(s) A4 · 9 cartes / page</span>
+  <span><?= count($products) ?> produit(s) · <?= count($pages) ?> page(s) A4 · <?= $per_page ?> cartes / page (<?= $cols ?>×<?= $rows ?>)</span>
   <button type="button" onclick="window.print()">Imprimer / PDF</button>
   <button type="button" onclick="window.close()">Fermer</button>
 </div>

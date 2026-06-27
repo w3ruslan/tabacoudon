@@ -81,8 +81,7 @@ body {
   margin: 0 auto 24px;
   padding: var(--page-pad);
   display: grid;
-  grid-template-columns: repeat(3, var(--label-width));
-  grid-template-rows: repeat(3, var(--label-height));
+  /* grid-template-columns and rows set dynamically by print_cards.php */
   gap: var(--label-gap);
   align-content: space-between;
   overflow: hidden;
