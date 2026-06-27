@@ -235,10 +235,7 @@ function adminProductNotes(array $p): array {
       <div style="font-size:13px;color:#6b7280;margin-bottom:20px">Choisissez la densité d'impression</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px">
         <button onclick="submitPdf(9)"  style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">9<br><span style="font-size:10px;font-weight:500;color:#6b7280">3×3</span></button>
-        <button onclick="submitPdf(12)" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">12<br><span style="font-size:10px;font-weight:500;color:#6b7280">4×3</span></button>
         <button onclick="submitPdf(16)" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">16<br><span style="font-size:10px;font-weight:500;color:#6b7280">4×4</span></button>
-        <button onclick="submitPdf(24)" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">24<br><span style="font-size:10px;font-weight:500;color:#6b7280">6×4</span></button>
-        <button onclick="submitPdf(32)" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#f9fafb;font-size:15px;font-weight:800;cursor:pointer">32<br><span style="font-size:10px;font-weight:500;color:#6b7280">8×4</span></button>
         <button onclick="document.getElementById('pdfPicker').style.display='none'" style="padding:14px 0;border-radius:10px;border:2px solid #e5e7eb;background:#fff;font-size:13px;font-weight:700;color:#6b7280;cursor:pointer">Annuler</button>
       </div>
     </div>
