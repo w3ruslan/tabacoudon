@@ -229,7 +229,24 @@ function switchCat(catId, btn) {
   document.querySelectorAll('.cat-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   currentCat = catId;
+  var label = document.getElementById('catToggleLabel');
+  if (label) label.textContent = catId === 0 ? 'Catégories' : btn.textContent.trim();
+  closeCatMenu();
   loadProducts(catId);
+}
+
+function toggleCatMenu() {
+  var d = document.getElementById('catDropdown');
+  var b = document.getElementById('catBackdrop');
+  d.classList.toggle('open');
+  b.classList.toggle('open');
+}
+
+function closeCatMenu() {
+  var d = document.getElementById('catDropdown');
+  var b = document.getElementById('catBackdrop');
+  if (d) d.classList.remove('open');
+  if (b) b.classList.remove('open');
 }
 
 function loadProducts(catId) {

@@ -99,11 +99,18 @@ function ageDecline() {
   </div>
 </div>
 
-<!-- CATEGORY TABS -->
-<nav class="cat-nav no-print">
-  <button class="cat-btn active" data-cat="0" onclick="switchCat(0, this)">Tous les produits</button>
-  <div id="catButtons"></div>
-</nav>
+<!-- CATEGORY DROPDOWN -->
+<div class="cat-wrap no-print">
+  <button class="cat-toggle" id="catToggle" onclick="toggleCatMenu()">
+    <span class="cat-toggle-icon">☰</span>
+    <span id="catToggleLabel">Catégories</span>
+  </button>
+  <nav class="cat-dropdown" id="catDropdown">
+    <button class="cat-btn active" data-cat="0" onclick="switchCat(0, this)">Tous les produits</button>
+    <div id="catButtons"></div>
+  </nav>
+  <div class="cat-backdrop" id="catBackdrop" onclick="closeCatMenu()"></div>
+</div>
 
 <!-- CATALOG -->
 <main class="catalog-main">
