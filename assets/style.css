@@ -230,6 +230,9 @@ body {
   position: fixed;
   inset: 0;
   z-index: 299;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 .cat-backdrop.open { display: block; }
 
