@@ -235,6 +235,48 @@ function switchCat(catId, btn) {
   loadProducts(catId);
 }
 
+var currentSort = '';
+
+function getSortedProducts(arr) {
+  var s = arr.slice();
+  if (currentSort === 'name') {
+    s.sort(function(a, b){ return (a.name||'').localeCompare(b.name||''); });
+  } else if (currentSort === 'price-asc') {
+    s.sort(function(a, b){ return parseFloat(a.price||0) - parseFloat(b.price||0); });
+  } else if (currentSort === 'price-desc') {
+    s.sort(function(a, b){ return parseFloat(b.price||0) - parseFloat(a.price||0); });
+  }
+  return s;
+}
+
+function updateProductCount(n) {
+  var el = document.getElementById('productCount');
+  if (el) el.textContent = n + ' produit' + (n !== 1 ? 's' : '');
+}
+
+function applySort() {
+  var sel = document.getElementById('sortSelect');
+  currentSort = sel ? sel.value : '';
+  var q = (document.getElementById('searchInput')||{}).value || '';
+  var ql = q.trim().toLowerCase();
+  var base = ql
+    ? productsCache.filter(function(p){
+        return (p.name||'').toLowerCase().indexOf(ql)!==-1
+            || (p.flavor||'').toLowerCase().indexOf(ql)!==-1
+            || (p.brand||'').toLowerCase().indexOf(ql)!==-1;
+      })
+    : productsCache;
+  var sorted = getSortedProducts(base);
+  var grid  = document.getElementById('productGrid');
+  var empty = document.getElementById('emptyState');
+  updateProductCount(sorted.length);
+  if (!sorted.length) { grid.style.display='none'; empty.style.display='block'; return; }
+  grid.innerHTML = sorted.map(renderCard).join('');
+  grid.style.display = 'grid';
+  empty.style.display = 'none';
+  initBarcodes();
+}
+
 function toggleCatMenu() {
   var d = document.getElementById('catDropdown');
   var b = document.getElementById('catBackdrop');
@@ -267,8 +309,10 @@ function loadProducts(catId) {
     .then(function(products){
       loading.style.display = 'none';
       productsCache = products;
-      if (!products.length) { empty.style.display = 'block'; return; }
-      grid.innerHTML     = products.map(renderCard).join('');
+      var sorted = getSortedProducts(products);
+      updateProductCount(sorted.length);
+      if (!sorted.length) { empty.style.display = 'block'; return; }
+      grid.innerHTML     = sorted.map(renderCard).join('');
       grid.style.display = 'grid';
       initBarcodes();
     });
@@ -281,24 +325,21 @@ function filterProducts(query) {
   clear.style.display = query ? 'flex' : 'none';
 
   var q = query.trim().toLowerCase();
-  if (!q) {
-    grid.innerHTML = productsCache.map(renderCard).join('');
-    grid.style.display = productsCache.length ? 'grid' : 'none';
-    empty.style.display = productsCache.length ? 'none' : 'block';
-    return;
-  }
+  var base = q
+    ? productsCache.filter(function(p) {
+        return (p.name   || '').toLowerCase().indexOf(q) !== -1
+            || (p.flavor || '').toLowerCase().indexOf(q) !== -1
+            || (p.brand  || '').toLowerCase().indexOf(q) !== -1;
+      })
+    : productsCache;
+  var sorted = getSortedProducts(base);
+  updateProductCount(sorted.length);
 
-  var filtered = productsCache.filter(function(p) {
-    return (p.name   || '').toLowerCase().indexOf(q) !== -1
-        || (p.flavor || '').toLowerCase().indexOf(q) !== -1
-        || (p.brand  || '').toLowerCase().indexOf(q) !== -1;
-  });
-
-  if (!filtered.length) {
+  if (!sorted.length) {
     grid.style.display  = 'none';
     empty.style.display = 'block';
   } else {
-    grid.innerHTML     = filtered.map(renderCard).join('');
+    grid.innerHTML     = sorted.map(renderCard).join('');
     grid.style.display = 'grid';
     empty.style.display = 'none';
     initBarcodes();

@@ -99,17 +99,29 @@ function ageDecline() {
   </div>
 </div>
 
-<!-- CATEGORY DROPDOWN -->
-<div class="cat-wrap no-print">
-  <button class="cat-toggle" id="catToggle" onclick="toggleCatMenu()">
-    <span class="cat-toggle-icon">☰</span>
-    <span id="catToggleLabel">Catégories</span>
-  </button>
-  <nav class="cat-dropdown" id="catDropdown">
-    <button class="cat-btn active" data-cat="0" onclick="switchCat(0, this)">Tous les produits</button>
-    <div id="catButtons"></div>
-  </nav>
-  <div class="cat-backdrop" id="catBackdrop" onclick="closeCatMenu()"></div>
+<!-- FILTER BAR -->
+<div class="filter-bar no-print">
+  <div class="cat-wrap">
+    <button class="cat-toggle" id="catToggle" onclick="toggleCatMenu()">
+      <span class="cat-toggle-icon">☰</span>
+      <span id="catToggleLabel">Catégories</span>
+    </button>
+    <nav class="cat-dropdown" id="catDropdown">
+      <button class="cat-btn active" data-cat="0" onclick="switchCat(0, this)">Tous les produits</button>
+      <div id="catButtons"></div>
+    </nav>
+    <div class="cat-backdrop" id="catBackdrop" onclick="closeCatMenu()"></div>
+  </div>
+
+  <div class="sort-bar">
+    <span id="productCount" class="product-count"></span>
+    <select id="sortSelect" class="sort-select" onchange="applySort()">
+      <option value="">Par défaut</option>
+      <option value="name">Nom A→Z</option>
+      <option value="price-asc">Prix ↑</option>
+      <option value="price-desc">Prix ↓</option>
+    </select>
+  </div>
 </div>
 
 <!-- CATALOG -->
