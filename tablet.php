@@ -28,35 +28,46 @@ body {
   overflow: hidden;
 }
 
-/* ── Sidebar ── */
-#sidebar {
-  width: 210px;
+/* ── Category toggle & dropdown ── */
+#cat-wrap {
+  position: relative;
   flex-shrink: 0;
+}
+
+#cat-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
   background: #0f172a;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-#sidebar-logo {
-  padding: 20px 16px 16px;
-  font-size: 20px;
-  font-weight: 900;
   color: #fff;
-  letter-spacing: -0.5px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  flex-shrink: 0;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-#sidebar-logo span {
-  color: #22c55e;
-}
+#cat-toggle:hover { background: #1e293b; }
 
-#cat-list {
+#cat-panel {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 300;
+  background: #0f172a;
+  border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.35);
+  padding: 6px 0;
+  min-width: 220px;
+  max-height: 80vh;
   overflow-y: auto;
-  flex: 1;
-  padding: 8px 0;
 }
+
+#cat-panel.open { display: flex; }
 
 .cat-btn {
   display: flex;
@@ -71,9 +82,8 @@ body {
   font-weight: 600;
   text-align: left;
   cursor: pointer;
-  border-radius: 0;
-  transition: background .15s, color .15s;
   border-left: 3px solid transparent;
+  transition: background .15s, color .15s;
 }
 
 .cat-btn:hover {
@@ -100,6 +110,15 @@ body {
   background: rgba(34,197,94,.2);
   color: #22c55e;
 }
+
+#cat-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 299;
+}
+
+#cat-backdrop.open { display: block; }
 
 /* ── Main area ── */
 #main {
@@ -152,7 +171,7 @@ body {
 
 #product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 14px;
 }
 
@@ -415,28 +434,27 @@ body {
 </head>
 <body>
 
-<!-- Sidebar -->
-<div id="sidebar">
-  <div id="sidebar-logo">Taba<span>coudon</span></div>
-  <div id="cat-list">
-    <button class="cat-btn active" data-cat="0" onclick="filterCat(0)">
-      🛍️ Tous les produits
-      <span class="cat-count" id="count-0"><?= count($products) ?></span>
-    </button>
-    <?php foreach ($categories as $cat): ?>
-    <?php $n = array_reduce($products, fn($c,$p) => $c + ($p['category_name']===$cat['name']?1:0), 0); ?>
-    <button class="cat-btn" data-cat="<?= (int)$cat['id'] ?>" onclick="filterCat(<?= (int)$cat['id'] ?>)"
-            style="--btn-cc:<?= htmlspecialchars($cat['color'] ?? '#22c55e') ?>">
-      <?= htmlspecialchars($cat['icon'] ?? '') ?> <?= htmlspecialchars($cat['name']) ?>
-      <span class="cat-count" id="count-<?= (int)$cat['id'] ?>"><?= $n ?></span>
-    </button>
-    <?php endforeach; ?>
-  </div>
-</div>
-
 <!-- Main -->
 <div id="main">
   <div id="search-bar">
+    <div id="cat-wrap">
+      <button id="cat-toggle" onclick="toggleCatPanel()">☰ Catégories</button>
+      <div id="cat-panel">
+        <button class="cat-btn active" data-cat="0" onclick="filterCat(0)">
+          🛍️ Tous les produits
+          <span class="cat-count" id="count-0"><?= count($products) ?></span>
+        </button>
+        <?php foreach ($categories as $cat): ?>
+        <?php $n = array_reduce($products, fn($c,$p) => $c + ($p['category_name']===$cat['name']?1:0), 0); ?>
+        <button class="cat-btn" data-cat="<?= (int)$cat['id'] ?>" onclick="filterCat(<?= (int)$cat['id'] ?>)"
+                style="--btn-cc:<?= htmlspecialchars($cat['color'] ?? '#22c55e') ?>">
+          <?= htmlspecialchars($cat['icon'] ?? '') ?> <?= htmlspecialchars($cat['name']) ?>
+          <span class="cat-count" id="count-<?= (int)$cat['id'] ?>"><?= $n ?></span>
+        </button>
+        <?php endforeach; ?>
+      </div>
+      <div id="cat-backdrop" onclick="closeCatPanel()"></div>
+    </div>
     <input type="search" id="search" placeholder="Rechercher un produit…" oninput="filterSearch(this.value)">
     <span id="cat-title">Tous les produits</span>
     <span id="product-count"></span>
@@ -513,6 +531,16 @@ function esc(s) {
   return String(s||'').replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[c];});
 }
 
+function toggleCatPanel() {
+  document.getElementById('cat-panel').classList.toggle('open');
+  document.getElementById('cat-backdrop').classList.toggle('open');
+}
+
+function closeCatPanel() {
+  document.getElementById('cat-panel').classList.remove('open');
+  document.getElementById('cat-backdrop').classList.remove('open');
+}
+
 function filterCat(catId) {
   activeCat = catId;
   document.querySelectorAll('.cat-btn').forEach(function(b){
@@ -521,6 +549,7 @@ function filterCat(catId) {
   var catName = catId === 0 ? 'Tous les produits'
     : (document.querySelector('.cat-btn[data-cat="'+catId+'"]').textContent.trim().split('\n')[0]);
   document.getElementById('cat-title').textContent = catName.trim();
+  closeCatPanel();
   applyFilter();
 }
 
