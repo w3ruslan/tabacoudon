@@ -8,7 +8,7 @@ $products   = $db->query(
    FROM products p
    LEFT JOIN categories c ON p.category_id = c.id
    WHERE p.active = 1
-   ORDER BY c.display_order, c.name, p.name'
+   ORDER BY c.display_order, p.display_order, p.name'
 )->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
